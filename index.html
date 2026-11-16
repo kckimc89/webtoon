@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.1</title>
+<title>나만의 웹툰 창작극장 C3.2</title>
 <style>
 :root{--bg:#fff9fb;--card:#fff;--line:#eadcf3;--vio:#7d4bd1;--vio2:#efe5ff;--txt:#2e2438;--sub:#74667f;--pink:#ec7cb6;--mint:#6ac2b7;--gold:#f2bc45;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--txt);background:var(--bg)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg)}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #8f68e4;outline-offset:2px}
@@ -16,7 +16,11 @@
 .card h2,.card h3{margin:0 0 10px}.sub{color:var(--sub);font-size:14px;line-height:1.55}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{min-width:0}.grow{flex:1}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[type=text],textarea,select{width:100%;border:2px solid #e5d9ef;border-radius:14px;background:#fff;padding:12px 13px;color:var(--txt)}textarea{min-height:74px;resize:vertical}
 .primary,.secondary,.ghost,.danger{border:0;border-radius:14px;padding:12px 14px;font-weight:900;min-height:46px}.primary{background:var(--vio);color:#fff}.secondary{background:var(--vio2);color:#5d3e9a}.ghost{background:#fff;border:2px solid #e3d7ee;color:#5b4878}.danger{background:#fff0f0;color:#a84250}.btns{display:flex;gap:10px;flex-wrap:wrap}.btns>*{flex:1;min-width:140px}.hint{font-size:13px;color:#7b6794}
-.choice,.story,.countBtn,.miniPick{border:2px solid var(--line);background:#fff;border-radius:18px;padding:12px;text-align:center;font-weight:900;color:#4f3d66;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.choice .big,.story .big{font-size:40px;line-height:1}.choice.selected,.story.selected,.countBtn.selected,.miniPick.selected{border-color:#8f67db;background:#f2ebff;box-shadow:inset 0 0 0 1px #8f67db}.miniPick{min-height:68px;border-radius:14px;padding:8px;font-size:13px}
+.choice,.story,.countBtn,.miniPick{border:2px solid var(--line);background:#fff;border-radius:18px;padding:12px;text-align:center;font-weight:900;color:#4f3d66;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.choice .big,.story .big{font-size:40px;line-height:1}
+.avatar-thumb{width:100%;max-width:128px;height:125px;object-fit:contain;filter:drop-shadow(0 4px 6px #756b8255)}
+.choice{min-height:190px}.choice img{pointer-events:none}
+.scene svg{overflow:hidden}
+.choice.selected,.story.selected,.countBtn.selected,.miniPick.selected{border-color:#8f67db;background:#f2ebff;box-shadow:inset 0 0 0 1px #8f67db}.miniPick{min-height:68px;border-radius:14px;padding:8px;font-size:13px}
 .headline{background:#fff5df;border-radius:14px;padding:12px 14px;font-weight:900;color:#7a5921;margin-bottom:10px}
 .comic{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.comic.one{grid-template-columns:1fr;max-width:640px;margin:auto}.comic.two{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{border:3px solid #2d2435;border-radius:13px;background:#fff;overflow:hidden;min-width:0}.panel.active{border-color:#9b63ea;box-shadow:0 0 0 4px #eadcff}.scene{aspect-ratio:1.08;position:relative;background:#fff}.scene svg,.scene img{display:block;width:100%;height:100%}.caption{padding:9px 10px 12px;font-weight:800;font-size:15px;line-height:1.42;min-height:62px}.bubbleText{font-weight:800}.panelNo{display:inline-block;background:#342b3c;color:#fff;border-radius:8px;padding:1px 7px;margin-right:6px;font-size:12px}
 .editorTitle{display:flex;justify-content:space-between;align-items:center;gap:10px}.pager{display:flex;gap:10px}.pager>*{flex:1}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.stepCard{background:#f8f2ff;border-radius:14px;padding:10px;text-align:center;font-size:13px;color:#604b76;font-weight:800}
@@ -29,10 +33,10 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <body>
 <div class="app">
   <header class="top">
-    <p>🎬 컷마다 표정·자세·동작이 달라지는</p>
+    <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 장면 설정 → 실제 웹툰 느낌으로 꾸미기</p>
-    <span class="pill">MASTER C3.1 · 실제 웹툰형 시험판</span>
+    <span class="pill">MASTER C3.2 · 고화질 캐릭터 시험판</span>
   </header>
 
   <nav class="tabs">
@@ -54,13 +58,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 
     <div class="card">
       <h2>① 주인공을 고르세요</h2>
-      <p class="sub">준비된 주인공으로 바로 시작하거나, 아이가 그린 그림을 가져와 중심 캐릭터로 쓸 수 있습니다.</p>
+      <p class="sub">이제 털·표정·옷까지 보이는 입체 캐릭터를 사용합니다. 토끼는 장면에 따라 실제 전신 동작 그림이 바뀝니다. 다른 준비된 캐릭터의 추가 동작도 앞으로 보강할 수 있어요.</p>
       <div id="characterChoices" class="grid4"></div>
       <div class="grid2" style="margin-top:10px">
         <div>
           <label class="block">🖍 내가 그린 캐릭터 올리기</label>
           <input id="customUpload" type="file" accept="image/*">
-          <p class="hint">아이가 직접 그린 그림 사진을 선택하면, 컷마다 주인공 대신 그 그림이 들어갑니다.</p>
+          <p class="hint">아이가 그린 그림은 모습 그대로 사용됩니다. AI가 자동으로 다양한 자세로 다시 그리는 기능은 아직 없어요.</p>
         </div>
         <div>
           <label class="block">🏷 주인공 이름</label>
@@ -89,8 +93,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <div class="grow">
           <label class="block">✂ 몇 컷으로 만들까요?</label>
           <div id="countChoices" class="row">
-            <button class="countBtn selected" data-count="2" type="button">2컷</button>
-            <button class="countBtn" data-count="4" type="button">4컷</button>
+            <button class="countBtn" data-count="2" type="button">2컷</button>
+            <button class="countBtn selected" data-count="4" type="button">4컷</button>
           </div>
           <p class="hint">시험판은 2컷 또는 4컷을 추천합니다.</p>
         </div>
@@ -118,7 +122,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
       <div class="editorTitle">
         <div>
           <h2 id="comicTitle">나의 웹툰</h2>
-          <p class="sub">윗쪽 컷을 직접 누르거나 아래의 「이전 컷 / 다음 컷」으로 이동하세요.</p>
+          <p class="sub">윗쪽 컷을 누르거나 아래의 「이전 컷 / 다음 컷」으로 이동하세요. 토끼는 장면별 전신 그림이 달라지고, 말풍선·배경·이야기는 그대로 편집할 수 있습니다.</p>
         </div>
         <button id="backToMake" class="ghost" type="button">← 주인공 바꾸기</button>
       </div>
@@ -213,7 +217,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.1 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.2 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 <script>
@@ -221,7 +225,7 @@ const $=id=>document.getElementById(id), $$=s=>document.querySelectorAll(s);
 const storageKey='family-webtoon-theater-c31';
 const settings={
   hero:'rabbit', heroName:'루루', heroTrait:'호기심 많고 용감함', custom:null,
-  title:'반짝이는 비밀 열쇠', idea:'토끼가 숲에서 반짝이는 열쇠를 발견해요', story:'key', count:2, baseBackground:'forest'
+  title:'반짝이는 비밀 열쇠', idea:'토끼가 숲에서 반짝이는 열쇠를 발견해요', story:'key', count:4, baseBackground:'forest'
 };
 let state={title:'', panels:[], hero:'rabbit', heroName:'루루', heroTrait:'', custom:null, story:'key'};
 let selected=0;
@@ -254,8 +258,8 @@ const props=['없음','열쇠','별','무지개','보석','나비','문','책'];
 const storyTemplates={
   key:[
     {caption:'숲길을 걷다가 반짝이는 것을 발견했어요.',speech:'어? 저게 뭐지?',emotion:'궁금해요',pose:'걷기',action:'발견하기',prop:'없음'},
-    {caption:'가까이 가 보니 신비한 열쇠였어요!',speech:'와! 열쇠다!',emotion:'놀랐어요',pose:'앉기',action:'줍기',prop:'열쇠'},
-    {caption:'열쇠로 비밀의 문을 열었어요.',speech:'열려라, 비밀문!',emotion:'용감해요',pose:'서 있기',action:'열기',prop:'문'},
+    {caption:'가까이 가 보니 신비한 열쇠였어요!',speech:'와! 열쇠다!',emotion:'놀랐어요',pose:'서 있기',action:'발견하기',prop:'열쇠'},
+    {caption:'열쇠로 비밀의 문을 열었어요.',speech:'열려라, 비밀문!',emotion:'용감해요',pose:'걷기',action:'열기',prop:'문'},
     {caption:'문 너머 아름다운 세상이 펼쳐졌어요!',speech:'정말 멋진 곳이야!',emotion:'기뻐요',pose:'점프하기',action:'축하하기',prop:'무지개'}
   ],
   friend:[
@@ -282,7 +286,7 @@ function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show')
 function switchView(id){$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));if(id==='library')renderLibrary()}
 $$('.tab').forEach(btn=>btn.onclick=()=>switchView(btn.dataset.view));
 function safe(s=''){return String(s).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
-function renderCharacterChoices(){const wrap=$('characterChoices');wrap.innerHTML='';heroes.forEach(h=>{const b=document.createElement('button');b.type='button';b.className='choice'+(settings.hero===h.id?' selected':'');b.innerHTML=`<div class="big">${h.emoji}</div><div>${h.name}</div><div class="hint">실제 웹툰형</div>`;b.onclick=()=>{settings.hero=h.id;settings.custom=null;renderCharacterChoices()};wrap.appendChild(b)});const custom=document.createElement('button');custom.type='button';custom.className='choice'+(settings.hero==='custom'?' selected':'');custom.innerHTML=`<div class="big">🖍</div><div>내 그림</div><div class="hint">직접 그린 캐릭터</div>`;custom.onclick=()=>{settings.hero='custom';renderCharacterChoices()};wrap.appendChild(custom)}
+function renderCharacterChoices(){const wrap=$('characterChoices');wrap.innerHTML='';heroes.forEach(h=>{const b=document.createElement('button');b.type='button';b.className='choice'+(settings.hero===h.id?' selected':'');b.innerHTML=`<img class="avatar-thumb" src="assets/${h.id}-standing.webp" alt="${h.name} 캐릭터" loading="lazy"><div>${h.name}</div><div class="hint">입체 캐릭터</div>`;b.onclick=()=>{settings.hero=h.id;settings.custom=null;renderCharacterChoices()};wrap.appendChild(b)});const custom=document.createElement('button');custom.type='button';custom.className='choice'+(settings.hero==='custom'?' selected':'');custom.innerHTML=`<div class="big">🖍</div><div>내 그림</div><div class="hint">직접 그린 캐릭터</div>`;custom.onclick=()=>{settings.hero='custom';renderCharacterChoices()};wrap.appendChild(custom)}
 function renderStoryChoices(){const wrap=$('storyChoices');wrap.innerHTML='';stories.forEach(s=>{const b=document.createElement('button');b.type='button';b.className='story'+(settings.story===s.id?' selected':'');b.innerHTML=`<div class="big">${s.icon}</div><div>${s.title}</div>`;b.onclick=()=>{settings.story=s.id;settings.title=s.titleValue;settings.idea=s.idea;$('storyTitle').value=settings.title;$('storyIdea').value=settings.idea;renderStoryChoices()};wrap.appendChild(b)})}
 function renderCounts(){ $$('#countChoices .countBtn').forEach(b=>{b.classList.toggle('selected',Number(b.dataset.count)===settings.count);b.onclick=()=>{settings.count=Number(b.dataset.count);renderCounts()}})}
 function initSelectors(){['panelEmotion','panelPose','panelAction','panelBg','panelProp'].forEach(id=>{const el=$(id);el.innerHTML=''});emotions.forEach(v=>$('panelEmotion').insertAdjacentHTML('beforeend',`<option>${v}</option>`));poses.forEach(v=>$('panelPose').insertAdjacentHTML('beforeend',`<option>${v}</option>`));actions.forEach(v=>$('panelAction').insertAdjacentHTML('beforeend',`<option>${v}</option>`));Object.keys(bgMeta).forEach(k=>$('panelBg').insertAdjacentHTML('beforeend',`<option value="${k}">${bgMeta[k].name}</option>`));props.forEach(v=>$('panelProp').insertAdjacentHTML('beforeend',`<option>${v}</option>`))}
@@ -291,7 +295,32 @@ function buildPanels(){const seed=storyTemplates[settings.story]||storyTemplates
 function makeComic(){settings.heroName=$('heroName').value.trim()||'루루';settings.heroTrait=$('heroTrait').value.trim()||'용감한 친구';settings.title=$('storyTitle').value.trim()||'나의 웹툰';settings.idea=$('storyIdea').value.trim()||'신나는 모험';settings.baseBackground=$('baseBackground').value;state={title:settings.title,hero:settings.hero,heroName:settings.heroName,heroTrait:settings.heroTrait,custom:settings.custom,story:settings.story,panels:buildPanels()};selected=0;renderComic();switchView('edit');toast('컷 초안을 만들었어요! 이제 표정과 자세를 바꿔 보세요.')}
 function currentHero(){return heroes.find(h=>h.id===state.hero) || heroes[0]}
 function hairFor(hero){return hero.id==='fairy'?`<ellipse cx="120" cy="112" rx="54" ry="32" fill="#ffb7d1"/>` : hero.id==='robot'?`<rect x="72" y="86" width="96" height="58" rx="24" fill="#d8e9f5" stroke="#577596" stroke-width="6"/><line x1="120" y1="66" x2="120" y2="88" stroke="#577596" stroke-width="6"/><circle cx="120" cy="60" r="8" fill="#ef7fb7"/>` : ''}
-function heroSvg(panel){const hero=currentHero();const c=hero.colors;const pose=panel.pose, emo=panel.emotion; const y=pose==='점프하기'?28:pose==='앉기'?58:pose==='뛰기'?38:46; const x=pose==='뛰기'?110:120; const bodyTilt=pose==='뛰기'?-14:pose==='점프하기'?-4:pose==='손 흔들기'?-7:0; const eye=emo==='놀랐어요'?'7':'3'; const mouth=emo==='슬퍼요'?'M110 142 Q120 134 130 142':emo==='기뻐요'||emo==='자랑스러워요'?'M104 138 Q120 152 136 138':'M106 140 Q120 146 134 140'; const eyebrow=emo==='용감해요'||emo==='자랑스러워요'?`<path d="M96 112 l16 -4" stroke="#3b3247" stroke-width="4" stroke-linecap="round"/><path d="M128 108 l16 4" stroke="#3b3247" stroke-width="4" stroke-linecap="round"/>`:'';
+// C3.2: use individually generated full-body character art, not simplified geometric faces.
+function characterAsset(panel){
+ if(state.hero==='custom'||!state.hero)return null;
+ const name=state.hero;
+ if(name==='rabbit'){
+   if(panel.pose==='점프하기'||panel.action==='축하하기')return 'rabbit-jumping.webp';
+   if(panel.pose==='뛰기')return 'rabbit-running.webp';
+   if(panel.emotion==='놀랐어요')return 'rabbit-surprised.webp';
+   if(panel.action==='줍기'||panel.prop==='열쇠')return 'rabbit-key.webp';
+   if(panel.pose==='걷기')return 'rabbit-walking.webp';
+   return 'rabbit-standing.webp';
+ }
+ return name+'-standing.webp';
+}
+function heroSvg(panel){
+ const sprite=characterAsset(panel);
+ if(sprite){
+   // A shared character identity with separate pose art for the rabbit.
+   const still=state.hero!=='rabbit';
+   const tilt=still?(panel.pose==='뛰기'?-9:panel.pose==='점프하기'?-4:0):0;
+   const y=still&&panel.pose==='점프하기'?-14:0;
+   const pos=still&&panel.pose==='뛰기'?11:0;
+   const prop=state.hero!=='rabbit'&&panel.prop!=='없음' ? `<text x="183" y="231" font-size="37">${({열쇠:'🗝️',별:'⭐',무지개:'🌈',보석:'💎',나비:'🦋',문:'🚪',책:'📘'})[panel.prop]||''}</text>` : '';
+   return `<g transform="translate(${pos} ${y}) rotate(${tilt} 120 180)"><image href="assets/${sprite}" x="50" y="70" width="165" height="206" preserveAspectRatio="xMidYMid meet"/></g>${prop}`;
+ }
+ const hero=currentHero();const c=hero.colors;const pose=panel.pose, emo=panel.emotion; const y=pose==='점프하기'?28:pose==='앉기'?58:pose==='뛰기'?38:46; const x=pose==='뛰기'?110:120; const bodyTilt=pose==='뛰기'?-14:pose==='점프하기'?-4:pose==='손 흔들기'?-7:0; const eye=emo==='놀랐어요'?'7':'3'; const mouth=emo==='슬퍼요'?'M110 142 Q120 134 130 142':emo==='기뻐요'||emo==='자랑스러워요'?'M104 138 Q120 152 136 138':'M106 140 Q120 146 134 140'; const eyebrow=emo==='용감해요'||emo==='자랑스러워요'?`<path d="M96 112 l16 -4" stroke="#3b3247" stroke-width="4" stroke-linecap="round"/><path d="M128 108 l16 4" stroke="#3b3247" stroke-width="4" stroke-linecap="round"/>`:'';
  const armL= pose==='손 흔들기'?`M90 190 Q72 158 78 130`: pose==='점프하기'?`M88 188 Q74 165 64 145`: pose==='뛰기'?`M90 190 Q72 170 70 152`: pose==='앉기'?`M88 190 Q78 198 72 196`:`M90 190 Q72 170 72 150`;
  const armR= pose==='손 흔들기'?`M150 190 Q180 162 178 118`: pose==='점프하기'?`M152 188 Q172 162 182 145`: pose==='뛰기'?`M150 190 Q171 178 178 162`: pose==='앉기'?`M152 190 Q160 198 168 196`:`M150 190 Q168 170 168 150`;
  const legL= pose==='뛰기'?`M104 228 Q92 250 80 264`: pose==='점프하기'?`M106 228 Q92 258 92 278`: pose==='앉기'?`M106 228 Q96 236 88 234`:`M106 228 Q100 252 98 276`;
@@ -335,7 +364,7 @@ function updatePanel(field,value){ if(!state.panels.length)return; state.panels[
 [['panelEmotion','emotion'],['panelPose','pose'],['panelAction','action'],['panelBg','background'],['panelProp','prop'],['panelMood','mood']].forEach(([id,field])=>$(id).addEventListener('change',e=>updatePanel(field,e.target.value)));
 $('prevPanel').onclick=()=>{selected=Math.max(0,selected-1); renderComic()}; $('nextPanel').onclick=()=>{selected=Math.min(state.panels.length-1,selected+1); renderComic()};
 $('applyIdea').onclick=()=>{const idea=$('panelIdea').value.trim(); if(!idea)return toast('먼저 아이디어를 적어 주세요.'); const p=state.panels[selected]; p.caption=idea.slice(0,80); if(/놀|깜짝/.test(idea))p.emotion='놀랐어요'; else if(/웃|행복|좋/.test(idea))p.emotion='기뻐요'; else if(/용기|싸우|지키/.test(idea))p.emotion='용감해요'; if(/뛰/.test(idea))p.pose='뛰기'; else if(/앉/.test(idea))p.pose='앉기'; else if(/점프|날/.test(idea))p.pose='점프하기'; if(/열쇠/.test(idea))p.prop='열쇠'; else if(/문/.test(idea))p.prop='문'; else if(/별/.test(idea))p.prop='별'; else if(/보석/.test(idea))p.prop='보석'; $('panelIdea').value=''; renderComic(); toast('아이디어를 이 컷에 넣었어요!')};
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.1 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.2 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 $('copyPrompt').onclick=async()=>{const txt=promptText(); try{await navigator.clipboard.writeText(txt); toast('GPT 그림 요청문을 복사했어요!')}catch{window.prompt('길게 눌러 복사해 주세요:',txt)}};
 function saveDB(list){localStorage.setItem(storageKey,JSON.stringify(list))}
 function loadDB(){try{return JSON.parse(localStorage.getItem(storageKey)||'[]')}catch{return []}}
