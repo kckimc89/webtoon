@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.5.2</title>
+<title>나만의 웹툰 창작극장 C3.6</title>
 <style>
 :root{--bg:#fff9fb;--card:#fff;--line:#eadcf3;--vio:#7d4bd1;--vio2:#efe5ff;--txt:#2e2438;--sub:#74667f;--pink:#ec7cb6;--mint:#6ac2b7;--gold:#f2bc45;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--txt);background:var(--bg)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg)}button,input,textarea,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #8f68e4;outline-offset:2px}
@@ -30,6 +30,11 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 @media(max-width:760px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3,.grid2,.works{grid-template-columns:1fr}.comic{gap:10px}.card{padding:14px}.app{padding:10px 10px 70px}.steps{grid-template-columns:repeat(2,1fr)}.caption{font-size:13px}.choice .big,.story .big{font-size:34px}}
 
 .voiceInputBtn{margin:7px 0 8px;min-height:42px;padding:8px 12px;font-size:14px;white-space:normal}.voiceInputBtn.listening{background:#fbd5e6;color:#923d78;border:2px solid #e988b4}.voiceHelp{margin:5px 0;color:#715c83;font-size:13px;line-height:1.5}
+
+/* C3.6 — story partner */
+.aiSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:8px 0 13px}.aiSteps div{background:#f5effd;border-radius:12px;padding:10px 6px;text-align:center;font-size:13px;font-weight:800;color:#604781}
+.aiCard{border:2px solid #dfccf9;background:#fffcff}.aiCard h3{margin:0 0 8px}.aiInfo{font-size:13px;line-height:1.65;color:#6c5683;background:#f5f0fc;padding:10px 12px;border-radius:12px;margin:8px 0 12px}.aiBox{background:#fff;border:2px solid #e7dcef;border-radius:14px;padding:10px 12px;line-height:1.6;white-space:pre-wrap;font-size:14px;margin:10px 0}.aiPanelImage{display:block;width:100%;height:100%;object-fit:contain;background:#ebe4f1}.aiBadge{font-size:12px;color:#705589;font-weight:800}.aiReady{color:#37694a;font-weight:800}.aiHide{display:none!important}.aiPreview{max-width:100%;max-height:180px;display:block;margin:9px auto;border-radius:10px}
+@media(max-width:550px){.aiSteps{grid-template-columns:1fr 1fr 1fr}.aiSteps div{font-size:11px;padding:9px 4px}}
 </style>
 </head>
 <body>
@@ -37,8 +42,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   <header class="top">
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
-    <p>아이의 상상 → 장면 설정 → 실제 동화책·웹툰 장면처럼 꾸미기</p>
-    <span class="pill">MASTER C3.5.2 · 말풍선 크기·말로 입력 개선</span>
+    <p>아이의 상상 → AI 친구와 이야기 → 그림 만들고 수정하기</p>
+    <span class="pill">MASTER C3.6 · 말풍선 크기·말로 입력 개선</span>
   </header>
 
   <nav class="tabs">
@@ -112,6 +117,11 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
             <option value="space">우주</option>
           </select>
         </div>
+      </div>
+      <div class="aiInfo">💡 <b>AI 친구와 먼저 이야기해도 좋아요.</b> 이야기 시작 칸에 아이가 말한 내용을 입력한 뒤 아래 「AI에게 이야기 정리 부탁하기」를 눌러 보세요. 고정해 둔 GPT 대화방에서 이야기의 흐름을 함께 정할 수 있어요.</div>
+      <div class="btns" style="margin:8px 0 14px">
+        <button id="storyToGpt" class="secondary" type="button">🤖 AI에게 이야기 정리 부탁하기</button>
+        <button class="ghost" type="button" data-open-gpt>💬 GPT 대화방 열기</button>
       </div>
       <div class="btns" style="margin-top:14px">
         <button id="makeComic" class="primary" type="button">🎉 컷 초안 만들기</button>
@@ -196,6 +206,32 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
       </div>
     </div>
 
+    <div class="card aiCard" id="aiFriendCard">
+      <h2>🤖 AI 친구와 이야기하고 고치기</h2>
+      <p class="sub">아이의 말을 그대로 먼저 듣고, AI에게 부탁한 다음 답을 확인해요. <b>앱에서 GPT의 답변을 자동으로 읽지는 않습니다.</b></p>
+      <div class="aiSteps"><div>① 말로 아이디어</div><div>② GPT 친구와 대화</div><div>③ 승인하고 반영</div></div>
+      <label class="block" for="aiChildIdea">🎤 아이가 하고 싶은 말</label>
+      <textarea id="aiChildIdea" placeholder="예: 2컷에서 토끼가 고양이를 만나고, 둘이 같이 문을 열었으면 좋겠어!"></textarea>
+      <div class="btns" style="margin:8px 0">
+        <button class="voiceInputBtn secondary" type="button" data-voice-target="aiChildIdea">🎤 말로 입력</button>
+        <button id="aiStoryRequest" class="secondary" type="button">💬 이야기 함께 정리</button>
+        <button id="aiDrawingRequest" class="secondary" type="button">🎨 이 컷 그림 수정</button>
+      </div>
+      <div class="aiInfo">요청문이 복사되면 <b>아이패드에 고정한 「나만의 웹툰 AI 친구」</b> 대화방을 열어 붙여넣으세요. 그림을 고칠 때는 기존 그림도 GPT에 첨부하면 좋습니다.</div>
+      <div class="btns" style="margin-bottom:12px"><button class="ghost" data-open-gpt type="button">💬 GPT 대화방 열기</button></div>
+      <label class="block" for="aiAnswer">📋 GPT가 정리해 준 컷 내용 붙여넣기</label>
+      <textarea id="aiAnswer" rows="5" placeholder="GPT의 [웹툰 컷 수정안] 또는 [웹툰 이야기 정리] 부분을 복사해 여기 붙여넣으세요."></textarea>
+      <div class="btns" style="margin-top:8px"><button id="aiReview" class="secondary" type="button">🔍 수정안 미리보기</button></div>
+      <div id="aiPreviewBox" class="aiBox aiHide" role="status"></div>
+      <div id="aiApproveRow" class="btns aiHide"><button id="aiApprove" class="primary" type="button">✅ 좋아요! 웹툰에 적용</button><button id="aiCancel" class="ghost" type="button">다시 생각할래요</button></div>
+      <div class="aiInfo">새 그림을 GPT에서 만들었다면 그 이미지를 저장한 뒤 아래에서 <b>현재 선택한 컷</b>에 넣으세요. 이전 그림과 저장된 작품을 자동으로 바꾸지 않습니다.</div>
+      <label class="block" for="aiImageFile">🖼 GPT가 만든 그림 가져오기</label>
+      <input id="aiImageFile" type="file" accept="image/*" aria-label="선택한 컷에 그림 가져오기">
+      <img id="aiImportedPreview" class="aiPreview aiHide" alt="가져올 그림 미리보기">
+      <div class="btns" style="margin-top:8px"><button id="aiUseImage" class="primary" type="button">✅ 선택한 컷에 그림 적용</button><button id="aiResetImage" class="ghost" type="button">↩ 이 컷을 기본 그림으로</button></div>
+      <p id="aiImageInfo" class="hint">새 그림을 선택한 후 적용 버튼을 누르세요. 기존 컷의 대사와 설명은 유지됩니다.</p>
+    </div>
+
     <div class="card">
       <h3>③ 작품을 완성했어요!</h3>
       <p class="sub">전시관에 저장하고, 필요하면 PNG 그림으로도 보관할 수 있어요.</p>
@@ -224,7 +260,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.5.2 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.6 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 <script>
@@ -505,14 +541,14 @@ function panelSvg(panel, idx){
    ${speechBubble(panel.speech||'',layout)}
  </svg>`;
 }
-function renderComic(){ $('comicTitle').textContent=state.title||'나의 웹툰'; const area=$('comicArea'); area.className='comic '+(state.panels.length===1?'one':state.panels.length===2?'two':''); area.innerHTML=''; state.panels.forEach((p,i)=>{const el=document.createElement('button'); el.type='button'; el.className='panel'+(i===selected?' active':''); el.innerHTML=`<div class="scene${richStoryArt[state.hero]&&state.story==='key'&&p.background==='forest' ? ' rich' : ''}">${panelSvg(p,i)}</div><div class="caption"><span class="panelNo">${i+1}컷</span>${safe(p.caption)}</div>`; el.onclick=()=>{selected=i; renderComic(); syncEditor()}; area.appendChild(el)}); syncEditor()}
+function renderComic(){ $('comicTitle').textContent=state.title||'나의 웹툰'; const area=$('comicArea'); area.className='comic '+(state.panels.length===1?'one':state.panels.length===2?'two':''); area.innerHTML=''; state.panels.forEach((p,i)=>{const el=document.createElement('button'); el.type='button'; el.className='panel'+(i===selected?' active':''); el.innerHTML=`<div class="scene${richStoryArt[state.hero]&&state.story==='key'&&p.background==='forest' && !p.aiImage ? ' rich' : ''}">${p.aiImage ? `<img class="aiPanelImage" src="${p.aiImage}" alt="${safe(p.caption)}">` : panelSvg(p,i)}</div><div class="caption"><span class="panelNo">${i+1}컷</span>${safe(p.caption)}</div>`; el.onclick=()=>{selected=i; renderComic(); syncEditor()}; area.appendChild(el)}); syncEditor()}
 function syncEditor(){ if(!state.panels.length)return; const p=state.panels[selected]; $('editTitle').textContent=(selected+1)+'컷 꾸미기'; $('editProgress').textContent=(selected+1)+' / '+state.panels.length; $('panelCaption').value=p.caption||''; $('panelSpeech').value=p.speech||''; $('panelEmotion').value=p.emotion||emotions[0]; $('panelPose').value=p.pose||poses[0]; $('panelAction').value=p.action||actions[0]; $('panelBg').value=p.background||'forest'; $('panelProp').value=p.prop||'없음'; $('panelMood').value=p.mood||'bright'; $('prevPanel').disabled=selected===0; $('nextPanel').disabled=selected===state.panels.length-1; }
 function updatePanel(field,value){ if(!state.panels.length)return; state.panels[selected][field]=value; renderComic() }
 ['panelCaption','panelSpeech'].forEach(id=>$(id).addEventListener('input',e=>updatePanel(id==='panelCaption'?'caption':'speech',e.target.value)));
 [['panelEmotion','emotion'],['panelPose','pose'],['panelAction','action'],['panelBg','background'],['panelProp','prop'],['panelMood','mood']].forEach(([id,field])=>$(id).addEventListener('change',e=>updatePanel(field,e.target.value)));
 $('prevPanel').onclick=()=>{selected=Math.max(0,selected-1); renderComic()}; $('nextPanel').onclick=()=>{selected=Math.min(state.panels.length-1,selected+1); renderComic()};
 $('applyIdea').onclick=()=>{const idea=$('panelIdea').value.trim(); if(!idea)return toast('먼저 아이디어를 적어 주세요.'); const p=state.panels[selected]; p.caption=idea.slice(0,80); if(/놀|깜짝/.test(idea))p.emotion='놀랐어요'; else if(/웃|행복|좋/.test(idea))p.emotion='기뻐요'; else if(/용기|싸우|지키/.test(idea))p.emotion='용감해요'; if(/뛰/.test(idea))p.pose='뛰기'; else if(/앉/.test(idea))p.pose='앉기'; else if(/점프|날/.test(idea))p.pose='점프하기'; if(/열쇠/.test(idea))p.prop='열쇠'; else if(/문/.test(idea))p.prop='문'; else if(/별/.test(idea))p.prop='별'; else if(/보석/.test(idea))p.prop='보석'; $('panelIdea').value=''; renderComic(); toast('아이디어를 이 컷에 넣었어요!')};
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.5.2 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.6 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 $('copyPrompt').onclick=async()=>{const txt=promptText(); try{await navigator.clipboard.writeText(txt); toast('GPT 그림 요청문을 복사했어요!')}catch{window.prompt('길게 눌러 복사해 주세요:',txt)}};
 function saveDB(list){localStorage.setItem(storageKey,JSON.stringify(list))}
 function loadDB(){try{return JSON.parse(localStorage.getItem(storageKey)||'[]')}catch{return []}}
@@ -568,6 +604,108 @@ function startVoiceInput(btn){
  }catch(err){voiceEnd();field.focus();toast('아이패드 키보드의 🎤 받아쓰기를 사용해 주세요.');}
 }
 document.querySelectorAll('[data-voice-target]').forEach(btn=>btn.addEventListener('click',()=>startVoiceInput(btn)));
+
+// C3.6 – bridge to an existing user-pinned ChatGPT conversation. No API keys or automatic cloud upload.
+let aiPending=null, aiImportedData=null;
+function gptOpen(){
+ toast('고정된 「나만의 웹툰 AI 친구」 대화방을 선택하세요. 새 대화가 자동으로 지정되지는 않습니다.');
+ window.open('https://chatgpt.com/','_blank','noopener,noreferrer');
+}
+document.querySelectorAll('[data-open-gpt]').forEach(btn=>btn.addEventListener('click',gptOpen));
+async function copyForGpt(payload){
+ try{await navigator.clipboard.writeText(payload);toast('GPT 요청문을 복사했어요! 고정 대화방에 붙여넣으세요.');}
+ catch(_){window.prompt('아래 요청문을 길게 눌러 복사하세요:',payload)}
+}
+function heroIdentity(){
+ return '주인공: '+(state.heroName||$('heroName').value||'루루')+' / 성격·특징: '+(state.heroTrait||$('heroTrait').value||'호기심 많음')+' / 종류: '+(heroes.find(h=>h.id===(state.hero||settings.hero))?.name||'아이가 직접 그린 캐릭터')+'\n주인공의 기존 디자인과 의상은 함부로 바꾸지 말아 주세요.';
+}
+function existingPanels(){return state.panels.map((p,i)=>(i+1)+'컷: '+p.caption+' / 대사: '+(p.speech||'없음')).join('\n')}
+function requestStory(){
+ const startText=($('storyIdea').value||'').trim();
+ if(!startText){toast('아이의 이야기를 먼저 말하거나 적어 주세요.');return;}
+ const prompt=`[C3.6 나만의 웹툰 AI 친구 — 이야기 함께 정리]\n너는 초등학교 1학년 아이의 창작 친구야. 아이의 원래 상상을 바꾸지 말고 반복만 줄여 자연스럽게 정리해 줘. 아이가 결정하지 않은 부분은 한 번에 질문 하나만 해 줘.\n\n아이의 첫 이야기(원문): ${startText}\n원하는 컷 수: ${settings.count}컷\n선택한 주인공: ${$('heroName').value||'루루'}\n\n먼저 아이에게 친절하게 이야기해 줘. 아이가 "좋아"라고 승인한 뒤에만 각 컷을 확정해 줘. 확정되면 아래 형식으로 결과를 작성해 줘.\n[웹툰 이야기 정리]\n1컷: 내용 | 대사: 대사\n2컷: 내용 | 대사: 대사\n${settings.count===4?'3컷: 내용 | 대사: 대사\n4컷: 내용 | 대사: 대사\n':''}[/웹툰 이야기 정리]\n가상 캐릭터만 사용하고 실제 가족의 얼굴이나 개인정보는 사용하지 마.`;
+ copyForGpt(prompt);
+}
+$('storyToGpt').onclick=requestStory;
+function currentPrompt(kind){
+ if(!state.panels.length){toast('먼저 웹툰 초안을 만들어 주세요.');return;}
+ const p=state.panels[selected], idea=$('aiChildIdea').value.trim();
+ if(!idea){toast('아이가 하고 싶은 말을 먼저 말하거나 적어 주세요.');return;}
+ const common=`[C3.6 나만의 웹툰 AI 친구]\n아이는 작가이자 감독, AI는 조수입니다. 아이 말을 그대로 존중하고 한번에 질문 하나만 해 주세요.\n제목: ${state.title}\n${heroIdentity()}\n현재 전체 이야기:\n${existingPanels()}\n현재 선택: ${selected+1}컷\n현재 컷 설명: ${p.caption}\n현재 컷 대사: ${p.speech||'없음'}\n아이의 새로운 말(원문): ${idea}\n`;
+ if(kind==='story') return common+`\n이야기의 연결을 자연스럽게 정리해 주세요. 결말과 새 사건은 임의로 결정하지 말고 아이에게 먼저 물어봐 주세요. 아이가 승인하고 컷 수정안이 확정되면 반드시 아래 구분자로 ${selected+1}컷 내용을 출력해 주세요.\n[웹툰 컷 수정안]\n컷: ${selected+1}\n설명: (확정된 문장)\n대사: (확정된 말풍선 문장)\n[/웹툰 컷 수정안]\n아이의 승인을 받지 않았다면 수정안을 확정 출력하지 마세요.`;
+ return common+`\n선택한 ${selected+1}컷의 그림을 수정하고 싶습니다. 기존 캐릭터 얼굴·의상·색·이전 확정 장면의 설정을 최대한 유지하고, 아이가 지정한 부분만 바꾼 새로운 그림을 만들어 주세요. 이 컷의 참고 그림이 있다면 첨부된 이미지를 사용해 주세요. 다른 컷은 변경하지 마세요. 한국어 말풍선은 앱에서 따로 표시할 수 있으니 그림 안에는 새 글자를 넣지 않는 편이 좋습니다.\n아이에게 필요한 부분만 짧게 확인하고 그림을 생성해 주세요. 그림을 사용자가 저장하여 웹툰 앱에서 "GPT가 만든 그림 가져오기"로 적용할 수 있도록 해 주세요. 자동으로 앱에 전송하지는 않습니다.\n그림에 대한 문장 수정도 확정되었다면 아래 형식으로 주세요.\n[웹툰 컷 수정안]\n컷: ${selected+1}\n설명: ${p.caption}\n대사: ${p.speech||'없음'}\n[/웹툰 컷 수정안]`;
+}
+$('aiStoryRequest').onclick=()=>{const p=currentPrompt('story');if(p)copyForGpt(p)};
+$('aiDrawingRequest').onclick=()=>{const p=currentPrompt('drawing');if(p)copyForGpt(p)};
+function parseApproved(s){
+ const whole=s.match(/\[웹툰 이야기 정리\]([\s\S]*?)\[\/웹툰 이야기 정리\]/);
+ if(whole){
+   const rows=whole[1].split('\n').map(x=>x.trim()).filter(Boolean);
+   const changes=[];
+   for(const row of rows){
+     const match=row.match(/^(\d+)컷\s*[:：]\s*(.+?)\s*\|\s*대사\s*[:：]\s*(.+)$/);
+     if(!match)continue;
+     const i=Number(match[1])-1;
+     if(i<0||i>=state.panels.length || match[2].length>220||match[3].length>120)return {error:'컷 수 또는 문장 길이를 확인해 주세요.'};
+     changes.push({index:i,caption:match[2].trim(),speech:match[3].trim()});
+   }
+   if(changes.length!==state.panels.length || new Set(changes.map(x=>x.index)).size!==changes.length)return {error:'전체 이야기 정리에는 웹툰의 모든 컷이 하나씩 필요합니다.'};
+   return {changes};
+ }
+ let body=s;
+ const block=s.match(/\[웹툰 컷 수정안\]([\s\S]*?)\[\/웹툰 컷 수정안\]/);
+ if(block)body=block[1];
+ const n=body.match(/(?:^|\n)\s*컷\s*[:：]\s*(\d+)/);
+ const cap=body.match(/(?:^|\n)\s*설명\s*[:：]\s*([^\n]+)/);
+ const speech=body.match(/(?:^|\n)\s*대사\s*[:：]\s*([^\n]+)/);
+ if(!cap||!speech)return null;
+ const target=n?Number(n[1])-1:selected;
+ if(target!==selected)return {error:'GPT의 수정안은 '+(target+1)+'컷입니다. 먼저 그 컷을 선택해 주세요.'};
+ if(cap[1].trim().length>220||speech[1].trim().length>120)return {error:'문장이 너무 깁니다. GPT에게 조금 짧게 정리해 달라고 해 주세요.'};
+ return {changes:[{index:target,caption:cap[1].trim(),speech:speech[1].trim()}]};
+}
+$('aiReview').onclick=()=>{
+ if(!state.panels.length)return toast('먼저 컷을 만들어 주세요.');
+ const val=$('aiAnswer').value.trim();
+ const parsed=parseApproved(val);
+ if(!parsed){toast('GPT의 [웹툰 컷 수정안] 또는 [웹툰 이야기 정리] 부분을 붙여넣어 주세요.');return;}
+ if(parsed.error){toast(parsed.error);return;}
+ aiPending=parsed;
+ $('aiPreviewBox').textContent='변경 미리보기 (아직 적용되지 않았습니다)\n\n'+parsed.changes.map(c=>(c.index+1)+'컷\n기존: '+state.panels[c.index].caption+'\n새 설명: '+c.caption+'\n새 대사: '+c.speech).join('\n\n');
+ $('aiPreviewBox').classList.remove('aiHide');$('aiApproveRow').classList.remove('aiHide');
+};
+$('aiApprove').onclick=()=>{
+ if(!aiPending)return toast('먼저 수정안을 미리보기로 확인해 주세요.');
+ for(const change of aiPending.changes){Object.assign(state.panels[change.index],{caption:change.caption,speech:change.speech})}
+ aiPending=null;$('aiPreviewBox').classList.add('aiHide');$('aiApproveRow').classList.add('aiHide');
+ renderComic();toast('아이가 확인한 수정안을 웹툰에 적용했어요!');
+};
+$('aiCancel').onclick=()=>{aiPending=null;$('aiPreviewBox').classList.add('aiHide');$('aiApproveRow').classList.add('aiHide');};
+// Preserve crisp rich story art until the user explicitly approves an image replacement.
+$('aiImageFile').onchange=async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ if(!f.type.startsWith('image/'))return toast('이미지 파일을 골라 주세요.');
+ if(f.size>14*1024*1024)return toast('그림이 너무 커요. 14MB 이하의 이미지를 선택해 주세요.');
+ try{
+  const sourceUrl=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result));r.onerror=()=>reject(Error('읽기 실패'));r.readAsDataURL(f)});
+  const im=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>reject(Error('이미지를 열 수 없어요.'));i.src=sourceUrl});
+  const limit=1000,scale=Math.min(1,limit/Math.max(im.naturalWidth,im.naturalHeight));
+  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(im.naturalWidth*scale));canvas.height=Math.max(1,Math.round(im.naturalHeight*scale));
+  canvas.getContext('2d').drawImage(im,0,0,canvas.width,canvas.height);
+  aiImportedData=canvas.toDataURL('image/jpeg',.75);
+  $('aiImportedPreview').src=aiImportedData;$('aiImportedPreview').classList.remove('aiHide');
+  $('aiImageInfo').textContent='✅ 그림 준비됨. 「선택한 컷에 그림 적용」을 누르면 지금 선택된 컷만 변경됩니다.';
+ }catch(err){toast('그림을 열 수 없습니다: '+err.message)}
+};
+$('aiUseImage').onclick=()=>{
+ if(!state.panels.length)return toast('먼저 컷을 만들어 주세요.');
+ if(!aiImportedData)return toast('GPT에서 저장한 그림을 먼저 골라 주세요.');
+ state.panels[selected].aiImage=aiImportedData;
+ aiImportedData=null;$('aiImageFile').value='';$('aiImportedPreview').classList.add('aiHide');
+ $('aiImageInfo').textContent=(selected+1)+'컷에 새 그림을 적용했습니다. 전시관에 저장하면 함께 보관됩니다.';
+ renderComic();toast((selected+1)+'컷에 새 그림을 넣었어요!');
+};
+$('aiResetImage').onclick=()=>{if(!state.panels.length)return;delete state.panels[selected].aiImage;renderComic();toast('이 컷을 기본 그림으로 돌렸어요.');};
 
 init();
 </script>
