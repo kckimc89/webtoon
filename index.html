@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.10.0</title>
+<title>나만의 웹툰 창작극장 C3.10.1</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -126,6 +126,16 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearGrid select{width:100%;min-width:0;min-height:45px;border-radius:12px;border:1px solid #d8c7ea;background:#fff;padding:8px;color:#342947;font-size:16px}
 .wearGrid select:disabled{opacity:.58;background:#eee9f4}
 @media(max-width:530px){.wearGrid{grid-template-columns:1fr}}
+
+/* C3.10.1: simple wearable thumbnails, with disabled items plainly marked. */
+.wearQuick{background:#fff;border:1px solid #e9d9f5;border-radius:16px;padding:10px;margin:10px 0}
+.wearQuickTitle{margin:2px 2px 8px;font-weight:850;font-size:16px}
+.wearQuickList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.wearQuickList button{background:#fbf7ff;color:#47315a;border:2px solid #e9d9f5;border-radius:15px;min-height:70px;font-size:27px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.wearQuickList button small{font-size:13px;font-weight:800}
+.wearQuickList button[aria-pressed="true"]{border-color:#784cc0;background:#f0e5ff;box-shadow:inset 0 0 0 1px #784cc0}
+.wearQuickList button:disabled{opacity:.35;filter:grayscale(1)}
+@media(min-width:780px){.wearQuickList{grid-template-columns:repeat(6,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -134,7 +144,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C3.10.0 · 고화질 소품 보강과 꾸미기 점검</span>
+    <span class="pill">MASTER C3.10.1 · 착용 장식 자동 추적·간편 꾸미기</span>
   </header>
 
   <nav class="tabs">
@@ -144,8 +154,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.10.0)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.10.0 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.10.1)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.10.1 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -432,6 +442,18 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
    <label>🧚 등에 날개<select data-wear-slot="back"><option value="none">추가 안 함</option><option value="butterfly">🦋 보석 요정날개</option></select></label>
    <label>🪄 손의 지팡이<select data-wear-slot="hand"><option value="none">추가 안 함</option><option value="star">🌟 별지팡이</option></select></label>
   </div>
+  <div class="wearQuick" id="wearQuick" aria-label="장식 그림으로 빠르게 고르기">
+   <p class="wearQuickTitle">✨ 그림을 눌러 바로 착용해요</p>
+   <div class="wearQuickList">
+    <button type="button" data-wear-quick="hair:ribbon">🎀<small>리본</small></button>
+    <button type="button" data-wear-quick="hair:rose">🌹<small>장미핀</small></button>
+    <button type="button" data-wear-quick="hair:gem">💎<small>보석핀</small></button>
+    <button type="button" data-wear-quick="neck:heart">💖<small>목걸이</small></button>
+    <button type="button" data-wear-quick="ears:crystal">✨<small>귀걸이</small></button>
+    <button type="button" data-wear-quick="back:butterfly">🦋<small>날개</small></button>
+   </div>
+   <p class="hint">같은 그림을 다시 누르면 벗어요. 원본에 그려진 장식은 그대로 유지됩니다.</p>
+  </div>
   <p id="wearCapability" class="hint" aria-live="polite"></p>
   <button type="button" id="wearClearAll" class="secondary">↩️ 내가 추가한 착용 장식 모두 벗기</button>
  </div>
@@ -522,7 +544,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.10.0 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.10.1 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 
@@ -755,7 +777,7 @@ function premiumPrincessAdornment(style,heroId,view){
  return `<g pointer-events="none" class="princessOrnaments">${star(24,112,7)}${star(211,109,7)}${star(34,197,5)}${star(203,216,6)}${star(65,45,4)}${star(190,166,5)}${star(92,243,5)}</g>`;
 }
 
-// C3.10.0: multi-slot studio wardrobe. Coordinates live within the hero SVG,
+// C3.10.1: multi-slot studio wardrobe. Coordinates live within the hero SVG,
 // so they follow the hero's drag and foot-anchored scaling (and render in exported PNG).
 const princessWearProfiles={
  princess_flower:{hair:[86,96],neck:[125,151],ears:[105,121,149,121],back:[123,162],hand:[189,139],builtIn:{crown:true,wings:false,staff:true}},
@@ -777,7 +799,8 @@ function premiumPrincessWearable(style,heroId,view,layer='front'){
  if(layer==='back'){
   if(portrait||profile.builtIn.wings||worn.back!=='butterfly')return '';
   const [x,y]=profile.back;
-  return `<g pointer-events="none" class="princessWornBack">${princessWornImage('요정날개',x,y,162,151,0,.92)}</g>`;
+  const fit=view==='full'?'translate(-19.929 -38.541) scale(1.178571 1.139640)':'';
+  return `<g pointer-events="none" class="princessWornBack" transform="${fit}">${princessWornImage('요정날개',x,y,162,151,0,.92)}</g>`;
  }
  let out='';
  const [hx,hy]=profile.hair;
@@ -804,7 +827,11 @@ function premiumPrincessWearable(style,heroId,view,layer='front'){
    const [x,y]=profile.hand;out+=princessWornImage('별지팡이',x,y,42,100,-14);
   }
  }
- return `<g pointer-events="none" class="princessWornAdornment">${out}</g>`;
+ // Character paintings use different image rectangles: the 6 expression/full-body
+ // pictures occupy 6,23,231,253; the original occupies 22,54,196,222.
+ // Map points relative to the source painting so jewelry follows its visible scale.
+ const fit=view==='full'?'translate(-19.929 -38.541) scale(1.178571 1.139640)':'';
+ return `<g pointer-events="none" class="princessWornAdornment" transform="${fit}">${out}</g>`;
 }
 function premiumPrincessSvg(panel,heroId){
  const p=validPrincessStyle(panel.princessLook,heroId);
@@ -940,6 +967,15 @@ function princessControls(){
   el.disabled=!!reason;
   el.title=reason||'공주가 착용하는 장식이에요.';
   if(reason)missing.push(reason);
+ });
+ // Matching large, child-friendly buttons mirror the existing safe select controls.
+ document.querySelectorAll('[data-wear-quick]').forEach(btn=>{
+  const [slot,value]=btn.dataset.wearQuick.split(':');
+  const sel=document.querySelector(`[data-wear-slot="${slot}"]`);
+  const active=st.wearSlots?.[slot]===value;
+  btn.disabled=!sel||sel.disabled||!!p.aiImage;
+  btn.setAttribute('aria-pressed',String(active));
+  btn.title=btn.disabled?(sel?.title||'지금은 착용할 수 없어요'):(active?'한 번 더 누르면 벗어요':'눌러서 착용해요');
  });
  const tip=$('wearCapability');if(tip)tip.textContent=missing.length?[...new Set(missing)].join(' · '):'각 부위의 장식을 함께 착용할 수 있어요.';
  renderPrincessSaved();
@@ -1683,7 +1719,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.10.0 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.10.1 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -2250,6 +2286,15 @@ for(const [id,view] of [['quickFullBody','full'],['quickFacePortrait','face'],['
   renderComic();
  });
 }
+// C3.10.1: quick pictorial controls reuse the validated independent select slots.
+document.querySelectorAll('[data-wear-quick]').forEach(btn=>btn.addEventListener('click',()=>{
+ if(btn.disabled)return;
+ const [slot,value]=btn.dataset.wearQuick.split(':');
+ const sel=document.querySelector(`[data-wear-slot="${slot}"]`);
+ if(!sel||sel.disabled)return;
+ sel.value=sel.value===value?'none':value;
+ sel.dispatchEvent(new Event('change',{bubbles:true}));
+}));
 // C3.10 independently editable accessory slots.
 for(const el of document.querySelectorAll('[data-wear-slot]'))el.addEventListener('change',()=>{
  const p=state?.panels?.[selected];if(!p||!isPrincess(state.hero)||p.aiImage)return;
@@ -2298,8 +2343,8 @@ $('quickBubbleMore').addEventListener('click',()=>{
 const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
-// C3.10.0: Same-origin static version manifest, no extra accounts or external service.
-const WEBTOON_APP_VERSION='3.10.0';
+// C3.10.1: Same-origin static version manifest, no extra accounts or external service.
+const WEBTOON_APP_VERSION='3.10.1';
 let latestPublishedVersion=null;
 function versionNumbers(v){
  const match=String(v||'').match(/^C?(\d+)\.(\d+)\.(\d+)$/i);
