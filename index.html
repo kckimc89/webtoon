@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.12.0</title>
+<title>나만의 웹툰 창작극장 C3.12.2</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -127,7 +127,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearGrid select:disabled{opacity:.58;background:#eee9f4}
 @media(max-width:530px){.wearGrid{grid-template-columns:1fr}}
 
-/* C3.12.0: simple wearable thumbnails, with disabled items plainly marked. */
+/* C3.12.2: simple wearable thumbnails, with disabled items plainly marked. */
 .wearQuick{background:#fff;border:1px solid #e9d9f5;border-radius:16px;padding:10px;margin:10px 0}
 .wearQuickTitle{margin:2px 2px 8px;font-weight:850;font-size:16px}
 .wearQuickList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -136,7 +136,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearQuickList button[aria-pressed="true"]{border-color:#784cc0;background:#f0e5ff;box-shadow:inset 0 0 0 1px #784cc0}
 .wearQuickList button:disabled{opacity:.35;filter:grayscale(1)}
 @media(min-width:780px){.wearQuickList{grid-template-columns:repeat(6,minmax(0,1fr))}}
-/* C3.12.0 — no unverified jewelry overlays. Existing work data is retained. */
+/* C3.12.2 — no unverified jewelry overlays. Existing work data is retained. */
 .wearAudit{display:flex;flex-direction:column;gap:5px;background:#effaf5;border:1px solid #b8dccd;color:#285a47;padding:12px;border-radius:14px;font-size:14px;margin:12px 0}
 .wearAdjust{border:1px solid #d8c7ea;border-radius:14px;background:white;padding:12px;margin:12px 0}
 .wearAdjust summary{font-weight:850;cursor:pointer}
@@ -144,13 +144,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearAdjust input[type=range]{width:100%;min-width:0;accent-color:#8654cc}
 .wearGrid select:disabled{opacity:.6}
 
-/* C3.12.0: per-scene approval workflow with safe defaults */
+/* C3.12.2: per-scene approval workflow with safe defaults */
 #wearReviewPanel{border:2px solid #d0b0eb;background:#fffaf4}
 #wearReviewPanel summary{font-size:16px}
 #wearReviewPanel .btns button{min-height:44px}
 #wearReviewStatus{padding:8px 10px;border-radius:10px;background:#f1eaff}
 
-/* C3.12.0 — rollback of the misleading complete-look gallery; focused one-button experiment. */
+/* C3.12.2 — rollback of the misleading complete-look gallery; focused one-button experiment. */
 .ribbonTestNotice{border:2px solid #d8b6f2;background:#fff8ff;border-radius:16px;padding:14px 16px;margin:12px 0;line-height:1.55}
 .ribbonTestNotice strong{font-size:18px;color:#63368f}.ribbonTestNotice p{font-size:14px;margin:8px 0 0}
 #princessWearStudio>.wearGrid,#princessWearStudio>.wearAdjust,
@@ -167,7 +167,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #princessStudio #legacyHairAccessorySetting{display:none!important}
 #princessStudio #fixedPrincessAccessories{display:none!important}
 
-/* C3.12.0 direct manipulation */
+/* C3.12.2 direct manipulation */
 #princessStudio{display:none!important}
 .scene svg{touch-action:none;user-select:none;-webkit-user-select:none}
 .scene .stageHandle{cursor:grab}
@@ -184,6 +184,21 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .directTools .tip{font-size:14px;color:#604e73;line-height:1.5}
 .directTools .mini{font-size:13px;color:#695678}
 @media(max-width:600px){.directTools button{padding:8px 10px}}
+/* C3.12.2: Fixed princess + unobtrusive handles. */
+.scene .fixedHero{pointer-events:none!important}
+.scene .editGizmo [data-transform-handle]{cursor:grab}
+
+/* C3.12.2: compact contextual prop menu in the scene's empty area. */
+#comicArea{position:relative}
+.propContext{position:absolute;z-index:12;width:min(238px,95%);padding:7px 8px;border:1.5px solid #bea3df;border-radius:13px;background:rgba(255,253,255,.98);box-shadow:0 3px 15px #38274b29;color:#342746;font-size:12px;text-align:left;touch-action:manipulation;box-sizing:border-box}
+.propContext .propContextTitle{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 5px}
+.propContext .propContextRow{display:flex;gap:4px;flex-wrap:wrap;margin:3px 0}
+.propContext button,.propContext select{min-height:33px;border:1px solid #ded0ed;border-radius:8px;background:#fff;color:#463252;padding:3px 6px;font-size:12px;font-weight:700;flex:1 1 auto;min-width:0}
+.propContext select{width:45%;flex:1 1 45%;font-size:13px;max-width:100%}
+.propContext button:active{background:#eee2fa}
+.propContext button[data-ctx="delete"]{color:#a13053}
+.propContext .propContextTip{font-size:10px;color:#74667f;line-height:1.2;margin:3px 0 0}
+@media(max-width:460px){.propContext{width:min(210px,96%);padding:5px}.propContext button,.propContext select{font-size:11px;min-height:31px;padding:2px 4px}}
 </style>
 </head>
 <body>
@@ -192,7 +207,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C3.12.0 · 직접 만지는 자유 꾸미기 · 반짝이 유지</span>
+    <span class="pill">MASTER C3.12.2 · 공주 고정 · 소품 선택·터치 개선</span>
   </header>
 
   <nav class="tabs">
@@ -202,8 +217,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.12.0)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.12.0 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.12.2)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.12.2 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -366,10 +381,10 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <label for="directColor">🌈 선택한 소품의 색감</label>
           <select id="directColor"><option value="normal">원래 색</option><option value="red">분홍·빨강</option><option value="orange">주황·금색</option><option value="blue">파랑·하늘</option><option value="green">초록</option><option value="purple">보라</option></select>
           <p class="mini">고화질 그림의 색감 변경은 필터 방식이라 원래 색을 정확하게 바꾸는 것은 아니에요. 원래 색으로 언제든 돌아갈 수 있어요.</p>
-          <div class="toolRow"><button type="button" id="directFront">⬆️ 공주 앞에</button><button type="button" id="directBack">⬇️ 공주 뒤에</button><button type="button" id="directBring">앞으로 한 칸</button><button type="button" id="directSend">뒤로 한 칸</button></div>
+          <div class="toolRow"><button type="button" id="directFront">⬆️ 공주 앞에</button><button type="button" id="directBack">⬇️ 공주 뒤에</button><button type="button" id="directBring">⬆️ 맨 앞으로</button></div>
           <div class="toolRow"><button type="button" id="directShrink">➖ 작게</button><button type="button" id="directGrow">➕ 크게</button><button type="button" id="directRotateL">↶ 돌리기</button><button type="button" id="directRotateR">↷ 돌리기</button><button type="button" id="directFlip">↔ 뒤집기</button></div>
           <div class="toolRow"><button type="button" id="directDuplicate">📋 복제</button><button type="button" id="directDelete">🗑 지우기</button><button type="button" id="directUndo">↩ 취소</button><button type="button" id="directRedo">↪ 다시</button></div>
-          <p id="directStatus" class="tip" aria-live="polite">그림에 소품을 추가하거나 소품을 눌러 선택해 주세요.</p>
+          <p id="directStatus" class="tip" aria-live="polite">그림 속 소품을 눌러 선택하세요. 빈 곳을 누르면 선택이 해제돼요. 공주는 고정됩니다.</p>
          </div>
          <details class="premiumPropGallery" style="margin:9px 0 12px;padding:11px;border:1px solid #ecdaf7;border-radius:14px;background:#fffafd">
           <summary style="font-weight:800;cursor:pointer">💎 공주와 어울리는 고화질 장식 21종</summary>
@@ -629,7 +644,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.12.0 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.12.2 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 
@@ -776,7 +791,7 @@ function validPrincessStyle(st,id){
  const fitting=src.wearFit&&typeof src.wearFit==='object'?src.wearFit:{};
  const bounded=(v,lo,hi,base)=>Number.isFinite(Number(v))?Math.max(lo,Math.min(hi,Number(v))):base;
  next.wearFit={x:bounded(fitting.x,-65,65,0),y:bounded(fitting.y,-65,65,0),scale:bounded(fitting.scale,45,155,100)};
- // C3.12.0: approval must be explicit and scene-specific. Preserve older data.
+ // C3.12.2: approval must be explicit and scene-specific. Preserve older data.
  next.wearScenes={};
  if(src.wearScenes&&typeof src.wearScenes==='object')for(const [scene,parts] of Object.entries(src.wearScenes).slice(0,100)){
   if(typeof scene!=='string'||scene.length>100||!parts||typeof parts!=='object')continue;
@@ -877,7 +892,7 @@ function premiumPrincessAdornment(style,heroId,view){
  return `<g pointer-events="none" class="princessOrnaments">${star(24,112,7)}${star(211,109,7)}${star(34,197,5)}${star(203,216,6)}${star(65,45,4)}${star(190,166,5)}${star(92,243,5)}</g>`;
 }
 
-// C3.12.0: multi-slot studio wardrobe. Coordinates live within the hero SVG,
+// C3.12.2: multi-slot studio wardrobe. Coordinates live within the hero SVG,
 // so they follow the hero's drag and foot-anchored scaling (and render in exported PNG).
 const princessWearProfiles={
  princess_flower:{hair:[86,96],neck:[125,151],ears:[105,121,149,121],back:[123,162],hand:[189,139],builtIn:{crown:true,wings:false,staff:true}},
@@ -891,7 +906,7 @@ function princessWornImage(key,x,y,w,h,rotate=0,opacity=1){
  const source=premiumPropImages[key];if(!source)return '';
  return `<image href="${source}" x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet" opacity="${opacity}" transform="rotate(${rotate} ${x} ${y})"/>`;
 }
-// C3.12.0: Conservative rendering. Never paint unsupported accessories in
+// C3.12.2: Conservative rendering. Never paint unsupported accessories in
 // arbitrary places. Existing slots are still stored for backward compatibility.
 let liveWearPreview=null; // never re-enable an unapproved draft when reopening a saved work
 function wearableSceneKey(panel,view){
@@ -904,7 +919,7 @@ function wearableRenderAllowed(fit,panel,scene,slot){return !!fit&&(fit.approved
 // All accessory geometry is inside the moving/scaling character group.
 // New parts are hidden until separately previewed and approved for this exact scene.
 function premiumPrincessWearable(style,heroId,view,layer='front',panel=null){
- // C3.12.0: old fixed anchor wearables are no longer rendered.
+ // C3.12.2: old fixed anchor wearables are no longer rendered.
  // Preserve saved wearSlots untouched for backwards compatibility.
  return '';
 }
@@ -1460,7 +1475,7 @@ function ensureItems(panel){
  }
  return panel.items;
 }
-function currentItem(){const p=state.panels[selected];const items=ensureItems(p);return items.find(i=>i.id===activeItemId)||items[items.length-1]||null}
+function currentItem(){const p=state.panels[selected];if(!p||!activeItemId)return null;return ensureItems(p).find(i=>i.id===activeItemId)||null}
 function addProp(name,source,emoji){const p=state.panels[selected];if(!p)return;if(p.aiImage){toast('먼저 기본 그림으로 돌아가 주세요.');return}if(name==='없음')return;
  const items=ensureItems(p);const offset=(items.length%5)*14;
  const item={id:'prop-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),name,x:offset-18,y:offset-12,size:100,rotation:0,flip:false,tint:'normal',source:source||null,emoji:emoji||null};items.push(item);activeItemId=item.id;renderComic();toast(name+' 소품을 추가했어요!')}
@@ -1497,25 +1512,35 @@ function panelSvg(panel, idx,showControls=false){
     ? `<image href="${premiumSource}" x="-29" y="-29" width="58" height="58" preserveAspectRatio="xMidYMid meet" style="filter:${filter}"/>`
     : (vector || `<text x="0" y="13" font-size="43" text-anchor="middle" style="filter:${filter}">${icon}</text>`);
   const chosen=it.id===activeItemId&&state.panels[selected]===panel;
-  return `<g class="stageHandle" data-piece="item" data-item-id="${it.id}" transform="translate(${x} ${y}) translate(155 122) rotate(${rotation}) scale(${scale*flip*stretchX} ${scale*stretchY})"><rect x="-31" y="-31" width="62" height="62" fill="transparent" stroke="none"/>${body}</g>`;
+  return `<g class="stageHandle" data-piece="item" data-item-id="${it.id}" transform="translate(${x} ${y}) translate(155 122) rotate(${rotation}) scale(${scale*flip*stretchX} ${scale*stretchY})"><rect x="-31" y="-31" width="62" height="62" fill="transparent" pointer-events="all" stroke="none"/>${body}</g>`;
  };
  const propsBack=items.filter(it=>it.layer==='back').map(renderItem).join('');
  const propsFront=items.filter(it=>it.layer!=='back').map(renderItem).join('');
+ const backHitZones=items.filter(it=>it.layer==='back').map(it=>{
+  const sc=Math.max(.15,Math.min(5,(Number(it.size)||100)/100));
+  const sx=sc*(it.flip?-1:1)*Math.max(.25,Math.min(3,Number(it.stretchX)||1));
+  const sy=sc*Math.max(.25,Math.min(3,Number(it.stretchY)||1));
+  return `<g class="stageHandle" data-piece="item" data-item-id="${it.id}" transform="translate(${Number(it.x)||0} ${Number(it.y)||0}) translate(155 122) rotate(${Number(it.rotation)||0}) scale(${sx} ${sy})"><rect x="-28" y="-28" width="56" height="56" fill="transparent" pointer-events="all" /></g>`;
+ }).join('');
  const selectedProp=items.find(it=>it.id===activeItemId);
+
  const gizmo=showControls&&state.panels[selected]===panel&&selectedProp ? (()=>{
    const it=selectedProp,scale=Math.max(.15,Math.min(5,(Number(it.size)||100)/100));
    const w=29*scale*Math.max(.25,Math.min(3,Number(it.stretchX)||1));
    const h=29*scale*Math.max(.25,Math.min(3,Number(it.stretchY)||1));
    const cx=155+(Number(it.x)||0),cy=122+(Number(it.y)||0),rot=Number(it.rotation)||0;
-   const grip=(name,x,y)=>`<circle data-transform-handle="${name}" data-item-id="${it.id}" cx="${x}" cy="${y}" r="7" fill="#fff" stroke="#784cc0" stroke-width="2"/>`;
-   return `<g class="editGizmo" transform="translate(${cx} ${cy}) rotate(${rot})"><rect x="${-w}" y="${-h}" width="${2*w}" height="${2*h}" fill="none" stroke="#8151c6" stroke-width="1.7" stroke-dasharray="3 2"/>${grip('corner',w,h)}${grip('horizontal',w,0)}${grip('vertical',0,h)}<path d="M0 ${-h} V${-h-20}" stroke="#8151c6" stroke-width="1.5"/>${grip('rotation',0,-h-20)}</g>`;
+   // Handles are outside the artwork and never paint over the small accessory.
+   const grip=(name,x,y)=>`<g data-transform-handle="${name}" data-item-id="${it.id}"><circle cx="${x}" cy="${y}" r="7" fill="transparent" pointer-events="all"/><circle cx="${x}" cy="${y}" r="2.5" fill="#fff" stroke="#784cc0" stroke-width="1.3" pointer-events="none"/></g>`;
+   const out=12;
+   return `<g class="editGizmo" transform="translate(${cx} ${cy}) rotate(${rot})"><rect x="${-w}" y="${-h}" width="${2*w}" height="${2*h}" rx="2" fill="none" stroke="#8151c6" stroke-width=".85" stroke-dasharray="2 3" pointer-events="none"/>${grip('corner',w+out,h+out)}${grip('horizontal',w+out,0)}${grip('vertical',0,h+out)}${grip('rotation',0,-h-out)}</g>`;
  })():'';
  return `<svg viewBox="0 0 300 192" role="img" aria-label="${caption}" style="filter:${moodFilter(panel.mood)}">
    <image href="${background}" x="0" y="0" width="300" height="192" preserveAspectRatio="xMidYMid slice" pointer-events="none"/>
    <ellipse cx="112" cy="181" rx="57" ry="8" fill="#29221a" opacity=".12" pointer-events="none"/>
    ${propsBack}
-   <g class="stageHandle" data-piece="hero" transform="translate(${hx} ${hy}) translate(7 -22) translate(${footShiftX} ${footShiftY}) scale(${.73*hs})"><g>${hero}</g><rect x="60" y="78" width="195" height="205" fill="transparent" stroke="none" /></g>
+   <g class="fixedHero" pointer-events="none" transform="translate(${hx} ${hy}) translate(7 -22) translate(${footShiftX} ${footShiftY}) scale(${.73*hs})"><g>${hero}</g></g>
    ${propsFront}
+   ${backHitZones}
    ${gizmo}
    ${isPrincess(state.hero) && validPrincessStyle(panel.princessLook,state.hero).sparkles==='yes' ? `<g class="heroGlitter" pointer-events="none" transform="translate(${hx} ${hy})" opacity=".92">
      <g fill="#fffdf5" stroke="#f9ce78" stroke-width=".8">
@@ -1540,7 +1565,12 @@ function renderComic(){
    el.dataset.panelIndex=String(i);
    el.className='panel'+(i===selected?' active':'');
    el.innerHTML=`<div class="scene${!p.aiImage?' rich':''}">${p.aiImage?`<img class="aiPanelImage" src="${p.aiImage}" alt="${safe(p.caption)}">`:panelSvg(p,i,true)}</div><div class="caption"><span class="panelNo">${i+1}컷</span>${safe(p.caption)}</div>`;
-   el.onclick=()=>{selected=i;renderComic()};
+   el.onclick=e=>{
+     const onProp=!!e.target.closest('.stageHandle[data-piece="item"], [data-transform-handle]');
+     if(performance.now()-lastPropGestureEnded<250)return;
+     if(!onProp)activeItemId=null;
+     selected=i;renderComic();
+   };
    area.appendChild(el);
  });
  $('modeAll').setAttribute('aria-pressed',String(all));
@@ -1549,11 +1579,61 @@ function renderComic(){
  $('modeNext').disabled=selected>=state.panels.length-1;
  $('modePage').textContent=(selected+1)+' / '+state.panels.length;
  syncEditor();
+ renderPropContextMenu();
+}
+function renderPropContextMenu(){
+ const area=$('comicArea');area.querySelectorAll('.propContext').forEach(n=>n.remove());
+ const it=currentItem();if(!it||!state.panels.length||state.panels[selected]?.aiImage)return;
+ const panel=area.querySelector(`.panel[data-panel-index="${selected}"]`);
+ const scene=panel?.querySelector('.scene');if(!scene)return;
+ const menu=document.createElement('div');menu.className='propContext';menu.setAttribute('role','group');menu.setAttribute('aria-label','선택한 소품 바로 꾸미기');
+ const opts=shapeNames.map(n=>`<option value="${safe(n)}" ${n===it.name?'selected':''}>${safe(n)}</option>`).join('');
+ menu.innerHTML=`<div class="propContextTitle">🎨 ${safe(it.name)} 꾸미기</div>
+  <div class="propContextRow"><button type="button" data-ctx="front">공주 앞</button><button type="button" data-ctx="back">공주 뒤</button><button type="button" data-ctx="bring">맨앞</button></div>
+  <div class="propContextRow"><select data-ctx-select="shape" aria-label="모양 바꾸기">${opts}</select><select data-ctx-select="color" aria-label="색감 바꾸기"><option value="normal">원래 색</option><option value="red">분홍</option><option value="orange">금색</option><option value="blue">하늘</option><option value="green">초록</option><option value="purple">보라</option></select></div>
+  <div class="propContextRow"><button type="button" data-ctx="flip">↔ 반전</button><button type="button" data-ctx="duplicate">📋 복제</button><button type="button" data-ctx="delete">🗑 삭제</button></div>
+  <p class="propContextTip">이동·확대·회전은 소품을 직접 만져 보세요.</p>`;
+ menu.querySelector('[data-ctx-select="color"]').value=it.tint||'normal';
+ // The menu is a sibling of panel buttons: no nested buttons and no accidental panel selection.
+ menu.addEventListener('pointerdown',e=>e.stopPropagation());
+ menu.addEventListener('click',e=>{
+   e.stopPropagation();const btn=e.target.closest('button[data-ctx]');if(!btn)return;
+   const map={front:'directFront',back:'directBack',bring:'directBring',flip:'directFlip',duplicate:'directDuplicate',delete:'directDelete'};
+   const target=$(map[btn.dataset.ctx]);if(target)target.click();
+ });
+ menu.addEventListener('change',e=>{
+   e.stopPropagation();const kind=e.target.dataset.ctxSelect;
+   const target=$(kind==='shape'?'directShape':'directColor');
+   if(target){target.value=e.target.value;target.dispatchEvent(new Event('change',{bubbles:true}));}
+ });
+ area.appendChild(menu);
+ const ar=area.getBoundingClientRect(),sr=scene.getBoundingClientRect();
+ // Convert SVG viewBox point to CSS pixels, respecting xMidYMid meet letterboxing.
+ const scale=Math.min(sr.width/300,sr.height/192);
+ const originX=sr.left-ar.left+(sr.width-300*scale)/2;
+ const originY=sr.top-ar.top+(sr.height-192*scale)/2;
+ const cx=originX+(155+(Number(it.x)||0))*scale;
+ const cy=originY+(122+(Number(it.y)||0))*scale;
+ const itemRadius=30*scale*Math.max(.35,Math.min(4,(Number(it.size)||100)/100));
+ const w=menu.offsetWidth,h=menu.offsetHeight;
+ const bx=sr.left-ar.left,by=sr.top-ar.top,bw=sr.width,bh=sr.height;
+ // Prefer side or vertical empty space, keeping most of the artwork unobscured.
+ const roomRight=bx+bw-(cx+itemRadius),roomLeft=cx-itemRadius-bx;
+ const roomBottom=by+bh-(cy+itemRadius),roomTop=cy-itemRadius-by;
+ let left,top;
+ if(roomRight>=w+9){left=cx+itemRadius+7;top=cy-h/2;}
+ else if(roomLeft>=w+9){left=cx-itemRadius-w-7;top=cy-h/2;}
+ else if(roomBottom>=h+7){left=cx-w/2;top=cy+itemRadius+6;}
+ else if(roomTop>=h+7){left=cx-w/2;top=cy-itemRadius-h-6;}
+ else {left=roomBottom>=roomTop?cx-w/2:cx-w/2;top=roomBottom>=roomTop?by+bh-h-5:by+5;}
+ left=Math.max(bx+4,Math.min(bx+bw-w-4,left));
+ top=Math.max(by+4,Math.min(by+bh-h-4,top));
+ menu.style.left=Math.round(left)+'px';menu.style.top=Math.round(top)+'px';
 }
 function syncItemControls(){
  const p=state.panels[selected];if(!p)return;
  const items=ensureItems(p),sel=$('selectedItem');
- if(!items.some(it=>it.id===activeItemId))activeItemId=items.length?items[items.length-1].id:null;
+ if(!items.some(it=>it.id===activeItemId))activeItemId=null;
  sel.innerHTML='';
  if(!items.length)sel.add(new Option('소품이 없어요',''));
  items.forEach((it,n)=>sel.add(new Option(`${n+1}. ${it.name}`,it.id)));
@@ -1631,7 +1711,7 @@ function refreshArtControls(){
 
  // Pre-existing princess variants should not misleadingly show flower princess on click.
 }
-function syncEditor(){ if(!state.panels.length)return; const p=state.panels[selected]; $('editTitle').textContent=(selected+1)+'컷 꾸미기'; $('editProgress').textContent=(selected+1)+' / '+state.panels.length; $('panelCaption').value=p.caption||''; $('panelSpeech').value=p.speech||''; $('panelEmotion').value=p.emotion||emotions[0]; $('panelPose').value=p.pose||poses[0]; $('panelAction').value=p.action||actions[0]; $('panelBg').value=p.background||'forest'; $('panelProp').value='없음'; syncItemControls(); $('panelMood').value=p.mood||'bright'; $('heroTint').value=p.heroTint||'normal'; $('heroOutfit').value=p.heroOutfit||'normal'; $('heroSize').value=p.heroSize||100; /* itemSize is controlled by syncItemControls() for the selected prop */ $('heroSizeValue').textContent=(p.heroSize||100)+'%'; /* selected prop size label is managed by syncItemControls() */ $('composerHint').textContent=p.aiImage?'GPT 완성 그림은 한 장으로 합쳐져 있어 움직일 수 없어요. 기본 그림으로 돌아가면 꾸미기가 가능합니다.':'주인공과 원하는 소품을 손가락으로 끌어서 이동하세요. 한 컷에 여러 개 넣을 수 있어요.'; $('editBubbleMode').value=p.bubbleMode||'bubble';
+function syncEditor(){ if(!state.panels.length)return; const p=state.panels[selected]; $('editTitle').textContent=(selected+1)+'컷 꾸미기'; $('editProgress').textContent=(selected+1)+' / '+state.panels.length; $('panelCaption').value=p.caption||''; $('panelSpeech').value=p.speech||''; $('panelEmotion').value=p.emotion||emotions[0]; $('panelPose').value=p.pose||poses[0]; $('panelAction').value=p.action||actions[0]; $('panelBg').value=p.background||'forest'; $('panelProp').value='없음'; syncItemControls(); $('panelMood').value=p.mood||'bright'; $('heroTint').value=p.heroTint||'normal'; $('heroOutfit').value=p.heroOutfit||'normal'; $('heroSize').value=p.heroSize||100; /* itemSize is controlled by syncItemControls() for the selected prop */ $('heroSizeValue').textContent=(p.heroSize||100)+'%'; /* selected prop size label is managed by syncItemControls() */ $('composerHint').textContent=p.aiImage?'GPT 완성 그림은 한 장으로 합쳐져 있어 움직일 수 없어요. 기본 그림으로 돌아가면 꾸미기가 가능합니다.':'소품을 직접 움직이고 두 손가락으로 돌리고 크기를 조절하세요. 공주는 고정됩니다.'; $('editBubbleMode').value=p.bubbleMode||'bubble';
  $('editBubbleFill').value=p.bubbleFill||'white';
  $('editBubbleOpacity').value=p.bubbleOpacity??70;
  $('editOpacityValue').textContent=(p.bubbleOpacity??70)+'%';
@@ -1663,7 +1743,7 @@ $('selectedItem').addEventListener('change',e=>{activeItemId=e.target.value||nul
 $('itemRotation').addEventListener('input',e=>{const it=currentItem();if(!it)return;it.rotation=Number(e.target.value);renderComic()});
 $('itemTint').addEventListener('change',e=>{const it=currentItem();if(!it)return;it.tint=e.target.value;renderComic();toast(recolorableProp(it)?'소품 그림 자체의 색을 바꿨어요!':'직접 추가한 이모지·사진은 색 변경이 제한됩니다.');});
 $('flipItem').onclick=()=>{const it=currentItem();if(!it)return;it.flip=!it.flip;renderComic();toast(it.flip?'소품을 좌우로 뒤집었어요.':'소품 뒤집기를 되돌렸어요.');};
-$('duplicateItem').onclick=()=>{const it=currentItem();if(it)addProp(it.name,it.source,it.emoji)};
+$('duplicateItem').onclick=()=>$('directDuplicate').click();
 $('removeItem').onclick=()=>{const p=state.panels[selected],it=currentItem();if(!it)return;p.items=ensureItems(p).filter(x=>x.id!==it.id);activeItemId=null;renderComic()};
 $('addCustomEmoji').onclick=()=>{const e=$('customPropEmoji'),v=e.value.trim();if(!v)return toast('원하는 이모지를 적어 주세요.');addProp(v,null,v.slice(0,8));e.value=''};
 $('customPropFile').onchange=async e=>{const f=e.target.files?.[0];e.target.value='';if(!f)return;if(!f.type.startsWith('image/'))return toast('이미지 파일을 선택해 주세요.');if(f.size>8*1024*1024)return toast('8MB 이하 그림을 사용해 주세요.');try{const url=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f)});const im=await new Promise((ok,no)=>{const a=new Image();a.onload=()=>ok(a);a.onerror=no;a.src=url});const cv=document.createElement('canvas'),scale=Math.min(1,200/Math.max(im.naturalWidth,im.naturalHeight));cv.width=Math.round(im.naturalWidth*scale);cv.height=Math.round(im.naturalHeight*scale);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);addProp(f.name.slice(0,16),cv.toDataURL('image/png'));}catch(err){toast('소품 파일을 읽지 못했어요.')}};
@@ -1677,8 +1757,9 @@ $('panelBg').addEventListener('change',e=>{
  updatePanel('background',e.target.value);
 });
 // C3.7: touch drag happens directly on the composed SVG layers, independent of GPT.
-// C3.12.0 touch engine. No magnets or automatic placement.
+// C3.12.2 touch engine. No magnets or automatic placement.
 let stageGesture=null;
+let lastPropGestureEnded=-10000;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function stagePoint(svg,e){
  const m=svg.getScreenCTM();if(!m)return null;
@@ -1688,12 +1769,19 @@ function stagePoint(svg,e){
 function stagePointerDown(e){
  const knob=e.target.closest('[data-transform-handle]');
  const handle=e.target.closest('.stageHandle');
- if(!knob&&!handle)return;
+ if(!knob&&!handle){
+   // Touching empty stage clears selected accessory, never moves the princess.
+   if(!stageGesture && e.target.closest('svg') && activeItemId!==null){
+     activeItemId=null;renderComic();
+   }
+   return;
+ }
  const svg=(knob||handle).ownerSVGElement;
  const panelButton=svg?.closest('.panel');if(!svg||!panelButton)return;
  const idx=Number(panelButton.dataset.panelIndex);
  if(!Number.isInteger(idx)||idx<0||idx>=state.panels.length)return;
  const piece=knob?'item':handle.dataset.piece;
+ if(piece==='hero')return; // C3.12.2: princess is locked during prop editing
  const id=knob?.dataset.itemId||handle?.dataset.itemId;
  const panel=state.panels[idx];const it=piece==='item'?ensureItems(panel).find(v=>v.id===id):null;
  if(piece==='item'&&!it)return;
@@ -1764,7 +1852,7 @@ function stagePointerEnd(e){
  const g=stageGesture;if(!g||!g.pointers.has(e.pointerId))return;
  g.pointers.delete(e.pointerId);
  try{g.svg.releasePointerCapture(e.pointerId)}catch(_){}
- if(!g.pointers.size){stageGesture=null;renderComic();return;}
+ if(!g.pointers.size){lastPropGestureEnded=performance.now();stageGesture=null;renderComic();return;}
  // When one finger remains after pinch, start a new one-finger drag baseline.
  const p=[...g.pointers.values()][0],t=g.item||g.panel;
  g.start={points:[p],x:Number(t[g.item?'x':'heroX'])||0,y:Number(t[g.item?'y':'heroY'])||0,size:Number(g.item?.size)||100,rotation:Number(g.item?.rotation)||0,stretchX:Number(g.item?.stretchX)||1,stretchY:Number(g.item?.stretchY)||1};
@@ -1786,8 +1874,8 @@ function syncDirectTools(it){
  if(it&&!shapeNames.includes(it.name))shape.add(new Option(it.name,it.name));
  shape.value=it?.name||'';
  color.value=it?.tint||'normal';
- status.textContent=it?`선택한 소품: ${it.name} · ${it.layer==='back'?'공주 뒤':'공주 앞'} · 크기 ${it.size||100}%`:'그림에 소품을 추가하거나 소품을 눌러 선택해 주세요.';
- for(const id of ['directShape','directColor','directFront','directBack','directBring','directSend','directShrink','directGrow','directRotateL','directRotateR','directFlip','directDuplicate','directDelete'])$(id).disabled=!it;
+ status.textContent=it?`선택한 소품: ${it.name} · ${it.layer==='back'?'공주 뒤':'공주 앞'} · 크기 ${it.size||100}%`:'그림 속 소품을 눌러 선택하세요. 빈 곳을 누르면 선택이 해제돼요. 공주는 고정됩니다.';
+ for(const id of ['directShape','directColor','directFront','directBack','directBring','directShrink','directGrow','directRotateL','directRotateR','directFlip','directDuplicate','directDelete'])$(id).disabled=!it;
 }
 function directChange(fn){const it=currentItem();if(!it)return;rememberAction('direct-change-'+Date.now());fn(it);renderComic()}
 $('directAddRibbon').onclick=()=>addProp('리본장식');
@@ -1798,8 +1886,7 @@ $('directShape').addEventListener('change',e=>directChange(it=>{it.name=e.target
 $('directColor').addEventListener('change',e=>directChange(it=>it.tint=e.target.value));
 $('directFront').onclick=()=>directChange(it=>it.layer='front');
 $('directBack').onclick=()=>directChange(it=>it.layer='back');
-$('directBring').onclick=()=>directChange(it=>{const items=ensureItems(state.panels[selected]),i=items.indexOf(it);if(i<items.length-1){const b=items[i+1];if((b.layer||'front')===(it.layer||'front'))[items[i],items[i+1]]=[b,it];else it.layer='front'}});
-$('directSend').onclick=()=>directChange(it=>{const items=ensureItems(state.panels[selected]),i=items.indexOf(it);if(i>0){const b=items[i-1];if((b.layer||'front')===(it.layer||'front'))[items[i],items[i-1]]=[b,it];else it.layer='back'}});
+$('directBring').onclick=()=>directChange(it=>{const items=ensureItems(state.panels[selected]);it.layer='front';const i=items.indexOf(it);if(i>=0){items.splice(i,1);items.push(it);}});
 $('directShrink').onclick=()=>directChange(it=>it.size=clamp((Number(it.size)||100)-15,20,450));
 $('directGrow').onclick=()=>directChange(it=>it.size=clamp((Number(it.size)||100)+15,20,450));
 $('directRotateL').onclick=()=>directChange(it=>it.rotation=(Number(it.rotation)||0)-15);
@@ -1916,7 +2003,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.12.0 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.12.2 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -2483,7 +2570,7 @@ for(const [id,view] of [['quickFullBody','full'],['quickFacePortrait','face'],['
   renderComic();
  });
 }
-// C3.12.0: quick pictorial controls reuse the validated independent select slots.
+// C3.12.2: quick pictorial controls reuse the validated independent select slots.
 document.querySelectorAll('[data-wear-quick]').forEach(btn=>btn.addEventListener('click',()=>{
  if(btn.disabled)return;
  const [slot,value]=btn.dataset.wearQuick.split(':');
@@ -2557,7 +2644,7 @@ $('quickBubbleMore').addEventListener('click',()=>{
 const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
-// C3.12.0: Same-origin static version manifest, no extra accounts or external service.
+// C3.12.2: Same-origin static version manifest, no extra accounts or external service.
 const WEBTOON_APP_VERSION='3.11.1';
 let latestPublishedVersion=null;
 function versionNumbers(v){
@@ -2614,7 +2701,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
  thumbnail.style.cssText='width:35px;height:35px;object-fit:contain;vertical-align:middle;margin-right:5px;';
  b.prepend(thumbnail);
 }
-// C3.12.0 adult-only per-scene test controls. Preview never alters existing artwork.
+// C3.12.2 adult-only per-scene test controls. Preview never alters existing artwork.
 function wearReviewContext(){
  const p=state?.panels?.[selected];if(!p||!isPrincess(state.hero)||p.aiImage)return null;
  const view=p.useExpressionArt?(p.expressionView==='face'?'face':'full'):'original';
