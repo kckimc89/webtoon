@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.10.2</title>
+<title>나만의 웹툰 창작극장 C3.10.3</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -127,7 +127,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearGrid select:disabled{opacity:.58;background:#eee9f4}
 @media(max-width:530px){.wearGrid{grid-template-columns:1fr}}
 
-/* C3.10.2: simple wearable thumbnails, with disabled items plainly marked. */
+/* C3.10.3: simple wearable thumbnails, with disabled items plainly marked. */
 .wearQuick{background:#fff;border:1px solid #e9d9f5;border-radius:16px;padding:10px;margin:10px 0}
 .wearQuickTitle{margin:2px 2px 8px;font-weight:850;font-size:16px}
 .wearQuickList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -136,13 +136,19 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearQuickList button[aria-pressed="true"]{border-color:#784cc0;background:#f0e5ff;box-shadow:inset 0 0 0 1px #784cc0}
 .wearQuickList button:disabled{opacity:.35;filter:grayscale(1)}
 @media(min-width:780px){.wearQuickList{grid-template-columns:repeat(6,minmax(0,1fr))}}
-/* C3.10.2 — no unverified jewelry overlays. Existing work data is retained. */
+/* C3.10.3 — no unverified jewelry overlays. Existing work data is retained. */
 .wearAudit{display:flex;flex-direction:column;gap:5px;background:#effaf5;border:1px solid #b8dccd;color:#285a47;padding:12px;border-radius:14px;font-size:14px;margin:12px 0}
 .wearAdjust{border:1px solid #d8c7ea;border-radius:14px;background:white;padding:12px;margin:12px 0}
 .wearAdjust summary{font-weight:850;cursor:pointer}
 .wearAdjust label{display:grid;grid-template-columns:80px 1fr 50px;align-items:center;gap:8px;margin-top:12px;font-weight:700;font-size:14px}
 .wearAdjust input[type=range]{width:100%;min-width:0;accent-color:#8654cc}
 .wearGrid select:disabled{opacity:.6}
+
+/* C3.10.3: per-scene approval workflow with safe defaults */
+#wearReviewPanel{border:2px solid #d0b0eb;background:#fffaf4}
+#wearReviewPanel summary{font-size:16px}
+#wearReviewPanel .btns button{min-height:44px}
+#wearReviewStatus{padding:8px 10px;border-radius:10px;background:#f1eaff}
 </style>
 </head>
 <body>
@@ -151,7 +157,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C3.10.2 · 착용 장식 안전 재설계·겹침 방지</span>
+    <span class="pill">MASTER C3.10.3 · 장식 장면별 맞춤 검증·보호</span>
   </header>
 
   <nav class="tabs">
@@ -161,8 +167,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.10.2)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.10.2 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.10.3)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.10.3 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -440,7 +446,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
  <p class="hint" id="fixedPrincessAccessories">💡 원본에 그려진 왕관·날개·지팡이는 떼거나 교체할 수 없습니다. 추가 장식은 별도 착용 장식은 공주의 머리에 붙어 함께 움직입니다. 배경에 놓는 일반 소품은 별도의 소품 메뉴에서 꾸밀 수 있습니다.</p>
  <div class="wearStudio" id="princessWearStudio">
   <h4 style="margin:6px 0 8px">👗 공주에게 장식 착용하기</h4>
-  <p class="hint">기존 공주 그림은 그대로 보존합니다. 머리 장식은 추가로 꾸밀 수 있어요. 귀걸이·목걸이·날개는 그림마다 착용점이 달라 잘못 붙는 문제를 확인하여, 검증된 전용 그림이 준비되기 전까지 화면에 표시하지 않습니다. 예전에 고른 장식 기록도 지우지 않습니다.</p>
+  <p class="hint">원본 공주는 변경하지 않습니다. 머리 장식은 바로 사용하고, 귀걸이·목걸이·날개는 아래 어른용 맞춤 시험에서 현재 장면을 직접 확인하고 승인한 경우에만 사용합니다. 이전 기록은 그대로 보존됩니다.</p>
   <div class="wearGrid">
    <label>👑 왕관·티아라<select data-wear-slot="crown"><option value="none">추가 안 함</option><option value="tiara">👑 보석 왕관</option></select></label>
    <label>🎀 머리 옆 장식<select data-wear-slot="hair"><option value="none">추가 안 함</option><option value="ribbon">🎀 비단 리본</option><option value="rose">🌹 장미핀</option><option value="flower">🌸 꽃장식</option><option value="gem">💎 보석핀</option></select></label>
@@ -450,7 +456,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
    <label>🪄 손의 지팡이<select data-wear-slot="hand"><option value="none">추가 안 함</option><option value="star">🌟 별지팡이</option></select></label>
   </div>
   <div class="wearQuick" id="wearQuick" aria-label="장식 그림으로 빠르게 고르기">
-   <p class="wearQuickTitle">🎀 머리 장식 선택 · 다른 부위는 안전 점검 중</p>
+   <p class="wearQuickTitle">🎀 장식 고르기 · 다른 부위는 장면별 승인 후 사용</p>
    <div class="wearQuickList">
     <button type="button" data-wear-quick="hair:ribbon">🎀<small>리본</small></button>
     <button type="button" data-wear-quick="hair:rose">🌹<small>장미핀</small></button>
@@ -459,7 +465,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <button type="button" data-wear-quick="ears:crystal">✨<small>귀걸이</small></button>
     <button type="button" data-wear-quick="back:butterfly">🦋<small>날개</small></button>
    </div>
-   <p class="hint">리본·꽃핀은 같은 그림을 다시 눌러 벗을 수 있어요. 다른 장식은 자연스러운 착용 그림을 준비하고 있어요.</p>
+   <p class="hint">리본·꽃핀은 바로 착용해요. 목걸이·귀걸이·날개는 어른이 장면별 시험을 승인해야 버튼이 열립니다.</p>
   </div>
   <p id="wearCapability" class="hint" aria-live="polite"></p>
   <div class="wearAudit" role="status"><strong>✅ 원본 장식 보호</strong><span>그림에 원래 그려진 왕관·귀걸이·목걸이·지팡이·날개는 수정하지 않습니다. 확인되지 않은 추가 장식은 숨기지만 저장 기록은 보관해요.</span></div>
@@ -469,6 +475,20 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <label>↕️ 위아래 <input type="range" data-wear-fit="y" min="-65" max="65" step="1" value="0"><output data-wear-out="y">0</output></label>
     <label>🔎 크기 <input type="range" data-wear-fit="scale" min="45" max="155" step="5" value="100"><output data-wear-out="scale">100%</output></label>
     <button type="button" id="wearFitReset" class="ghost">위치·크기 기본값</button>
+  </details>
+  <details class="wearAdjust" id="wearReviewPanel">
+    <summary>🛠️ 어른용 장식 맞춤 시험 · 귀걸이 / 목걸이 / 날개</summary>
+    <p class="hint"><strong>새 기능:</strong> 장식별로 위치를 시험하고, 자연스러울 때만 「이 장면 사용 승인」을 눌러 주세요. 승인 전에는 아이의 꾸미기 화면에 나타나지 않습니다. 승인 정보는 <b>현재 컷의 현재 표정·그림 종류·자세</b>에만 적용됩니다. 원본에 포함된 장식은 지우지 못하므로 중복 여부도 확인해야 합니다.</p>
+    <div class="wearGrid">
+      <label>시험할 부위<select id="wearReviewSlot"><option value="neck">💖 목걸이</option><option value="ears">✨ 귀걸이</option><option value="back">🧚 날개</option></select></label>
+      <label>시험 장식<select id="wearReviewItem"></select></label>
+    </div>
+    <p id="wearReviewScene" class="hint" aria-live="polite"></p>
+    <label>↔️ 좌우 위치<input type="range" id="wearReviewX" min="-110" max="110" step="1" value="0"><output id="wearReviewXOut">0</output></label>
+    <label>↕️ 상하 위치<input type="range" id="wearReviewY" min="-110" max="110" step="1" value="0"><output id="wearReviewYOut">0</output></label>
+    <label>🔎 크기<input type="range" id="wearReviewScale" min="25" max="190" step="5" value="100"><output id="wearReviewScaleOut">100%</output></label>
+    <div class="btns"><button type="button" class="secondary" id="wearReviewPreview">👁️ 이 장면에서 미리보기</button><button type="button" class="primary" id="wearReviewApprove">✅ 이 장면 사용 승인</button><button type="button" class="ghost" id="wearReviewRevoke">🚫 승인 취소·숨기기</button></div>
+    <p id="wearReviewStatus" class="hint" aria-live="polite">승인하지 않은 장식은 아이 화면에 보이지 않습니다.</p>
   </details>
   <button type="button" id="wearClearAll" class="secondary">↩️ 내가 추가한 착용 장식 모두 벗기</button>
  </div>
@@ -559,7 +579,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.10.2 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.10.3 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 
@@ -706,6 +726,17 @@ function validPrincessStyle(st,id){
  const fitting=src.wearFit&&typeof src.wearFit==='object'?src.wearFit:{};
  const bounded=(v,lo,hi,base)=>Number.isFinite(Number(v))?Math.max(lo,Math.min(hi,Number(v))):base;
  next.wearFit={x:bounded(fitting.x,-65,65,0),y:bounded(fitting.y,-65,65,0),scale:bounded(fitting.scale,45,155,100)};
+ // C3.10.3: approval must be explicit and scene-specific. Preserve older data.
+ next.wearScenes={};
+ if(src.wearScenes&&typeof src.wearScenes==='object')for(const [scene,parts] of Object.entries(src.wearScenes).slice(0,100)){
+  if(typeof scene!=='string'||scene.length>100||!parts||typeof parts!=='object')continue;
+  const clean={};
+  for(const slot of ['neck','ears','back']){
+   const r=parts[slot];if(!r||typeof r!=='object')continue;
+   clean[slot]={x:bounded(r.x,-110,110,0),y:bounded(r.y,-110,110,0),scale:bounded(r.scale,25,190,100),approved:r.approved===true,preview:r.preview===true};
+  }
+  next.wearScenes[scene]=clean;
+ }
  return next;
 }
 function princessSvg(panel,heroId){
@@ -796,7 +827,7 @@ function premiumPrincessAdornment(style,heroId,view){
  return `<g pointer-events="none" class="princessOrnaments">${star(24,112,7)}${star(211,109,7)}${star(34,197,5)}${star(203,216,6)}${star(65,45,4)}${star(190,166,5)}${star(92,243,5)}</g>`;
 }
 
-// C3.10.2: multi-slot studio wardrobe. Coordinates live within the hero SVG,
+// C3.10.3: multi-slot studio wardrobe. Coordinates live within the hero SVG,
 // so they follow the hero's drag and foot-anchored scaling (and render in exported PNG).
 const princessWearProfiles={
  princess_flower:{hair:[86,96],neck:[125,151],ears:[105,121,149,121],back:[123,162],hand:[189,139],builtIn:{crown:true,wings:false,staff:true}},
@@ -810,25 +841,59 @@ function princessWornImage(key,x,y,w,h,rotate=0,opacity=1){
  const source=premiumPropImages[key];if(!source)return '';
  return `<image href="${source}" x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet" opacity="${opacity}" transform="rotate(${rotate} ${x} ${y})"/>`;
 }
-// C3.10.2: Conservative rendering. Never paint unsupported accessories in
+// C3.10.3: Conservative rendering. Never paint unsupported accessories in
 // arbitrary places. Existing slots are still stored for backward compatibility.
-function premiumPrincessWearable(style,heroId,view,layer='front'){
- const profile=profileForPrincess(heroId);if(!profile||layer==='back')return '';
+let liveWearPreview=null; // never re-enable an unapproved draft when reopening a saved work
+function wearableSceneKey(panel,view){
+ return [view,panel?.emotion||'기뻐요',view==='original'?(panel?.pose||'서 있기'):'그림'].join('|');
+}
+function wearableSceneEntry(style,panel,view,slot){
+ return style.wearScenes?.[wearableSceneKey(panel,view)]?.[slot]||null;
+}
+function wearableRenderAllowed(fit,panel,scene,slot){return !!fit&&(fit.approved===true||(fit.preview===true&&liveWearPreview?.panel===panel&&liveWearPreview?.scene===scene&&liveWearPreview?.slot===slot))}
+// All accessory geometry is inside the moving/scaling character group.
+// New parts are hidden until separately previewed and approved for this exact scene.
+function premiumPrincessWearable(style,heroId,view,layer='front',panel=null){
+ const profile=profileForPrincess(heroId);if(!profile)return '';
  const worn=style.wearSlots||{};
- if(!worn.hair||worn.hair==='none')return '';
- const keys={ribbon:'리본장식',rose:'장미',flower:'화관',gem:'보석'};
- const widths={ribbon:37,rose:35,flower:42,gem:31};
- const key=keys[worn.hair];if(!key)return '';
- const portrait=view==='face';
- const [hx,hy]=profile.hair;
- const x=portrait?83:hx,y=portrait?99:hy;
- const fit=style.wearFit||{};
- const dx=Number(fit.x)||0,dy=Number(fit.y)||0,sc=Math.max(.45,Math.min(1.55,(Number(fit.scale)||100)/100));
- const img=princessWornImage(key,x+dx,y+dy,widths[worn.hair]*sc,38*sc);
- // The source pictures have different image rectangles. Keep the original
- // transform, then apply only deliberate saved per-panel fitting changes.
- const frame= view==='full'?'translate(-19.929 -38.541) scale(1.178571 1.139640)':'';
- return `<g pointer-events="none" class="princessWornAdornment" transform="${frame}">${img}</g>`;
+ const images=[];
+ if(layer==='front'&&worn.hair&&worn.hair!=='none'){
+  const keys={ribbon:'리본장식',rose:'장미',flower:'화관',gem:'보석'};
+  const widths={ribbon:37,rose:35,flower:42,gem:31};
+  const key=keys[worn.hair];
+  if(key){const portrait=view==='face';const [hx,hy]=profile.hair;
+   const x=portrait?83:hx,y=portrait?99:hy;
+   const fit=style.wearFit||{};const dx=Number(fit.x)||0,dy=Number(fit.y)||0,sc=Math.max(.45,Math.min(1.55,(Number(fit.scale)||100)/100));
+   images.push(princessWornImage(key,x+dx,y+dy,widths[worn.hair]*sc,38*sc));
+  }
+ }
+ const scene=panel?wearableSceneKey(panel,view):null;
+ for(const slot of ['neck','ears','back']){
+  if(slot==='back'&&layer!=='back'||slot!=='back'&&layer!=='front')continue;
+  const value=worn[slot];if(!value||value==='none')continue;
+  if(slot==='back'&&profile.builtIn.wings)continue;
+  const fit=scene?style.wearScenes?.[scene]?.[slot]:null;
+  if(!wearableRenderAllowed(fit,panel,scene,slot))continue;
+  const sc=fit.scale/100,dx=fit.x,dy=fit.y;
+  const [bx,by]=slot==='neck'?profile.neck:slot==='back'?profile.back:[profile.ears[0],profile.ears[1]];
+  const x=(view==='face'? (slot==='neck'?125:slot==='back'?125:109):bx)+dx;
+  const y=(view==='face'? (slot==='neck'?162:slot==='back'?188:145):by)+dy;
+  if(slot==='neck'){
+   const ink=value==='pearl'?'#c7e2f3':'#e896b1', jewel=value==='pearl'?'#d2ebff':'#ff9abf';
+   images.push(`<g transform="translate(${x} ${y}) scale(${sc})" fill="none" stroke-linecap="round"><path d="M-17 -5 Q0 18 17 -5" stroke="${ink}" stroke-width="3.5"/><circle cx="0" cy="11" r="5" fill="${jewel}" stroke="#fff" stroke-width="1.7"/></g>`);
+  }else if(slot==='ears'){
+   const fill=value==='pink'?'#ff9dbf':'#c6ecff';
+   // Both earrings are individually placed; hair occlusion cannot be inferred.
+   const spread=(profile.ears[2]-profile.ears[0])*sc;
+   const first=x, second=x+spread;
+   images.push(`<g fill="${fill}" stroke="#fff" stroke-width="1.2"><circle cx="${first}" cy="${y+5*sc}" r="${4.5*sc}"/><circle cx="${second}" cy="${y+5*sc}" r="${4.5*sc}"/></g>`);
+  }else if(slot==='back'){
+   images.push(princessWornImage('요정날개',x,y,125*sc,116*sc));
+  }
+ }
+ if(!images.length)return '';
+ const frame=view==='full'?'translate(-19.929 -38.541) scale(1.178571 1.139640)':'';
+ return `<g pointer-events="none" class="princessWornAdornment" transform="${frame}">${images.join('')}</g>`;
 }
 function premiumPrincessSvg(panel,heroId){
  const p=validPrincessStyle(panel.princessLook,heroId);
@@ -837,13 +902,13 @@ function premiumPrincessSvg(panel,heroId){
    && dedicatedFullBodyExpressions[heroId][panel.emotion||'기뻐요'];
  if(chosenFullBody){
    // The entire person, outfit and actual expression are changed as one image.
-   return `<g>${premiumPrincessWearable(p,heroId,'full','back')}<image href="${chosenFullBody}" x="6" y="23" width="231" height="253" preserveAspectRatio="xMidYMid meet"/>${premiumPrincessWearable(p,heroId,'full')}${premiumPrincessAdornment(p,heroId,'full')}</g>`;
+   return `<g>${premiumPrincessWearable(p,heroId,'full','back',panel)}<image href="${chosenFullBody}" x="6" y="23" width="231" height="253" preserveAspectRatio="xMidYMid meet"/>${premiumPrincessWearable(p,heroId,'full','front',panel)}${premiumPrincessAdornment(p,heroId,'full')}</g>`;
  }
  const chosenPortrait=princessExpressionArt(panel,heroId);
  if(chosenPortrait){
    // Whole illustration swap (portrait scene). Never paste pupils, eyebrows or
    // emoji onto the original face. This is a genuine close-up shot, not a full-body pose.
-   return `<g>${premiumPrincessWearable(p,heroId,'face','back')}<defs><radialGradient id="portraitFade"><stop offset="57%" stop-color="white"/><stop offset="79%" stop-color="white" stop-opacity=".98"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient><mask id="portraitSoft"><ellipse cx="125" cy="159" rx="102" ry="120" fill="url(#portraitFade)"/></mask></defs><image href="${chosenPortrait}" x="23" y="42" width="204" height="234" preserveAspectRatio="xMidYMid meet" mask="url(#portraitSoft)"/>${premiumPrincessWearable(p,heroId,'face')}${premiumPrincessAdornment(p,heroId,'face')}</g>`;
+   return `<g>${premiumPrincessWearable(p,heroId,'face','back',panel)}<defs><radialGradient id="portraitFade"><stop offset="57%" stop-color="white"/><stop offset="79%" stop-color="white" stop-opacity=".98"/><stop offset="100%" stop-color="white" stop-opacity="0"/></radialGradient><mask id="portraitSoft"><ellipse cx="125" cy="159" rx="102" ry="120" fill="url(#portraitFade)"/></mask></defs><image href="${chosenPortrait}" x="23" y="42" width="204" height="234" preserveAspectRatio="xMidYMid meet" mask="url(#portraitSoft)"/>${premiumPrincessWearable(p,heroId,'face','front',panel)}${premiumPrincessAdornment(p,heroId,'face')}</g>`;
  }
 
  const d=princessDefaults[heroId];
@@ -867,7 +932,7 @@ function premiumPrincessSvg(panel,heroId){
  const jewel=p.crown==='none'?'':p.crown==='flower'?`<text x="131" y="76" font-size="25">🌺</text>`:p.crown==='bow'?`<text x="125" y="76" font-size="27">🎀</text>`:p.crown==='tiara'?`<text x="119" y="71" font-size="23">💎</text>`:`<text x="121" y="74" font-size="24">👑</text>`;
  const sparkles=p.sparkles==='no'?'':`<g fill="#fff3b0" stroke="#fff" stroke-width="1.5"><path d="M37 120l5 -14 5 14 14 5-14 5-5 14-5-14-14-5Z"/><path d="M200 131l4 -11 4 11 11 4-11 4-4 11-4-11-11-4Z"/><path d="M173 242l3 -8 3 8 8 3-8 3-3 8-3-8-8-3Z"/></g>`;
  const staffDecor=p.staff==='none'?'':p.staff==='star'?`<text x="195" y="94" font-size="20">🌟</text>`:p.staff==='heart'?`<text x="195" y="94" font-size="20">💖</text>`:`<text x="195" y="94" font-size="20">🌸</text>`;
- return `<g transform="translate(0 ${yy}) rotate(${tilt} 122 200)">${premiumPrincessWearable(p,heroId,'original','back')}${image(a.base)}${premiumPrincessWearable(p,heroId,'original')}${premiumPrincessAdornment(p,heroId,'original')}</g>`;
+ return `<g transform="translate(0 ${yy}) rotate(${tilt} 122 200)">${premiumPrincessWearable(p,heroId,'original','back',panel)}${image(a.base)}${premiumPrincessWearable(p,heroId,'original','front',panel)}${premiumPrincessAdornment(p,heroId,'original')}</g>`;
 }
 function princessThumb(h){
  if(premiumPrincessImages[h.id])return premiumPrincessImages[h.id].thumb;
@@ -958,7 +1023,11 @@ function princessControls(){
   else if(slot==='crown'&&profile.builtIn.crown)reason='원본에 왕관·티아라가 이미 포함되어 있어요.';
   else if(slot==='back'&&profile.builtIn.wings)reason='원본에 날개가 이미 포함되어 있어요.';
   else if(slot==='hand'&&profile.builtIn.staff)reason='원본 그림에 지팡이가 이미 포함되어 있어요.';
-  else if(slot!=='hair')reason='현재 공주 그림에 맞는 착용 위치가 검증되지 않아 잠시 사용할 수 없어요. 이전 장식 기록은 보존됩니다.';
+  else if(slot!=='hair'){
+   const view=p.useExpressionArt?(p.expressionView==='face'?'face':'full'):'original';
+   const fit=wearableSceneEntry(st,p,view,slot);
+   if(!fit?.approved)reason='이 표정·자세에서 어른의 착용 시험과 사용 승인이 필요해요.';
+  }
   const active=st.wearSlots?.[slot]||'none';
   el.value=active;
   el.disabled=!!reason;
@@ -974,7 +1043,7 @@ function princessControls(){
   btn.setAttribute('aria-pressed',String(active));
   btn.title=btn.disabled?(sel?.title||'지금은 착용할 수 없어요'):(active?'한 번 더 누르면 벗어요':'눌러서 착용해요');
  });
- const tip=$('wearCapability');if(tip)tip.textContent='🎀 머리 장식만 추가할 수 있어요. 왕관·귀걸이·목걸이·날개는 원본 유지 / 잘못된 위치에 표시하지 않아요.';
+ const tip=$('wearCapability');if(tip)tip.textContent='🎀 머리 장식은 바로 사용해요. 귀걸이·목걸이·날개는 어른이 현재 장면에서 확인하고 승인한 경우에만 사용할 수 있어요.';
  document.querySelectorAll('[data-wear-fit]').forEach(el=>{
    const v=st.wearFit?.[el.dataset.wearFit]??(el.dataset.wearFit==='scale'?100:0);
    el.value=v;
@@ -1722,7 +1791,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.10.2 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.10.3 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -2289,7 +2358,7 @@ for(const [id,view] of [['quickFullBody','full'],['quickFacePortrait','face'],['
   renderComic();
  });
 }
-// C3.10.2: quick pictorial controls reuse the validated independent select slots.
+// C3.10.3: quick pictorial controls reuse the validated independent select slots.
 document.querySelectorAll('[data-wear-quick]').forEach(btn=>btn.addEventListener('click',()=>{
  if(btn.disabled)return;
  const [slot,value]=btn.dataset.wearQuick.split(':');
@@ -2303,7 +2372,7 @@ for(const el of document.querySelectorAll('[data-wear-slot]'))el.addEventListene
  const p=state?.panels?.[selected];if(!p||!isPrincess(state.hero)||p.aiImage)return;
  const slot=el.dataset.wearSlot;
  const profile=profileForPrincess(state.hero);
- if(!profile||el.disabled||slot!=='hair')return;
+ if(!profile||el.disabled||!(['hair','neck','ears','back'].includes(slot)))return;
  rememberAction('wear-slot-'+slot+'-'+Date.now());
  const st=validPrincessStyle(p.princessLook,state.hero);
  st.wearSlots={...st.wearSlots,[slot]:el.value};
@@ -2363,7 +2432,7 @@ $('quickBubbleMore').addEventListener('click',()=>{
 const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
-// C3.10.2: Same-origin static version manifest, no extra accounts or external service.
+// C3.10.3: Same-origin static version manifest, no extra accounts or external service.
 const WEBTOON_APP_VERSION='3.10.2';
 let latestPublishedVersion=null;
 function versionNumbers(v){
@@ -2420,6 +2489,67 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
  thumbnail.style.cssText='width:35px;height:35px;object-fit:contain;vertical-align:middle;margin-right:5px;';
  b.prepend(thumbnail);
 }
+// C3.10.3 adult-only per-scene test controls. Preview never alters existing artwork.
+function wearReviewContext(){
+ const p=state?.panels?.[selected];if(!p||!isPrincess(state.hero)||p.aiImage)return null;
+ const view=p.useExpressionArt?(p.expressionView==='face'?'face':'full'):'original';
+ return {p,view,scene:wearableSceneKey(p,view),slot:$('wearReviewSlot').value};
+}
+const wearReviewOptions={neck:[['heart','💖 하트 목걸이'],['pearl','💎 수정 목걸이']],ears:[['crystal','💎 수정 귀걸이'],['pink','💗 하트 귀걸이']],back:[['butterfly','🦋 보석 요정날개']]};
+function wearReviewRefreshOptions(){
+ const slot=$('wearReviewSlot').value,sel=$('wearReviewItem');const old=sel.value;
+ sel.replaceChildren();
+ for(const [value,label] of wearReviewOptions[slot]){
+  const opt=document.createElement('option');opt.value=value;opt.textContent=label;sel.appendChild(opt);
+ }
+ if([...sel.options].some(o=>o.value===old))sel.value=old;
+}
+function wearReviewRead(){
+ const ctx=wearReviewContext();if(!ctx)return;
+ const st=validPrincessStyle(ctx.p.princessLook,state.hero);
+ const rec=st.wearScenes?.[ctx.scene]?.[ctx.slot]||{x:0,y:0,scale:100,approved:false,preview:false};
+ for(const [k,v] of [['X',rec.x],['Y',rec.y],['Scale',rec.scale]]){
+  $('wearReview'+k).value=v;$('wearReview'+k+'Out').textContent=v+(k==='Scale'?'%':'');
+ }
+ $('wearReviewItem').value=st.wearSlots?.[ctx.slot]||wearReviewOptions[ctx.slot][0][0];
+ if($('wearReviewItem').value==='')$('wearReviewItem').value=wearReviewOptions[ctx.slot][0][0];
+ $('wearReviewScene').textContent='현재: '+state.heroName+' · '+(ctx.view==='original'?'기본 그림':ctx.view==='face'?'얼굴 그림':'전신 표정 그림')+' · '+(ctx.p.emotion||'기뻐요')+' · '+(ctx.p.pose||'서 있기');
+ $('wearReviewStatus').textContent=rec.approved?'✅ 이 장면의 '+ctx.slot+' 장식은 승인되었습니다. 다른 표정·자세에는 자동으로 적용되지 않습니다.':rec.preview?'👁️ 현재 장면에서 시험 표시 중입니다. 자연스러우면 승인하고, 아니면 위치를 고쳐 주세요.':'🔒 승인 전입니다. 이 장면의 추가 장식은 보이지 않습니다.';
+}
+function wearReviewSave(previewMode,approval){
+ const ctx=wearReviewContext();if(!ctx)return toast('기본 공주 그림 컷을 선택해 주세요.');
+ const prof=profileForPrincess(state.hero);if(!prof)return;
+ if(ctx.slot==='back'&&prof.builtIn.wings)return toast('원본에 날개가 있는 공주는 새 날개를 겹쳐 입힐 수 없어요.');
+ const st=validPrincessStyle(ctx.p.princessLook,state.hero);
+ const old=st.wearScenes?.[ctx.scene]?.[ctx.slot]||{};
+ const item=$('wearReviewItem').value;
+ if(!princessWearSlots[ctx.slot].includes(item))return;
+ rememberAction('wear-review-'+ctx.slot+'-'+Date.now());
+ st.wearScenes=st.wearScenes||{};st.wearScenes[ctx.scene]=st.wearScenes[ctx.scene]||{};
+ st.wearScenes[ctx.scene][ctx.slot]={x:Number($('wearReviewX').value),y:Number($('wearReviewY').value),scale:Number($('wearReviewScale').value),approved:approval===true,preview:previewMode===true};
+ st.wearSlots={...st.wearSlots,[ctx.slot]:item};ctx.p.princessLook=st;
+ liveWearPreview=previewMode===true?{panel:ctx.p,scene:ctx.scene,slot:ctx.slot}:null;
+ renderComic();wearReviewRead();
+}
+$('wearReviewSlot').addEventListener('change',()=>{wearReviewRefreshOptions();wearReviewRead()});
+$('wearReviewPanel').addEventListener('toggle',()=>{if($('wearReviewPanel').open){wearReviewRefreshOptions();wearReviewRead()}});
+$('wearReviewPreview').addEventListener('click',()=>wearReviewSave(true,false));
+$('wearReviewApprove').addEventListener('click',()=>{
+ if(!confirm('이 장면에서 장식이 자연스럽게 맞는 것을 직접 확인하셨나요? 승인하면 이 장면에서만 사용할 수 있어요.'))return;
+ wearReviewSave(false,true);
+});
+$('wearReviewRevoke').addEventListener('click',()=>{
+ const ctx=wearReviewContext();if(!ctx)return;
+ rememberAction('wear-review-revoke');const st=validPrincessStyle(ctx.p.princessLook,state.hero);
+ if(st.wearScenes?.[ctx.scene]?.[ctx.slot]){st.wearScenes[ctx.scene][ctx.slot].approved=false;st.wearScenes[ctx.scene][ctx.slot].preview=false;}
+ ctx.p.princessLook=st;liveWearPreview=null;renderComic();wearReviewRead();
+});
+for(const id of ['wearReviewX','wearReviewY','wearReviewScale','wearReviewItem'])$(''+id).addEventListener('change',()=>{
+ // Editing values requires deliberate Preview or Approve; never silently enables.
+ $('wearReviewStatus').textContent='수정한 위치는 「미리보기」를 눌러 확인하세요.';
+});
+wearReviewRefreshOptions();
+
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true),700);
 </script>
