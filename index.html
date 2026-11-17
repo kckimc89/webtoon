@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.12.2</title>
+<title>나만의 웹툰 창작극장 C3.12.4</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -127,7 +127,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearGrid select:disabled{opacity:.58;background:#eee9f4}
 @media(max-width:530px){.wearGrid{grid-template-columns:1fr}}
 
-/* C3.12.2: simple wearable thumbnails, with disabled items plainly marked. */
+/* C3.12.4: simple wearable thumbnails, with disabled items plainly marked. */
 .wearQuick{background:#fff;border:1px solid #e9d9f5;border-radius:16px;padding:10px;margin:10px 0}
 .wearQuickTitle{margin:2px 2px 8px;font-weight:850;font-size:16px}
 .wearQuickList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -136,7 +136,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearQuickList button[aria-pressed="true"]{border-color:#784cc0;background:#f0e5ff;box-shadow:inset 0 0 0 1px #784cc0}
 .wearQuickList button:disabled{opacity:.35;filter:grayscale(1)}
 @media(min-width:780px){.wearQuickList{grid-template-columns:repeat(6,minmax(0,1fr))}}
-/* C3.12.2 — no unverified jewelry overlays. Existing work data is retained. */
+/* C3.12.4 — no unverified jewelry overlays. Existing work data is retained. */
 .wearAudit{display:flex;flex-direction:column;gap:5px;background:#effaf5;border:1px solid #b8dccd;color:#285a47;padding:12px;border-radius:14px;font-size:14px;margin:12px 0}
 .wearAdjust{border:1px solid #d8c7ea;border-radius:14px;background:white;padding:12px;margin:12px 0}
 .wearAdjust summary{font-weight:850;cursor:pointer}
@@ -144,13 +144,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearAdjust input[type=range]{width:100%;min-width:0;accent-color:#8654cc}
 .wearGrid select:disabled{opacity:.6}
 
-/* C3.12.2: per-scene approval workflow with safe defaults */
+/* C3.12.4: per-scene approval workflow with safe defaults */
 #wearReviewPanel{border:2px solid #d0b0eb;background:#fffaf4}
 #wearReviewPanel summary{font-size:16px}
 #wearReviewPanel .btns button{min-height:44px}
 #wearReviewStatus{padding:8px 10px;border-radius:10px;background:#f1eaff}
 
-/* C3.12.2 — rollback of the misleading complete-look gallery; focused one-button experiment. */
+/* C3.12.4 — rollback of the misleading complete-look gallery; focused one-button experiment. */
 .ribbonTestNotice{border:2px solid #d8b6f2;background:#fff8ff;border-radius:16px;padding:14px 16px;margin:12px 0;line-height:1.55}
 .ribbonTestNotice strong{font-size:18px;color:#63368f}.ribbonTestNotice p{font-size:14px;margin:8px 0 0}
 #princessWearStudio>.wearGrid,#princessWearStudio>.wearAdjust,
@@ -167,7 +167,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #princessStudio #legacyHairAccessorySetting{display:none!important}
 #princessStudio #fixedPrincessAccessories{display:none!important}
 
-/* C3.12.2 direct manipulation */
+/* C3.12.4 direct manipulation */
 #princessStudio{display:none!important}
 .scene svg{touch-action:none;user-select:none;-webkit-user-select:none}
 .scene .stageHandle{cursor:grab}
@@ -184,11 +184,11 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .directTools .tip{font-size:14px;color:#604e73;line-height:1.5}
 .directTools .mini{font-size:13px;color:#695678}
 @media(max-width:600px){.directTools button{padding:8px 10px}}
-/* C3.12.2: Fixed princess + unobtrusive handles. */
+/* C3.12.4: Fixed princess + unobtrusive handles. */
 .scene .fixedHero{pointer-events:none!important}
 .scene .editGizmo [data-transform-handle]{cursor:grab}
 
-/* C3.12.2: compact contextual prop menu in the scene's empty area. */
+/* C3.12.4: compact contextual prop menu in the scene's empty area. */
 #comicArea{position:relative}
 .propContext{position:absolute;z-index:12;width:min(238px,95%);padding:7px 8px;border:1.5px solid #bea3df;border-radius:13px;background:rgba(255,253,255,.98);box-shadow:0 3px 15px #38274b29;color:#342746;font-size:12px;text-align:left;touch-action:manipulation;box-sizing:border-box}
 .propContext .propContextTitle{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 5px}
@@ -207,7 +207,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C3.12.2 · 공주 고정 · 소품 선택·터치 개선</span>
+    <span class="pill">MASTER C3.12.4 · 공주 고정 · 소품 선택·터치 개선</span>
   </header>
 
   <nav class="tabs">
@@ -217,8 +217,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.12.2)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.12.2 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.12.4)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.12.4 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -564,8 +564,9 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
  <div id="pSavedCards" class="savedHeroCards"></div>
  <p class="hint">주인공 보관함은 이제 IndexedDB에 저장합니다. 이전 보관함은 그대로 두고 읽어옵니다. Safari 웹사이트 데이터를 지우면 사라질 수 있으므로 중요한 작품은 전시관의 전체 백업을 저장하세요.</p>
 </details>
-<div class="btns"><button type="button" class="secondary" id="copyBg">🌄 배경을 다른 컷에도 적용</button><button type="button" class="secondary" id="copyProps">✨ 소품을 다른 컷에도 복사</button><button type="button" class="secondary" id="copyHero">🐰 주인공 설정을 다른 컷에도 적용</button><button type="button" class="ghost" id="undoEdit">↶ 실행 취소</button><button type="button" class="ghost" id="redoEdit">↷ 다시 실행</button></div>
+<div class="btns"><button type="button" class="secondary" id="copyBg">🌄 배경을 다른 컷에도 적용</button><button type="button" class="primary" id="copyProps">🎨 꾸민 소품 4컷 모두 적용</button><button type="button" class="secondary" id="copyHero">🐰 주인공 설정을 다른 컷에도 적용</button><button type="button" class="ghost" id="undoEdit">↶ 실행 취소</button><button type="button" class="ghost" id="redoEdit">↷ 다시 실행</button></div>
         <div class="btns"><button type="button" class="secondary" id="centerHero">↩ 주인공 제자리</button><button type="button" class="ghost" id="centerItem">↩ 선택 소품 제자리</button><button type="button" class="ghost" id="resetStage">🔄 이 컷 배치 초기화</button></div>
+        <p class="hint" id="copyPropsHelp">현재 컷에서 꾸민 소품을 나머지 3컷에 한 번에 복사해요. 위치·크기·회전·색감·모양·앞뒤 순서를 유지하며, 공주 표정·배경·대사는 바꾸지 않아요. 복사 후 각 컷의 소품을 따로 수정할 수 있어요.</p>
         <p class="hint" id="composerHint">현재 컷의 주인공과 소품만 움직입니다. 다른 컷은 그대로예요.</p>
       </div>
       <label class="block">🎤 아이디어를 더 말해 보세요</label>
@@ -644,7 +645,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.12.2 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.12.4 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 
@@ -791,7 +792,7 @@ function validPrincessStyle(st,id){
  const fitting=src.wearFit&&typeof src.wearFit==='object'?src.wearFit:{};
  const bounded=(v,lo,hi,base)=>Number.isFinite(Number(v))?Math.max(lo,Math.min(hi,Number(v))):base;
  next.wearFit={x:bounded(fitting.x,-65,65,0),y:bounded(fitting.y,-65,65,0),scale:bounded(fitting.scale,45,155,100)};
- // C3.12.2: approval must be explicit and scene-specific. Preserve older data.
+ // C3.12.4: approval must be explicit and scene-specific. Preserve older data.
  next.wearScenes={};
  if(src.wearScenes&&typeof src.wearScenes==='object')for(const [scene,parts] of Object.entries(src.wearScenes).slice(0,100)){
   if(typeof scene!=='string'||scene.length>100||!parts||typeof parts!=='object')continue;
@@ -892,7 +893,7 @@ function premiumPrincessAdornment(style,heroId,view){
  return `<g pointer-events="none" class="princessOrnaments">${star(24,112,7)}${star(211,109,7)}${star(34,197,5)}${star(203,216,6)}${star(65,45,4)}${star(190,166,5)}${star(92,243,5)}</g>`;
 }
 
-// C3.12.2: multi-slot studio wardrobe. Coordinates live within the hero SVG,
+// C3.12.4: multi-slot studio wardrobe. Coordinates live within the hero SVG,
 // so they follow the hero's drag and foot-anchored scaling (and render in exported PNG).
 const princessWearProfiles={
  princess_flower:{hair:[86,96],neck:[125,151],ears:[105,121,149,121],back:[123,162],hand:[189,139],builtIn:{crown:true,wings:false,staff:true}},
@@ -906,7 +907,7 @@ function princessWornImage(key,x,y,w,h,rotate=0,opacity=1){
  const source=premiumPropImages[key];if(!source)return '';
  return `<image href="${source}" x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet" opacity="${opacity}" transform="rotate(${rotate} ${x} ${y})"/>`;
 }
-// C3.12.2: Conservative rendering. Never paint unsupported accessories in
+// C3.12.4: Conservative rendering. Never paint unsupported accessories in
 // arbitrary places. Existing slots are still stored for backward compatibility.
 let liveWearPreview=null; // never re-enable an unapproved draft when reopening a saved work
 function wearableSceneKey(panel,view){
@@ -919,7 +920,7 @@ function wearableRenderAllowed(fit,panel,scene,slot){return !!fit&&(fit.approved
 // All accessory geometry is inside the moving/scaling character group.
 // New parts are hidden until separately previewed and approved for this exact scene.
 function premiumPrincessWearable(style,heroId,view,layer='front',panel=null){
- // C3.12.2: old fixed anchor wearables are no longer rendered.
+ // C3.12.4: old fixed anchor wearables are no longer rendered.
  // Preserve saved wearSlots untouched for backwards compatibility.
  return '';
 }
@@ -1757,7 +1758,7 @@ $('panelBg').addEventListener('change',e=>{
  updatePanel('background',e.target.value);
 });
 // C3.7: touch drag happens directly on the composed SVG layers, independent of GPT.
-// C3.12.2 touch engine. No magnets or automatic placement.
+// C3.12.4 touch engine. No magnets or automatic placement.
 let stageGesture=null;
 let lastPropGestureEnded=-10000;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -1781,7 +1782,7 @@ function stagePointerDown(e){
  const idx=Number(panelButton.dataset.panelIndex);
  if(!Number.isInteger(idx)||idx<0||idx>=state.panels.length)return;
  const piece=knob?'item':handle.dataset.piece;
- if(piece==='hero')return; // C3.12.2: princess is locked during prop editing
+ if(piece==='hero')return; // C3.12.4: princess is locked during prop editing
  const id=knob?.dataset.itemId||handle?.dataset.itemId;
  const panel=state.panels[idx];const it=piece==='item'?ensureItems(panel).find(v=>v.id===id):null;
  if(piece==='item'&&!it)return;
@@ -1905,15 +1906,30 @@ $('copyBg').onclick=()=>{
  for(const p of targets){p.background=source.background;p.mood=source.mood}
  renderComic();toast(`${targets.length}개 컷에 같은 배경을 적용했어요!`)
 };
+// C3.12.4 — Copy the current cut's finished props to every other cut in ONE tap.
+// Keep current cut untouched; destination props are independent deep clones.
 $('copyProps').onclick=()=>{
  const source=state.panels[selected];if(!source)return;
- const sourceItems=JSON.parse(JSON.stringify(ensureItems(source)));
- const targets=state.panels.filter((p,i)=>i!==selected&&!p.aiImage);
- targets.forEach((p,idx)=>{
-   p.items=sourceItems.map((it,n)=>({...it,id:'copied-'+Date.now()+'-'+idx+'-'+n}));
-   p.prop='없음';
+ if(source.aiImage)return toast('기본 그림 컷에서 소품을 꾸민 뒤 적용해 주세요.');
+ const items=clone(ensureItems(source));
+ if(!items.length)return toast('먼저 이 컷에 소품을 추가하고 꾸며 주세요.');
+ const targetIndices=state.panels.map((_,i)=>i).filter(i=>i!==selected&&state.panels[i]&&!state.panels[i].aiImage);
+ if(!targetIndices.length)return toast('적용할 다른 기본 그림 컷이 없어요.');
+ const populated=targetIndices.filter(i=>ensureItems(state.panels[i]).length>0);
+ if(populated.length){
+  const label=populated.map(i=>(i+1)+'컷').join(', ');
+  if(!confirm(label+'에는 이미 소품이 있어요. 현재 컷에서 꾸민 소품으로 바꿀까요?\n기존의 공주 표정·대사·배경은 유지됩니다.'))return;
+ }
+ rememberAction('copy-props-all-'+Date.now());
+ const stamp=Date.now();
+ targetIndices.forEach(i=>{
+  const dest=state.panels[i];
+  dest.items=items.map((it,n)=>({...clone(it),id:'copied-'+stamp+'-'+i+'-'+n+'-'+Math.random().toString(36).slice(2,8)}));
+  dest.prop='없음';
  });
- renderComic();toast(`${targets.length}개 컷에 소품 배치를 복사했어요!`)
+ activeItemId=null;
+ renderComic();
+ toast(`현재 컷과 함께 ${targetIndices.length+1}컷에 같은 소품 꾸밈을 적용했어요! 각 컷은 독립적으로 수정할 수 있어요.`);
 };
 $('copyHero').onclick=()=>{
  const source=state.panels[selected];if(!source)return;
@@ -2003,7 +2019,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.12.2 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.12.4 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -2570,7 +2586,7 @@ for(const [id,view] of [['quickFullBody','full'],['quickFacePortrait','face'],['
   renderComic();
  });
 }
-// C3.12.2: quick pictorial controls reuse the validated independent select slots.
+// C3.12.4: quick pictorial controls reuse the validated independent select slots.
 document.querySelectorAll('[data-wear-quick]').forEach(btn=>btn.addEventListener('click',()=>{
  if(btn.disabled)return;
  const [slot,value]=btn.dataset.wearQuick.split(':');
@@ -2644,7 +2660,7 @@ $('quickBubbleMore').addEventListener('click',()=>{
 const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
-// C3.12.2: Same-origin static version manifest, no extra accounts or external service.
+// C3.12.4: Same-origin static version manifest, no extra accounts or external service.
 const WEBTOON_APP_VERSION='3.11.1';
 let latestPublishedVersion=null;
 function versionNumbers(v){
@@ -2701,7 +2717,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
  thumbnail.style.cssText='width:35px;height:35px;object-fit:contain;vertical-align:middle;margin-right:5px;';
  b.prepend(thumbnail);
 }
-// C3.12.2 adult-only per-scene test controls. Preview never alters existing artwork.
+// C3.12.4 adult-only per-scene test controls. Preview never alters existing artwork.
 function wearReviewContext(){
  const p=state?.panels?.[selected];if(!p||!isPrincess(state.hero)||p.aiImage)return null;
  const view=p.useExpressionArt?(p.expressionView==='face'?'face':'full'):'original';
