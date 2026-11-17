@@ -125,7 +125,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C3.9.6 · 쉬운 꾸미기와 기능 연결 정리</span>
+    <span class="pill">MASTER C3.9.7 · 쉬운 꾸미기와 기능 연결 정리</span>
   </header>
 
   <nav class="tabs">
@@ -133,6 +133,17 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <button class="tab" data-view="edit">📖 웹툰 꾸미기</button>
     <button class="tab" data-view="library">🏆 전시관</button>
   </nav>
+
+  <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.9.7)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.9.7 · 최신 버전 확인 전</p>
+    <div class="btns">
+      <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
+      <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
+    </div>
+    <p class="hint" style="margin-top:7px">업데이트는 GitHub에 새 index.html과 version.json을 게시한 후 확인할 수 있어요. 앱을 다시 여는 것만으로 GitHub 파일이 업로드되지는 않습니다. 저장한 작품은 초기화하지 않습니다.</p>
+  </details>
+
 
   <section id="make" class="view active">
     <div class="card">
@@ -2164,7 +2175,56 @@ $('quickBubbleMore').addEventListener('click',()=>{
 const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
+// C3.9.7: Same-origin static version manifest, no extra accounts or external service.
+const WEBTOON_APP_VERSION='3.9.7';
+let latestPublishedVersion=null;
+function versionNumbers(v){
+ const match=String(v||'').match(/^C?(\d+)\.(\d+)\.(\d+)$/i);
+ return match?match.slice(1).map(Number):null;
+}
+function compareVersions(a,b){
+ const x=versionNumbers(a),y=versionNumbers(b);
+ if(!x||!y)return null;
+ for(let k=0;k<3;k++)if(x[k]!==y[k])return x[k]>y[k]?1:-1;
+ return 0;
+}
+async function checkWebtoonVersion(quiet=false){
+ const st=document.getElementById('versionStatus');
+ const install=document.getElementById('installLatestVersion');
+ const panel=document.getElementById('versionPanel');
+ if(!st||!install)return;
+ if(!quiet)st.textContent='게시된 버전을 확인하고 있어요…';
+ install.hidden=true;
+ try{
+  const res=await fetch('./version.json?check='+Date.now(),{cache:'no-store'});
+  if(!res.ok)throw new Error('버전 정보 없음');
+  const manifest=await res.json();
+  const remote=String(manifest.version||'');
+  if(!versionNumbers(remote))throw new Error('버전 정보 형식 오류');
+  latestPublishedVersion=remote;
+  const cmp=compareVersions(remote,WEBTOON_APP_VERSION);
+  if(cmp>0){
+   st.textContent='✨ 새 버전 C'+remote+'이(가) 게시되었습니다. 업데이트 버튼을 눌러 주세요.';
+   install.hidden=false;
+   if(quiet&&panel)panel.open=true;
+  }else if(cmp===0){st.textContent='✅ 최신 버전 C'+WEBTOON_APP_VERSION+'을 사용 중입니다.';}
+  else{st.textContent='현재 앱 C'+WEBTOON_APP_VERSION+' · 게시된 버전 C'+remote+' (게시 정보가 이전 버전입니다).';}
+ }catch(e){
+  st.textContent='현재 앱 C'+WEBTOON_APP_VERSION+' · 버전 정보를 확인할 수 없습니다. GitHub의 webtoon 폴더에 version.json을 함께 올렸는지 확인해 주세요.';
+ }
+}
+document.getElementById('checkVersionNow')?.addEventListener('click',()=>checkWebtoonVersion(false));
+document.getElementById('installLatestVersion')?.addEventListener('click',()=>{
+ if(!latestPublishedVersion||compareVersions(latestPublishedVersion,WEBTOON_APP_VERSION)<=0)return;
+ const dest=new URL(window.location.href);
+ dest.searchParams.set('v',latestPublishedVersion.replaceAll('.',''));
+ dest.searchParams.set('refresh',String(Date.now()));
+ window.location.assign(dest.toString());
+});
+
 init();
+// After the first screen is ready, verify the published version without blocking editing.
+setTimeout(()=>checkWebtoonVersion(true),700);
 </script>
 </body>
 </html>
