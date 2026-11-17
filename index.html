@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.12.4</title>
+<title>나만의 웹툰 창작극장 C3.13.0</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -127,7 +127,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearGrid select:disabled{opacity:.58;background:#eee9f4}
 @media(max-width:530px){.wearGrid{grid-template-columns:1fr}}
 
-/* C3.12.4: simple wearable thumbnails, with disabled items plainly marked. */
+/* C3.13.0: simple wearable thumbnails, with disabled items plainly marked. */
 .wearQuick{background:#fff;border:1px solid #e9d9f5;border-radius:16px;padding:10px;margin:10px 0}
 .wearQuickTitle{margin:2px 2px 8px;font-weight:850;font-size:16px}
 .wearQuickList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -136,7 +136,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearQuickList button[aria-pressed="true"]{border-color:#784cc0;background:#f0e5ff;box-shadow:inset 0 0 0 1px #784cc0}
 .wearQuickList button:disabled{opacity:.35;filter:grayscale(1)}
 @media(min-width:780px){.wearQuickList{grid-template-columns:repeat(6,minmax(0,1fr))}}
-/* C3.12.4 — no unverified jewelry overlays. Existing work data is retained. */
+/* C3.13.0 — no unverified jewelry overlays. Existing work data is retained. */
 .wearAudit{display:flex;flex-direction:column;gap:5px;background:#effaf5;border:1px solid #b8dccd;color:#285a47;padding:12px;border-radius:14px;font-size:14px;margin:12px 0}
 .wearAdjust{border:1px solid #d8c7ea;border-radius:14px;background:white;padding:12px;margin:12px 0}
 .wearAdjust summary{font-weight:850;cursor:pointer}
@@ -144,13 +144,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearAdjust input[type=range]{width:100%;min-width:0;accent-color:#8654cc}
 .wearGrid select:disabled{opacity:.6}
 
-/* C3.12.4: per-scene approval workflow with safe defaults */
+/* C3.13.0: per-scene approval workflow with safe defaults */
 #wearReviewPanel{border:2px solid #d0b0eb;background:#fffaf4}
 #wearReviewPanel summary{font-size:16px}
 #wearReviewPanel .btns button{min-height:44px}
 #wearReviewStatus{padding:8px 10px;border-radius:10px;background:#f1eaff}
 
-/* C3.12.4 — rollback of the misleading complete-look gallery; focused one-button experiment. */
+/* C3.13.0 — rollback of the misleading complete-look gallery; focused one-button experiment. */
 .ribbonTestNotice{border:2px solid #d8b6f2;background:#fff8ff;border-radius:16px;padding:14px 16px;margin:12px 0;line-height:1.55}
 .ribbonTestNotice strong{font-size:18px;color:#63368f}.ribbonTestNotice p{font-size:14px;margin:8px 0 0}
 #princessWearStudio>.wearGrid,#princessWearStudio>.wearAdjust,
@@ -167,7 +167,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #princessStudio #legacyHairAccessorySetting{display:none!important}
 #princessStudio #fixedPrincessAccessories{display:none!important}
 
-/* C3.12.4 direct manipulation */
+/* C3.13.0 direct manipulation */
 #princessStudio{display:none!important}
 .scene svg{touch-action:none;user-select:none;-webkit-user-select:none}
 .scene .stageHandle{cursor:grab}
@@ -184,11 +184,11 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .directTools .tip{font-size:14px;color:#604e73;line-height:1.5}
 .directTools .mini{font-size:13px;color:#695678}
 @media(max-width:600px){.directTools button{padding:8px 10px}}
-/* C3.12.4: Fixed princess + unobtrusive handles. */
+/* C3.13.0: Fixed princess + unobtrusive handles. */
 .scene .fixedHero{pointer-events:none!important}
 .scene .editGizmo [data-transform-handle]{cursor:grab}
 
-/* C3.12.4: compact contextual prop menu in the scene's empty area. */
+/* C3.13.0: compact contextual prop menu in the scene's empty area. */
 #comicArea{position:relative}
 .propContext{position:absolute;z-index:12;width:min(238px,95%);padding:7px 8px;border:1.5px solid #bea3df;border-radius:13px;background:rgba(255,253,255,.98);box-shadow:0 3px 15px #38274b29;color:#342746;font-size:12px;text-align:left;touch-action:manipulation;box-sizing:border-box}
 .propContext .propContextTitle{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 5px}
@@ -207,7 +207,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C3.12.4 · 공주 고정 · 소품 선택·터치 개선</span>
+    <span class="pill">MASTER C3.13.0 · 동물 동작 그림 확장 · 감정 연출 시험</span>
   </header>
 
   <nav class="tabs">
@@ -217,8 +217,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.12.4)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.12.4 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.13.0)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.13.0 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -645,7 +645,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.12.4 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.13.0 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 
@@ -792,7 +792,7 @@ function validPrincessStyle(st,id){
  const fitting=src.wearFit&&typeof src.wearFit==='object'?src.wearFit:{};
  const bounded=(v,lo,hi,base)=>Number.isFinite(Number(v))?Math.max(lo,Math.min(hi,Number(v))):base;
  next.wearFit={x:bounded(fitting.x,-65,65,0),y:bounded(fitting.y,-65,65,0),scale:bounded(fitting.scale,45,155,100)};
- // C3.12.4: approval must be explicit and scene-specific. Preserve older data.
+ // C3.13.0: approval must be explicit and scene-specific. Preserve older data.
  next.wearScenes={};
  if(src.wearScenes&&typeof src.wearScenes==='object')for(const [scene,parts] of Object.entries(src.wearScenes).slice(0,100)){
   if(typeof scene!=='string'||scene.length>100||!parts||typeof parts!=='object')continue;
@@ -893,7 +893,7 @@ function premiumPrincessAdornment(style,heroId,view){
  return `<g pointer-events="none" class="princessOrnaments">${star(24,112,7)}${star(211,109,7)}${star(34,197,5)}${star(203,216,6)}${star(65,45,4)}${star(190,166,5)}${star(92,243,5)}</g>`;
 }
 
-// C3.12.4: multi-slot studio wardrobe. Coordinates live within the hero SVG,
+// C3.13.0: multi-slot studio wardrobe. Coordinates live within the hero SVG,
 // so they follow the hero's drag and foot-anchored scaling (and render in exported PNG).
 const princessWearProfiles={
  princess_flower:{hair:[86,96],neck:[125,151],ears:[105,121,149,121],back:[123,162],hand:[189,139],builtIn:{crown:true,wings:false,staff:true}},
@@ -907,7 +907,7 @@ function princessWornImage(key,x,y,w,h,rotate=0,opacity=1){
  const source=premiumPropImages[key];if(!source)return '';
  return `<image href="${source}" x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet" opacity="${opacity}" transform="rotate(${rotate} ${x} ${y})"/>`;
 }
-// C3.12.4: Conservative rendering. Never paint unsupported accessories in
+// C3.13.0: Conservative rendering. Never paint unsupported accessories in
 // arbitrary places. Existing slots are still stored for backward compatibility.
 let liveWearPreview=null; // never re-enable an unapproved draft when reopening a saved work
 function wearableSceneKey(panel,view){
@@ -920,7 +920,7 @@ function wearableRenderAllowed(fit,panel,scene,slot){return !!fit&&(fit.approved
 // All accessory geometry is inside the moving/scaling character group.
 // New parts are hidden until separately previewed and approved for this exact scene.
 function premiumPrincessWearable(style,heroId,view,layer='front',panel=null){
- // C3.12.4: old fixed anchor wearables are no longer rendered.
+ // C3.13.0: old fixed anchor wearables are no longer rendered.
  // Preserve saved wearSlots untouched for backwards compatibility.
  return '';
 }
@@ -1151,23 +1151,34 @@ function hairFor(hero){return hero.id==='fairy'?`<ellipse cx="120" cy="112" rx="
 // C3.2: use individually generated full-body character art, not simplified geometric faces.
 function characterAsset(panel){
  if(state.hero==='custom'||isPrincess(state.hero)||!state.hero)return null;
- const name=state.hero;
- if(name==='rabbit'){
-   if(panel.pose==='점프하기'||panel.action==='축하하기')return 'rabbit-jumping.webp';
-   if(panel.pose==='뛰기')return 'rabbit-running.webp';
-   if(panel.emotion==='놀랐어요')return 'rabbit-surprised.webp';
-   if(panel.action==='줍기'||panel.prop==='열쇠')return 'rabbit-key.webp';
-   if(panel.pose==='걷기')return 'rabbit-walking.webp';
-   return 'rabbit-standing.webp';
- }
- if(['cat','fox','fairy'].includes(name)){
-   if(panel.pose==='점프하기'||panel.action==='축하하기')return name+'-jumping.webp';
-   if(panel.emotion==='놀랐어요')return name+'-surprised.webp';
-   if(panel.action==='줍기'||panel.prop==='열쇠'||panel.action==='열기')return name+'-key.webp';
-   if(panel.pose==='걷기'||panel.pose==='뛰기')return name+'-walking.webp';
-   return name+'-walking.webp';
- }
+ const name=state.hero, pose=panel.pose||'서 있기';
+ if(name==='bear'||name==='robot')return name+'-standing.webp';
+ // Explicit posture choice has priority over story-stage props; show actual sprite files.
+ if(pose==='열쇠 들기')return name+'-key.webp';
+ if(pose==='깜짝 놀라기')return name+'-surprised.webp';
+ if(pose==='점프하기')return name+'-jumping.webp';
+ if(name==='rabbit'&&pose==='뛰기')return 'rabbit-running.webp';
+ if(pose==='걷기'||pose==='뛰기')return name+'-walking.webp';
+ if(pose==='서 있기')return name+'-standing.webp';
+ if(panel.emotion==='놀랐어요')return name+'-surprised.webp';
  return name+'-standing.webp';
+}
+// C3.13.0: expression *effects* for artwork without separately painted facial portraits.
+// These do not claim to replace the original animal's facial features.
+function animalEmotionAccent(panel, name){
+ const mood=panel.emotion||'기뻐요';
+ if(mood==='기뻐요'||mood==='놀랐어요')return '';
+ const cues={
+ '슬퍼요':{mark:'💧',caption:'슬픔',fill:'#e4f3ff'},
+ '화났어요':{mark:'💢',caption:'화남',fill:'#fff0e8'},
+ '생각해요':{mark:'💭',caption:'생각',fill:'#f1edff'},
+ '신나요':{mark:'✨',caption:'신남',fill:'#fff8df'},
+ '궁금해요':{mark:'❔',caption:'궁금',fill:'#f0f6ff'},
+ '용감해요':{mark:'⭐',caption:'용감',fill:'#fff7e6'},
+ '자랑스러워요':{mark:'🌟',caption:'뿌듯',fill:'#fff7dc'}
+ };
+ const c=cues[mood];if(!c)return '';
+ return `<g class="animalEmotionAccent" pointer-events="none"><circle cx="231" cy="97" r="22" fill="${c.fill}" stroke="#d9c5e5" stroke-width="1.5"/><text x="231" y="107" text-anchor="middle" font-size="26">${c.mark}</text></g>`;
 }
 // C3.9.6 — Character colours are applied to sprite PIXELS on a transparent
 // canvas. CSS hue-rotate alone leaves white bunny fur white in Safari, so it
@@ -1252,7 +1263,7 @@ function heroSvg(panel){
    // wings and tails after scene transforms. Use a smaller centered safe box.
    const bounds= name==='fairy'?{x:50,y:86,w:186,h:184}: {x:62,y:88,w:174,h:183};
    const img=colorizedHeroImage(sprite,panel);
-   return `<g transform="translate(${dx} ${dy}) rotate(${tilt} 150 200)"><image href="${img}" x="${bounds.x}" y="${bounds.y}" width="${bounds.w}" height="${bounds.h}" preserveAspectRatio="xMidYMid meet"/></g>${poseFx}${extra}`;
+   return `<g transform="translate(${dx} ${dy}) rotate(${tilt} 150 200)"><image href="${img}" x="${bounds.x}" y="${bounds.y}" width="${bounds.w}" height="${bounds.h}" preserveAspectRatio="xMidYMid meet"/></g>${poseFx}${extra}${animalEmotionAccent(panel,name)}`;
  }
  const hero=currentHero();const c=hero.colors;const pose=panel.pose, emo=panel.emotion; const y=pose==='점프하기'?28:pose==='앉기'?58:pose==='뛰기'?38:46; const x=pose==='뛰기'?110:120; const bodyTilt=pose==='뛰기'?-14:pose==='점프하기'?-4:pose==='손 흔들기'?-7:0; const eye=emo==='놀랐어요'?'7':'3'; const mouth=emo==='슬퍼요'?'M110 142 Q120 134 130 142':emo==='기뻐요'||emo==='자랑스러워요'?'M104 138 Q120 152 136 138':'M106 140 Q120 146 134 140'; const eyebrow=emo==='용감해요'||emo==='자랑스러워요'?`<path d="M96 112 l16 -4" stroke="#3b3247" stroke-width="4" stroke-linecap="round"/><path d="M128 108 l16 4" stroke="#3b3247" stroke-width="4" stroke-linecap="round"/>`:'';
  const armL= pose==='손 흔들기'?`M90 190 Q72 158 78 130`: pose==='점프하기'?`M88 188 Q74 165 64 145`: pose==='뛰기'?`M90 190 Q72 170 70 152`: pose==='앉기'?`M88 190 Q78 198 72 196`:`M90 190 Q72 170 72 150`;
@@ -1651,10 +1662,12 @@ function syncItemControls(){
 }
 // C3.9.6: Capability-based choices. No button promises an unprovided artwork.
 const expressionHeroes=['princess_flower','princess_strawberry','princess_emerald','princess_starlight','princess_pearl'];
-const illustratedAnimalEmotions=['기뻐요','놀랐어요'];
+const illustratedAnimalEmotions=['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요','궁금해요','용감해요','자랑스러워요'];
 const supportedPoseMap={
- rabbit:['서 있기','걷기','뛰기','점프하기'],
- cat:['걷기','점프하기'], fox:['걷기','점프하기'],fairy:['걷기','점프하기'],
+ rabbit:['서 있기','걷기','뛰기','점프하기','열쇠 들기','깜짝 놀라기'],
+ cat:['서 있기','걷기','점프하기','열쇠 들기','깜짝 놀라기'],
+ fox:['서 있기','걷기','점프하기','열쇠 들기','깜짝 놀라기'],
+ fairy:['서 있기','걷기','점프하기','열쇠 들기','깜짝 놀라기'],
  robot:['서 있기'],bear:['서 있기'],custom:['서 있기']
 };
 function refreshArtControls(){
@@ -1687,12 +1700,12 @@ function refreshArtControls(){
  $('advancedArtTip').textContent=availablePrincess
    ?'공주는 위에서 표정을 선택하고 전신·얼굴을 바꿔요. 동작은 표정별 전신 그림에 포함됩니다. 더 꾸미려면 소품을 움직여 보세요.'
    :otherPrincess?'이 공주는 아직 표정별 전용 그림이 없어요. 원래 전신 그림과 소품·배경으로 꾸밀 수 있어요.'
-   :hero==='bear'||hero==='robot'?'이 주인공은 전신 서 있기 그림만 준비되어 있어요. 놀람은 효과로 표시되며, 다른 동작은 아직 없어요.'
-   :'표정은 웃기·놀라기, 자세는 실제 준비된 동작 그림만 선택할 수 있어요. 나머지 표정은 제작 후 추가됩니다.';
+   :hero==='bear'||hero==='robot'?'곰·로봇은 아직 서 있는 원본 그림 한 장입니다. 다른 감정은 주변 효과로 표시됩니다. 없는 자세를 완성 그림처럼 표시하지 않아요.'
+   :'동물의 자세는 준비된 전신 그림으로 바뀌어요. 기쁨·놀람 외 감정은 그림 옆 효과로 표현하며 실제 얼굴 그림은 바뀌지 않아요.';
  $('artCapability').textContent=availablePrincess?'👑 표정 6가지 · 전신/얼굴 전환 가능 · 한 컷씩 다르게 꾸미기':
  otherPrincess?'👑 이 공주는 기본 그림·배경·소품 꾸미기 지원 (표정 전용 그림 준비 중)':
- hero==='bear'||hero==='robot'?'🐾 기본 자세 1종 · 놀람 효과 · 배경과 소품 꾸미기':
- '🐾 웃기·놀라기 · 준비된 동작 '+choices.length+'종 · 배경과 소품 꾸미기 (일부 자세와 표정은 조합 불가)';
+ hero==='bear'||hero==='robot'?'🐾 서 있는 전신 그림 1종 · 감정 효과(얼굴 그림 그대로) · 배경과 소품 꾸미기':
+ '🐾 전신 동작 그림 '+choices.length+'종 · 감정 효과 9종(일부는 얼굴 그림이 아닌 주변 효과) · 컷마다 따로 저장';
  const views=$('quickCharacterView');views.style.display=availablePrincess?'flex':'none';
  $('characterColorControls').style.display=isPrincess(hero)?'none':'';
  $('princessColorInfo').hidden=!isPrincess(hero);
@@ -1758,7 +1771,7 @@ $('panelBg').addEventListener('change',e=>{
  updatePanel('background',e.target.value);
 });
 // C3.7: touch drag happens directly on the composed SVG layers, independent of GPT.
-// C3.12.4 touch engine. No magnets or automatic placement.
+// C3.13.0 touch engine. No magnets or automatic placement.
 let stageGesture=null;
 let lastPropGestureEnded=-10000;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -1782,7 +1795,7 @@ function stagePointerDown(e){
  const idx=Number(panelButton.dataset.panelIndex);
  if(!Number.isInteger(idx)||idx<0||idx>=state.panels.length)return;
  const piece=knob?'item':handle.dataset.piece;
- if(piece==='hero')return; // C3.12.4: princess is locked during prop editing
+ if(piece==='hero')return; // C3.13.0: princess is locked during prop editing
  const id=knob?.dataset.itemId||handle?.dataset.itemId;
  const panel=state.panels[idx];const it=piece==='item'?ensureItems(panel).find(v=>v.id===id):null;
  if(piece==='item'&&!it)return;
@@ -1906,7 +1919,7 @@ $('copyBg').onclick=()=>{
  for(const p of targets){p.background=source.background;p.mood=source.mood}
  renderComic();toast(`${targets.length}개 컷에 같은 배경을 적용했어요!`)
 };
-// C3.12.4 — Copy the current cut's finished props to every other cut in ONE tap.
+// C3.13.0 — Copy the current cut's finished props to every other cut in ONE tap.
 // Keep current cut untouched; destination props are independent deep clones.
 $('copyProps').onclick=()=>{
  const source=state.panels[selected];if(!source)return;
@@ -2019,7 +2032,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.12.4 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.13.0 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -2586,7 +2599,7 @@ for(const [id,view] of [['quickFullBody','full'],['quickFacePortrait','face'],['
   renderComic();
  });
 }
-// C3.12.4: quick pictorial controls reuse the validated independent select slots.
+// C3.13.0: quick pictorial controls reuse the validated independent select slots.
 document.querySelectorAll('[data-wear-quick]').forEach(btn=>btn.addEventListener('click',()=>{
  if(btn.disabled)return;
  const [slot,value]=btn.dataset.wearQuick.split(':');
@@ -2660,7 +2673,7 @@ $('quickBubbleMore').addEventListener('click',()=>{
 const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
-// C3.12.4: Same-origin static version manifest, no extra accounts or external service.
+// C3.13.0: Same-origin static version manifest, no extra accounts or external service.
 const WEBTOON_APP_VERSION='3.11.1';
 let latestPublishedVersion=null;
 function versionNumbers(v){
@@ -2717,7 +2730,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
  thumbnail.style.cssText='width:35px;height:35px;object-fit:contain;vertical-align:middle;margin-right:5px;';
  b.prepend(thumbnail);
 }
-// C3.12.4 adult-only per-scene test controls. Preview never alters existing artwork.
+// C3.13.0 adult-only per-scene test controls. Preview never alters existing artwork.
 function wearReviewContext(){
  const p=state?.panels?.[selected];if(!p||!isPrincess(state.hero)||p.aiImage)return null;
  const view=p.useExpressionArt?(p.expressionView==='face'?'face':'full'):'original';
