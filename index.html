@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.11.1</title>
+<title>나만의 웹툰 창작극장 C3.12.0</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -127,7 +127,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearGrid select:disabled{opacity:.58;background:#eee9f4}
 @media(max-width:530px){.wearGrid{grid-template-columns:1fr}}
 
-/* C3.11.1: simple wearable thumbnails, with disabled items plainly marked. */
+/* C3.12.0: simple wearable thumbnails, with disabled items plainly marked. */
 .wearQuick{background:#fff;border:1px solid #e9d9f5;border-radius:16px;padding:10px;margin:10px 0}
 .wearQuickTitle{margin:2px 2px 8px;font-weight:850;font-size:16px}
 .wearQuickList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -136,7 +136,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearQuickList button[aria-pressed="true"]{border-color:#784cc0;background:#f0e5ff;box-shadow:inset 0 0 0 1px #784cc0}
 .wearQuickList button:disabled{opacity:.35;filter:grayscale(1)}
 @media(min-width:780px){.wearQuickList{grid-template-columns:repeat(6,minmax(0,1fr))}}
-/* C3.11.1 — no unverified jewelry overlays. Existing work data is retained. */
+/* C3.12.0 — no unverified jewelry overlays. Existing work data is retained. */
 .wearAudit{display:flex;flex-direction:column;gap:5px;background:#effaf5;border:1px solid #b8dccd;color:#285a47;padding:12px;border-radius:14px;font-size:14px;margin:12px 0}
 .wearAdjust{border:1px solid #d8c7ea;border-radius:14px;background:white;padding:12px;margin:12px 0}
 .wearAdjust summary{font-weight:850;cursor:pointer}
@@ -144,13 +144,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .wearAdjust input[type=range]{width:100%;min-width:0;accent-color:#8654cc}
 .wearGrid select:disabled{opacity:.6}
 
-/* C3.11.1: per-scene approval workflow with safe defaults */
+/* C3.12.0: per-scene approval workflow with safe defaults */
 #wearReviewPanel{border:2px solid #d0b0eb;background:#fffaf4}
 #wearReviewPanel summary{font-size:16px}
 #wearReviewPanel .btns button{min-height:44px}
 #wearReviewStatus{padding:8px 10px;border-radius:10px;background:#f1eaff}
 
-/* C3.11.1 — rollback of the misleading complete-look gallery; focused one-button experiment. */
+/* C3.12.0 — rollback of the misleading complete-look gallery; focused one-button experiment. */
 .ribbonTestNotice{border:2px solid #d8b6f2;background:#fff8ff;border-radius:16px;padding:14px 16px;margin:12px 0;line-height:1.55}
 .ribbonTestNotice strong{font-size:18px;color:#63368f}.ribbonTestNotice p{font-size:14px;margin:8px 0 0}
 #princessWearStudio>.wearGrid,#princessWearStudio>.wearAdjust,
@@ -166,6 +166,24 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #princessStudio #premiumStaffSetting,#princessStudio #premiumShoesSetting,
 #princessStudio #legacyHairAccessorySetting{display:none!important}
 #princessStudio #fixedPrincessAccessories{display:none!important}
+
+/* C3.12.0 direct manipulation */
+#princessStudio{display:none!important}
+.scene svg{touch-action:none;user-select:none;-webkit-user-select:none}
+.scene .stageHandle{cursor:grab}
+.scene .stageHandle:active{cursor:grabbing}
+.scene .editGizmo{pointer-events:none}
+.scene .editGizmo [data-transform-handle]{pointer-events:all;cursor:grab}
+.directTools{border:2px solid #bba2e8;border-radius:17px;background:#faf6ff;padding:13px;margin:12px 0}
+.directTools h3{margin:0 0 7px}
+.directTools .toolRow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.directTools button{min-height:46px;padding:8px 12px;border:1px solid #ccb6e4;border-radius:12px;background:white;font-weight:750;color:#392755}
+.directTools button:disabled{opacity:.4}
+.directTools select{min-height:46px;min-width:0;width:100%;background:white;border:1px solid #ccb6e4;border-radius:12px;padding:8px;font-size:16px}
+.directTools label{display:block;font-size:15px;font-weight:750;margin:7px 0}
+.directTools .tip{font-size:14px;color:#604e73;line-height:1.5}
+.directTools .mini{font-size:13px;color:#695678}
+@media(max-width:600px){.directTools button{padding:8px 10px}}
 </style>
 </head>
 <body>
@@ -174,7 +192,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C3.11.1 · 표정별 리본 합성 시험 · 반짝이 복구</span>
+    <span class="pill">MASTER C3.12.0 · 직접 만지는 자유 꾸미기 · 반짝이 유지</span>
   </header>
 
   <nav class="tabs">
@@ -184,8 +202,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.11.1)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.11.1 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.12.0)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.12.0 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -339,6 +357,20 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <button type="button" data-quick-prop="풍선">🎈 풍선</button>
           <button type="button" id="quickPropMore">➕ 모든 소품·크기·색·회전</button>
          </div>
+         <div class="directTools" id="directTools">
+          <h3>🖐️ 소품을 직접 만져서 꾸미기</h3>
+          <p class="tip">그림 속 소품을 손으로 끌어 옮기고, <b>두 손가락으로 키우기·줄이기·돌리기</b> 해보세요. 선택 테두리의 옆 점은 가로·세로 늘리기, 위쪽 동그라미는 회전이에요. 자동 위치 보정은 하지 않아요.</p>
+          <div class="toolRow"><button type="button" id="directAddRibbon">🎀 리본 추가</button><button type="button" id="directAddWing">🪽 날개 추가</button><button type="button" id="directAddNecklace">💎 보석 소품 추가</button><button type="button" id="directSparkles">✨ 주변 반짝이 켜기/끄기</button></div>
+          <label for="directShape">🎨 선택한 소품의 모양 바꾸기</label>
+          <select id="directShape" aria-label="소품 모양 선택"></select>
+          <label for="directColor">🌈 선택한 소품의 색감</label>
+          <select id="directColor"><option value="normal">원래 색</option><option value="red">분홍·빨강</option><option value="orange">주황·금색</option><option value="blue">파랑·하늘</option><option value="green">초록</option><option value="purple">보라</option></select>
+          <p class="mini">고화질 그림의 색감 변경은 필터 방식이라 원래 색을 정확하게 바꾸는 것은 아니에요. 원래 색으로 언제든 돌아갈 수 있어요.</p>
+          <div class="toolRow"><button type="button" id="directFront">⬆️ 공주 앞에</button><button type="button" id="directBack">⬇️ 공주 뒤에</button><button type="button" id="directBring">앞으로 한 칸</button><button type="button" id="directSend">뒤로 한 칸</button></div>
+          <div class="toolRow"><button type="button" id="directShrink">➖ 작게</button><button type="button" id="directGrow">➕ 크게</button><button type="button" id="directRotateL">↶ 돌리기</button><button type="button" id="directRotateR">↷ 돌리기</button><button type="button" id="directFlip">↔ 뒤집기</button></div>
+          <div class="toolRow"><button type="button" id="directDuplicate">📋 복제</button><button type="button" id="directDelete">🗑 지우기</button><button type="button" id="directUndo">↩ 취소</button><button type="button" id="directRedo">↪ 다시</button></div>
+          <p id="directStatus" class="tip" aria-live="polite">그림에 소품을 추가하거나 소품을 눌러 선택해 주세요.</p>
+         </div>
          <details class="premiumPropGallery" style="margin:9px 0 12px;padding:11px;border:1px solid #ecdaf7;border-radius:14px;background:#fffafd">
           <summary style="font-weight:800;cursor:pointer">💎 공주와 어울리는 고화질 장식 21종</summary>
           <p class="hint" style="margin:7px 0">그림을 누르면 현재 컷에 추가돼요. 드래그·크기·회전·복제·삭제가 가능합니다. 고화질 소품은 색상 필터를 사용하지 않아 원본의 보석 색감이 유지됩니다.</p>
@@ -448,7 +480,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         </div>
         <p class="hint">기존 토끼·곰 등의 색상은 그림 전체를 바꾸는 제한적인 방식입니다. <b>공주·요정은 바로 아래 「👑 나만의 공주·요정 꾸미기」에서 머리·드레스·장식을 각각 바꿔 주세요.</b></p>
         <details class="princessStudio" id="princessStudio" open hidden>
- <summary>👑 공주 꾸미기 · 리본 합성 시험</summary>
+ <summary>👑 공주 그림 유지 · 자유 꾸미기</summary>
  <div class="ribbonTestNotice"><strong>🎀 꽃 공주 · 리본 자동합성 시험</strong><p>기존 전신 표정별 그림은 그대로 두고, 리본만 추가해 보세요. 아래 「🎀 리본」을 누르고 표정을 바꾸어 자연스러운지 확인해요. 다시 누르면 제거됩니다. 이 기능은 아직 착용 품질이 검증되지 않은 시험입니다.</p><p>✨ 주변 반짝이는 아래에서 독립적으로 추가하거나 숨길 수 있습니다. 어른의 위치 조절이나 승인은 필요하지 않습니다.</p></div>
  <p class="hint">고화질 공주 그림은 그대로 유지됩니다. 표정별 그림과 리본 시험을 별도로 사용하며, 반짝이 효과는 자유롭게 켜고 끌 수 있어요.</p>
  <div class="princessGrid">
@@ -597,7 +629,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.11.1 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.12.0 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 
@@ -744,7 +776,7 @@ function validPrincessStyle(st,id){
  const fitting=src.wearFit&&typeof src.wearFit==='object'?src.wearFit:{};
  const bounded=(v,lo,hi,base)=>Number.isFinite(Number(v))?Math.max(lo,Math.min(hi,Number(v))):base;
  next.wearFit={x:bounded(fitting.x,-65,65,0),y:bounded(fitting.y,-65,65,0),scale:bounded(fitting.scale,45,155,100)};
- // C3.11.1: approval must be explicit and scene-specific. Preserve older data.
+ // C3.12.0: approval must be explicit and scene-specific. Preserve older data.
  next.wearScenes={};
  if(src.wearScenes&&typeof src.wearScenes==='object')for(const [scene,parts] of Object.entries(src.wearScenes).slice(0,100)){
   if(typeof scene!=='string'||scene.length>100||!parts||typeof parts!=='object')continue;
@@ -845,7 +877,7 @@ function premiumPrincessAdornment(style,heroId,view){
  return `<g pointer-events="none" class="princessOrnaments">${star(24,112,7)}${star(211,109,7)}${star(34,197,5)}${star(203,216,6)}${star(65,45,4)}${star(190,166,5)}${star(92,243,5)}</g>`;
 }
 
-// C3.11.1: multi-slot studio wardrobe. Coordinates live within the hero SVG,
+// C3.12.0: multi-slot studio wardrobe. Coordinates live within the hero SVG,
 // so they follow the hero's drag and foot-anchored scaling (and render in exported PNG).
 const princessWearProfiles={
  princess_flower:{hair:[86,96],neck:[125,151],ears:[105,121,149,121],back:[123,162],hand:[189,139],builtIn:{crown:true,wings:false,staff:true}},
@@ -859,7 +891,7 @@ function princessWornImage(key,x,y,w,h,rotate=0,opacity=1){
  const source=premiumPropImages[key];if(!source)return '';
  return `<image href="${source}" x="${x-w/2}" y="${y-h/2}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid meet" opacity="${opacity}" transform="rotate(${rotate} ${x} ${y})"/>`;
 }
-// C3.11.1: Conservative rendering. Never paint unsupported accessories in
+// C3.12.0: Conservative rendering. Never paint unsupported accessories in
 // arbitrary places. Existing slots are still stored for backward compatibility.
 let liveWearPreview=null; // never re-enable an unapproved draft when reopening a saved work
 function wearableSceneKey(panel,view){
@@ -872,16 +904,9 @@ function wearableRenderAllowed(fit,panel,scene,slot){return !!fit&&(fit.approved
 // All accessory geometry is inside the moving/scaling character group.
 // New parts are hidden until separately previewed and approved for this exact scene.
 function premiumPrincessWearable(style,heroId,view,layer='front',panel=null){
- // C3.11.1: strictly isolated ribbon experiment. No adult calibration, no other jewelry.
- if(layer!=='front'||style?.wearSlots?.hair!=='ribbon')return '';
- const profile=profileForPrincess(heroId);
- if(!profile)return '';
- const portrait=view==='face';
- const [hx,hy]=profile.hair;
- // Reuse the existing fitted SVG asset and existing character-relative transform.
- const x=portrait?83:hx,y=portrait?99:hy;
- const frame=view==='full'?'translate(-19.929 -38.541) scale(1.178571 1.139640)':'';
- return `<g pointer-events="none" class="princessWornAdornment" transform="${frame}">${princessWornImage('리본장식',x,y,37,38)}</g>`;
+ // C3.12.0: old fixed anchor wearables are no longer rendered.
+ // Preserve saved wearSlots untouched for backwards compatibility.
+ return '';
 }
 
 function premiumPrincessSvg(panel,heroId){
@@ -1414,7 +1439,7 @@ function rememberAction(key){
  redoHistory.length=0;lastHistoryAt=now;lastHistoryKey=key;
  syncHistoryButtons();
 }
-function syncHistoryButtons(){if($('undoEdit'))$('undoEdit').disabled=!undoHistory.length;if($('redoEdit'))$('redoEdit').disabled=!redoHistory.length}
+function syncHistoryButtons(){if($('undoEdit'))$('undoEdit').disabled=!undoHistory.length;if($('redoEdit'))$('redoEdit').disabled=!redoHistory.length;if($('directUndo'))$('directUndo').disabled=!undoHistory.length;if($('directRedo'))$('directRedo').disabled=!redoHistory.length}
 function applyHistory(which,other){if(!which.length)return toast('더 이상 되돌릴 내용이 없어요.');other.push(JSON.stringify(state));if(other.length>35)other.shift();state=JSON.parse(which.pop());activeItemId=null;lastHistoryKey='';renderComic();syncHistoryButtons();toast('이전 편집 상태로 돌아왔어요.')}
 // Capture user gestures before existing change/input/click listeners mutate state.
 document.addEventListener('input',e=>{
@@ -1439,7 +1464,7 @@ function currentItem(){const p=state.panels[selected];const items=ensureItems(p)
 function addProp(name,source,emoji){const p=state.panels[selected];if(!p)return;if(p.aiImage){toast('먼저 기본 그림으로 돌아가 주세요.');return}if(name==='없음')return;
  const items=ensureItems(p);const offset=(items.length%5)*14;
  const item={id:'prop-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),name,x:offset-18,y:offset-12,size:100,rotation:0,flip:false,tint:'normal',source:source||null,emoji:emoji||null};items.push(item);activeItemId=item.id;renderComic();toast(name+' 소품을 추가했어요!')}
-function panelSvg(panel, idx){
+function panelSvg(panel, idx,showControls=false){
  const caption=safe(panel.caption||'');
  const bg=panel.background||'forest';
  const bubble=fittedBubble(panel.speech||'',{right:288,top:10,maxWidth:198,fontSize:13.2,maxChars:14,panel});
@@ -1457,26 +1482,41 @@ function panelSvg(panel, idx){
  const heroFootY = state.hero==='custom' ? 240 : isPrincess(state.hero) ? 276 : 271;
  const footShiftX = +(0.73*heroFootX*(1-hs)).toFixed(3);
  const footShiftY = +(0.73*heroFootY*(1-hs)).toFixed(3);
- const propsRendered=ensureItems(panel).map(it=>{
-  const x=Number(it.x)||0,y=Number(it.y)||0,scale=Math.max(.3,Math.min(2.5,(Number(it.size)||100)/100)),rotation=Number(it.rotation)||0,flip=it.flip?-1:1;
+ const items=ensureItems(panel);
+ const renderItem=(it)=>{
+  const x=Number(it.x)||0,y=Number(it.y)||0;
+  const scale=Math.max(.15,Math.min(5,(Number(it.size)||100)/100));
+  const stretchX=Math.max(.25,Math.min(3,Number(it.stretchX)||1));
+  const stretchY=Math.max(.25,Math.min(3,Number(it.stretchY)||1));
+  const rotation=Number(it.rotation)||0, flip=it.flip?-1:1;
   const filter=propFilters[it.tint]||'none';
   const icon=safe(it.emoji||propIcons[it.name]||'⭐');
-  // Recolor the *item pixels*, not a colored disk behind the item.
-  // Emoji are rendered by the operating system; hue filters vary by emoji/platform.
   const premiumSource=it.source||(it.emoji?null:premiumPropImages[it.name]);
-  // Use premium 3D ornament artwork when available; no simplified SVG glyph over it.
   const vector=!premiumSource?recolorableProp(it):null;
   const body=premiumSource
-    ? `<image href="${premiumSource}" x="-29" y="-29" width="58" height="58" preserveAspectRatio="xMidYMid meet"/>`
-    : (vector || `<text x="0" y="13" font-size="43" text-anchor="middle">${icon}</text>`);
+    ? `<image href="${premiumSource}" x="-29" y="-29" width="58" height="58" preserveAspectRatio="xMidYMid meet" style="filter:${filter}"/>`
+    : (vector || `<text x="0" y="13" font-size="43" text-anchor="middle" style="filter:${filter}">${icon}</text>`);
   const chosen=it.id===activeItemId&&state.panels[selected]===panel;
-  return `<g class="stageHandle" data-piece="item" data-item-id="${it.id}" transform="translate(${x} ${y}) translate(155 122) rotate(${rotation}) scale(${scale*flip} ${scale})"><circle cx="0" cy="0" r="30" fill="transparent" stroke="${chosen?'#f0c200':'none'}" stroke-width="2" stroke-dasharray="4 3"/>${body}</g>`;
- }).join('');
+  return `<g class="stageHandle" data-piece="item" data-item-id="${it.id}" transform="translate(${x} ${y}) translate(155 122) rotate(${rotation}) scale(${scale*flip*stretchX} ${scale*stretchY})"><rect x="-31" y="-31" width="62" height="62" fill="transparent" stroke="none"/>${body}</g>`;
+ };
+ const propsBack=items.filter(it=>it.layer==='back').map(renderItem).join('');
+ const propsFront=items.filter(it=>it.layer!=='back').map(renderItem).join('');
+ const selectedProp=items.find(it=>it.id===activeItemId);
+ const gizmo=showControls&&state.panels[selected]===panel&&selectedProp ? (()=>{
+   const it=selectedProp,scale=Math.max(.15,Math.min(5,(Number(it.size)||100)/100));
+   const w=29*scale*Math.max(.25,Math.min(3,Number(it.stretchX)||1));
+   const h=29*scale*Math.max(.25,Math.min(3,Number(it.stretchY)||1));
+   const cx=155+(Number(it.x)||0),cy=122+(Number(it.y)||0),rot=Number(it.rotation)||0;
+   const grip=(name,x,y)=>`<circle data-transform-handle="${name}" data-item-id="${it.id}" cx="${x}" cy="${y}" r="7" fill="#fff" stroke="#784cc0" stroke-width="2"/>`;
+   return `<g class="editGizmo" transform="translate(${cx} ${cy}) rotate(${rot})"><rect x="${-w}" y="${-h}" width="${2*w}" height="${2*h}" fill="none" stroke="#8151c6" stroke-width="1.7" stroke-dasharray="3 2"/>${grip('corner',w,h)}${grip('horizontal',w,0)}${grip('vertical',0,h)}<path d="M0 ${-h} V${-h-20}" stroke="#8151c6" stroke-width="1.5"/>${grip('rotation',0,-h-20)}</g>`;
+ })():'';
  return `<svg viewBox="0 0 300 192" role="img" aria-label="${caption}" style="filter:${moodFilter(panel.mood)}">
    <image href="${background}" x="0" y="0" width="300" height="192" preserveAspectRatio="xMidYMid slice" pointer-events="none"/>
    <ellipse cx="112" cy="181" rx="57" ry="8" fill="#29221a" opacity=".12" pointer-events="none"/>
+   ${propsBack}
    <g class="stageHandle" data-piece="hero" transform="translate(${hx} ${hy}) translate(7 -22) translate(${footShiftX} ${footShiftY}) scale(${.73*hs})"><g>${hero}</g><rect x="60" y="78" width="195" height="205" fill="transparent" stroke="none" /></g>
-   ${propsRendered}
+   ${propsFront}
+   ${gizmo}
    ${isPrincess(state.hero) && validPrincessStyle(panel.princessLook,state.hero).sparkles==='yes' ? `<g class="heroGlitter" pointer-events="none" transform="translate(${hx} ${hy})" opacity=".92">
      <g fill="#fffdf5" stroke="#f9ce78" stroke-width=".8">
       <path d="M54 47 l3.4 -11 3.4 11 11 3.4 -11 3.4 -3.4 11 -3.4 -11 -11 -3.4Z"/>
@@ -1499,7 +1539,7 @@ function renderComic(){
    const el=document.createElement('button');el.type='button';
    el.dataset.panelIndex=String(i);
    el.className='panel'+(i===selected?' active':'');
-   el.innerHTML=`<div class="scene${!p.aiImage?' rich':''}">${p.aiImage?`<img class="aiPanelImage" src="${p.aiImage}" alt="${safe(p.caption)}">`:panelSvg(p,i)}</div><div class="caption"><span class="panelNo">${i+1}컷</span>${safe(p.caption)}</div>`;
+   el.innerHTML=`<div class="scene${!p.aiImage?' rich':''}">${p.aiImage?`<img class="aiPanelImage" src="${p.aiImage}" alt="${safe(p.caption)}">`:panelSvg(p,i,true)}</div><div class="caption"><span class="panelNo">${i+1}컷</span>${safe(p.caption)}</div>`;
    el.onclick=()=>{selected=i;renderComic()};
    area.appendChild(el);
  });
@@ -1521,11 +1561,12 @@ function syncItemControls(){
  $('itemSize').value=it?.size??100;$('itemSizeValue').textContent=(it?.size??100)+'%';
  $('itemRotation').value=it?.rotation||0;$('itemRotationValue').textContent=(it?.rotation||0)+'°';
  $('itemTint').value=it?.tint||'normal';
+ syncDirectTools(it);
  for(const id of ['itemSize','itemRotation','itemTint','flipItem','duplicateItem','removeItem','centerItem'])$(id).disabled=!it;
  // A detailed 3D picture is a single colored illustration; do not present a fake color-edit control.
  const isPremium=!!(it && (it.source||(!it.emoji && premiumPropImages[it.name])));
- $('itemTint').disabled=!it||isPremium;
- $('itemTint').title=isPremium?'고화질 그림은 색을 바꾸지 않고 원래 보석 색감을 유지합니다.':'소품 색상 선택';
+ $('itemTint').disabled=!it;
+ $('itemTint').title=isPremium?'고화질 그림은 필터로 색감을 바꿉니다.':'소품 색상 선택';
 }
 // C3.9.6: Capability-based choices. No button promises an unprovided artwork.
 const expressionHeroes=['princess_flower','princess_strawberry','princess_emerald','princess_starlight','princess_pearl'];
@@ -1636,43 +1677,138 @@ $('panelBg').addEventListener('change',e=>{
  updatePanel('background',e.target.value);
 });
 // C3.7: touch drag happens directly on the composed SVG layers, independent of GPT.
+// C3.12.0 touch engine. No magnets or automatic placement.
+let stageGesture=null;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function stagePoint(svg,e){
+ const m=svg.getScreenCTM();if(!m)return null;
+ const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;
+ return p.matrixTransform(m.inverse());
+}
 function stagePointerDown(e){
+ const knob=e.target.closest('[data-transform-handle]');
  const handle=e.target.closest('.stageHandle');
- if(!handle)return;
- const svg=handle.ownerSVGElement;
- if(!svg)return;
- const panelButton=svg.closest('.panel');
- if(!panelButton)return;
+ if(!knob&&!handle)return;
+ const svg=(knob||handle).ownerSVGElement;
+ const panelButton=svg?.closest('.panel');if(!svg||!panelButton)return;
  const idx=Number(panelButton.dataset.panelIndex);
- if(idx<0||idx>=state.panels.length)return;
- if(idx!==selected){selected=idx; [...$('comicArea').children].forEach(c=>c.classList.toggle('active',Number(c.dataset.panelIndex)===idx));syncEditor()}
- const p=state.panels[idx];
- const piece=handle.dataset.piece;
- const point=svg.createSVGPoint();point.x=e.clientX;point.y=e.clientY;
- const inv=svg.getScreenCTM()?.inverse();if(!inv)return;
- const origin=point.matrixTransform(inv);
- const it=piece==='item'?ensureItems(p).find(x=>x.id===handle.dataset.itemId):null;
+ if(!Number.isInteger(idx)||idx<0||idx>=state.panels.length)return;
+ const piece=knob?'item':handle.dataset.piece;
+ const id=knob?.dataset.itemId||handle?.dataset.itemId;
+ const panel=state.panels[idx];const it=piece==='item'?ensureItems(panel).find(v=>v.id===id):null;
  if(piece==='item'&&!it)return;
- if(it){activeItemId=it.id;syncItemControls()}
- const keyx=piece==='hero'?'heroX':'x',keyy=piece==='hero'?'heroY':'y';
- const target=it||p;const startX=Number(target[keyx])||0,startY=Number(target[keyy])||0;
- rememberAction('drag-'+Date.now());
- const firstTransform=handle.getAttribute('transform');
- const move=ev=>{
-  ev.preventDefault(); point.x=ev.clientX;point.y=ev.clientY;
-  const at=point.matrixTransform(inv);
-  const x=Math.max(-160,Math.min(160,startX+at.x-origin.x));
-  const y=Math.max(-150,Math.min(150,startY+at.y-origin.y));
-  handle.setAttribute('transform',firstTransform.replace(/^translate\([^)]*\)/,`translate(${x} ${y})`));
-  target[keyx]=x;target[keyy]=y;
- };
- const done=()=>{svg.removeEventListener('pointermove',move);svg.removeEventListener('pointerup',done);svg.removeEventListener('pointercancel',done);try{svg.releasePointerCapture(e.pointerId)}catch(_){};renderComic()};
- svg.addEventListener('pointermove',move);svg.addEventListener('pointerup',done);svg.addEventListener('pointercancel',done);
+ if(stageGesture && (stageGesture.svg!==svg||stageGesture.item!==it))return;
+ const point=stagePoint(svg,e);if(!point)return;
+ if(!stageGesture){
+   if(idx!==selected){selected=idx;}
+   if(it)activeItemId=it.id;
+   rememberAction('direct-gesture-'+Date.now());
+   stageGesture={svg,panel,item:it,kind:piece,handle:knob?.dataset.transformHandle||'move',pointers:new Map(),start:null,changed:false};
+   // render gizmo only once, before drag; SVG replaced only after gesture.
+   // The drag target is the previously captured SVG, which remains mounted.
+ }
+ const g=stageGesture;
+ g.pointers.set(e.pointerId,point);
+ if(g.pointers.size===1)g.start={points:[point],x:Number((it||panel)[it?'x':'heroX'])||0,y:Number((it||panel)[it?'y':'heroY'])||0,size:Number(it?.size)||100,rotation:Number(it?.rotation)||0,stretchX:Number(it?.stretchX)||1,stretchY:Number(it?.stretchY)||1};
+ if(g.pointers.size===2){const ps=[...g.pointers.values()];g.start={points:ps,x:Number((it||panel)[it?'x':'heroX'])||0,y:Number((it||panel)[it?'y':'heroY'])||0,size:Number(it?.size)||100,rotation:Number(it?.rotation)||0,stretchX:Number(it?.stretchX)||1,stretchY:Number(it?.stretchY)||1};}
  try{svg.setPointerCapture(e.pointerId)}catch(_){}
  e.preventDefault();e.stopPropagation();
 }
+function stagePointerMove(e){
+ const g=stageGesture;if(!g||!g.pointers.has(e.pointerId))return;
+ const pt=stagePoint(g.svg,e);if(!pt)return;
+ g.pointers.set(e.pointerId,pt);const t=g.item||g.panel,s=g.start;
+ const ps=[...g.pointers.values()];if(!s)return;
+ if(ps.length>=2&&g.item){
+  const [a,b]=ps,[p,q]=s.points;
+  if(!q)return;
+  const oldDist=Math.hypot(q.x-p.x,q.y-p.y),newDist=Math.hypot(b.x-a.x,b.y-a.y);
+  const oldAngle=Math.atan2(q.y-p.y,q.x-p.x),newAngle=Math.atan2(b.y-a.y,b.x-a.x);
+  t.size=Math.round(clamp(s.size*(newDist/Math.max(1,oldDist)),20,450));
+  t.rotation=Math.round(clamp(s.rotation+(newAngle-oldAngle)*180/Math.PI,-360,360));
+  t.x=clamp(s.x+(a.x+b.x-p.x-q.x)/2,-200,200);
+  t.y=clamp(s.y+(a.y+b.y-p.y-q.y)/2,-175,175);
+ }else{
+  const p=s.points[0],a=ps[0],dx=a.x-p.x,dy=a.y-p.y;
+  if(g.handle==='rotation'&&g.item){
+   const cx=155+s.x,cy=122+s.y;
+   const old=Math.atan2(p.y-cy,p.x-cx),now=Math.atan2(a.y-cy,a.x-cx);
+   t.rotation=Math.round(clamp(s.rotation+(now-old)*180/Math.PI,-360,360));
+  }else if(['corner','horizontal','vertical'].includes(g.handle)&&g.item){
+   const radians=s.rotation*Math.PI/180;
+   const localX=dx*Math.cos(radians)+dy*Math.sin(radians);
+   const localY=-dx*Math.sin(radians)+dy*Math.cos(radians);
+   const baseW=Math.max(5,29*s.size/100*s.stretchX),baseH=Math.max(5,29*s.size/100*s.stretchY);
+   if(g.handle==='corner')t.size=Math.round(clamp(s.size*Math.max(.1,1+(localX/baseW+localY/baseH)/2),20,450));
+   if(g.handle==='horizontal')t.stretchX=+clamp(s.stretchX*(1+localX/baseW),.25,3).toFixed(3);
+   if(g.handle==='vertical')t.stretchY=+clamp(s.stretchY*(1+localY/baseH),.25,3).toFixed(3);
+  }else{
+   const xkey=g.item?'x':'heroX',ykey=g.item?'y':'heroY';
+   t[xkey]=+clamp(s.x+dx,-200,200).toFixed(2);
+   t[ykey]=+clamp(s.y+dy,-175,175).toFixed(2);
+  }
+ }
+ g.changed=true;
+ // Update only transform nodes. Never rerender while pointers are active.
+ if(g.item){
+  const it=g.item,elem=[...g.svg.querySelectorAll('.stageHandle[data-piece="item"]')].find(v=>v.dataset.itemId===it.id);
+  if(elem){const z=clamp((Number(it.size)||100)/100,.15,5);elem.setAttribute('transform',`translate(${Number(it.x)||0} ${Number(it.y)||0}) translate(155 122) rotate(${Number(it.rotation)||0}) scale(${z*(it.flip?-1:1)*(Number(it.stretchX)||1)} ${z*(Number(it.stretchY)||1)})`)}
+  // Old gizmo may remain until gesture ends; interaction remains on actual art.
+ }else{
+  const elem=g.svg.querySelector('.stageHandle[data-piece="hero"]');
+  if(elem){const first=elem.getAttribute('transform');elem.setAttribute('transform',first.replace(/^translate\([^)]*\)/,`translate(${Number(t.heroX)||0} ${Number(t.heroY)||0})`))}
+ }
+ e.preventDefault();
+}
+function stagePointerEnd(e){
+ const g=stageGesture;if(!g||!g.pointers.has(e.pointerId))return;
+ g.pointers.delete(e.pointerId);
+ try{g.svg.releasePointerCapture(e.pointerId)}catch(_){}
+ if(!g.pointers.size){stageGesture=null;renderComic();return;}
+ // When one finger remains after pinch, start a new one-finger drag baseline.
+ const p=[...g.pointers.values()][0],t=g.item||g.panel;
+ g.start={points:[p],x:Number(t[g.item?'x':'heroX'])||0,y:Number(t[g.item?'y':'heroY'])||0,size:Number(g.item?.size)||100,rotation:Number(g.item?.rotation)||0,stretchX:Number(g.item?.stretchX)||1,stretchY:Number(g.item?.stretchY)||1};
+}
 $('comicArea').addEventListener('pointerdown',stagePointerDown);
+$('comicArea').addEventListener('pointermove',stagePointerMove);
+$('comicArea').addEventListener('pointerup',stagePointerEnd);
+$('comicArea').addEventListener('pointercancel',stagePointerEnd);
 
+
+// Direct controls: all saved as normal panel.items, no migration required.
+const shapeNames=['리본장식','화관','장미','보석나비','요정날개','수정보석','별지팡이','황금열쇠','별','꽃','나비','하트','선물','풍선','왕관','보석','열쇠','달','구름','책'];
+function syncDirectTools(it){
+ const shape=$('directShape'),color=$('directColor'),status=$('directStatus');
+ if(!shape)return;
+ shape.replaceChildren();
+ shape.add(new Option('모양 선택 (소품을 먼저 선택)',''));
+ shapeNames.forEach(name=>shape.add(new Option(name,name)));
+ if(it&&!shapeNames.includes(it.name))shape.add(new Option(it.name,it.name));
+ shape.value=it?.name||'';
+ color.value=it?.tint||'normal';
+ status.textContent=it?`선택한 소품: ${it.name} · ${it.layer==='back'?'공주 뒤':'공주 앞'} · 크기 ${it.size||100}%`:'그림에 소품을 추가하거나 소품을 눌러 선택해 주세요.';
+ for(const id of ['directShape','directColor','directFront','directBack','directBring','directSend','directShrink','directGrow','directRotateL','directRotateR','directFlip','directDuplicate','directDelete'])$(id).disabled=!it;
+}
+function directChange(fn){const it=currentItem();if(!it)return;rememberAction('direct-change-'+Date.now());fn(it);renderComic()}
+$('directAddRibbon').onclick=()=>addProp('리본장식');
+$('directAddWing').onclick=()=>addProp('요정날개');
+$('directAddNecklace').onclick=()=>addProp('수정보석');
+$('directSparkles').onclick=()=>{if(!isPrincess(state.hero)||!state.panels.length)return toast('공주를 고르면 주변 반짝이를 바꿀 수 있어요.');const p=state.panels[selected];rememberAction('sparkles-'+Date.now());const st=validPrincessStyle(p.princessLook,state.hero);st.sparkles=st.sparkles==='yes'?'no':'yes';p.princessLook=st;renderComic();toast(st.sparkles==='yes'?'반짝이를 켰어요.':'추가 반짝이를 숨겼어요.')};
+$('directShape').addEventListener('change',e=>directChange(it=>{it.name=e.target.value;it.source=null;it.emoji=null}));
+$('directColor').addEventListener('change',e=>directChange(it=>it.tint=e.target.value));
+$('directFront').onclick=()=>directChange(it=>it.layer='front');
+$('directBack').onclick=()=>directChange(it=>it.layer='back');
+$('directBring').onclick=()=>directChange(it=>{const items=ensureItems(state.panels[selected]),i=items.indexOf(it);if(i<items.length-1){const b=items[i+1];if((b.layer||'front')===(it.layer||'front'))[items[i],items[i+1]]=[b,it];else it.layer='front'}});
+$('directSend').onclick=()=>directChange(it=>{const items=ensureItems(state.panels[selected]),i=items.indexOf(it);if(i>0){const b=items[i-1];if((b.layer||'front')===(it.layer||'front'))[items[i],items[i-1]]=[b,it];else it.layer='back'}});
+$('directShrink').onclick=()=>directChange(it=>it.size=clamp((Number(it.size)||100)-15,20,450));
+$('directGrow').onclick=()=>directChange(it=>it.size=clamp((Number(it.size)||100)+15,20,450));
+$('directRotateL').onclick=()=>directChange(it=>it.rotation=(Number(it.rotation)||0)-15);
+$('directRotateR').onclick=()=>directChange(it=>it.rotation=(Number(it.rotation)||0)+15);
+$('directFlip').onclick=()=>directChange(it=>it.flip=!it.flip);
+$('directDuplicate').onclick=()=>{const it=currentItem();if(!it)return;rememberAction('duplicate-direct-'+Date.now());const copy={...it,id:'prop-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),x:(Number(it.x)||0)+12,y:(Number(it.y)||0)+10};ensureItems(state.panels[selected]).push(copy);activeItemId=copy.id;renderComic()};
+$('directDelete').onclick=()=>{const it=currentItem();if(!it)return;rememberAction('delete-direct-'+Date.now());const p=state.panels[selected];p.items=ensureItems(p).filter(i=>i.id!==it.id);activeItemId=null;renderComic()};
+$('directUndo').onclick=()=>applyHistory(undoHistory,redoHistory);
+$('directRedo').onclick=()=>applyHistory(redoHistory,undoHistory);
 $('undoEdit').onclick=()=>applyHistory(undoHistory,redoHistory);
 $('redoEdit').onclick=()=>applyHistory(redoHistory,undoHistory);
 syncHistoryButtons();
@@ -1780,7 +1916,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.11.1 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.12.0 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -2347,7 +2483,7 @@ for(const [id,view] of [['quickFullBody','full'],['quickFacePortrait','face'],['
   renderComic();
  });
 }
-// C3.11.1: quick pictorial controls reuse the validated independent select slots.
+// C3.12.0: quick pictorial controls reuse the validated independent select slots.
 document.querySelectorAll('[data-wear-quick]').forEach(btn=>btn.addEventListener('click',()=>{
  if(btn.disabled)return;
  const [slot,value]=btn.dataset.wearQuick.split(':');
@@ -2421,7 +2557,7 @@ $('quickBubbleMore').addEventListener('click',()=>{
 const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
-// C3.11.1: Same-origin static version manifest, no extra accounts or external service.
+// C3.12.0: Same-origin static version manifest, no extra accounts or external service.
 const WEBTOON_APP_VERSION='3.11.1';
 let latestPublishedVersion=null;
 function versionNumbers(v){
@@ -2478,7 +2614,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
  thumbnail.style.cssText='width:35px;height:35px;object-fit:contain;vertical-align:middle;margin-right:5px;';
  b.prepend(thumbnail);
 }
-// C3.11.1 adult-only per-scene test controls. Preview never alters existing artwork.
+// C3.12.0 adult-only per-scene test controls. Preview never alters existing artwork.
 function wearReviewContext(){
  const p=state?.panels?.[selected];if(!p||!isPrincess(state.hero)||p.aiImage)return null;
  const view=p.useExpressionArt?(p.expressionView==='face'?'face':'full'):'original';
