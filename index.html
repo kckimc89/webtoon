@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C3.13.0</title>
+<title>나만의 웹툰 창작극장 C3.13.2</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -186,6 +186,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 @media(max-width:600px){.directTools button{padding:8px 10px}}
 /* C3.13.0: Fixed princess + unobtrusive handles. */
 .scene .fixedHero{pointer-events:none!important}
+.scene .heroTouchArea{cursor:grab;touch-action:none}
+.scene .heroTouchArea:active{cursor:grabbing}
 .scene .editGizmo [data-transform-handle]{cursor:grab}
 
 /* C3.13.0: compact contextual prop menu in the scene's empty area. */
@@ -207,7 +209,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C3.13.0 · 동물 동작 그림 확장 · 감정 연출 시험</span>
+    <span class="pill">MASTER C3.13.2 · 주인공 직접 선택 · 소품 메뉴 간격 개선</span>
   </header>
 
   <nav class="tabs">
@@ -217,8 +219,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.13.0)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.13.0 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C3.13.2)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C3.13.2 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -240,7 +242,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 
     <div class="card">
       <h2>① 주인공을 고르세요</h2>
-      <p class="sub">공주 5명은 전신·얼굴 표정 6종을 선택할 수 있어요. 동물 친구들은 현재 준비된 표정·자세만 표시해요. 새로운 주인공과 기존 저장 작품은 그대로 유지합니다.</p>
+      <p class="sub">공주 5명은 전신·얼굴 표정 6종을 선택할 수 있어요. 동물 친구들은 준비된 자세 그림 위에 얼굴 표정선을 덧그려 감정이 더 잘 보이게 했어요. 새로운 주인공과 기존 저장 작품은 그대로 유지합니다.</p>
       <div id="characterChoices" class="grid4"></div>
       <div class="grid2" style="margin-top:10px">
         <div>
@@ -332,7 +334,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <button type="button" id="quickBubbleMore">🎨 색·글씨·여백</button>
         </div>
         <div class="quickPanelTitle" style="margin-top:12px">😊 표정과 그림 보기 — 이곳에서 모두 선택해요</div>
-        <p class="hint" style="margin:4px 0 8px">공주·요정은 전신 표정 그림과 얼굴 표정 그림을 모두 사용할 수 있어요. 기존 동물 친구들도 아래 표정 버튼을 함께 사용해요.</p>
+        <p class="hint" style="margin:4px 0 8px">공주·요정은 전신 표정 그림과 얼굴 표정 그림을 모두 사용할 수 있어요. 동물 친구들은 준비된 자세 그림 위에 얼굴 표정선을 덧그려 아래 표정 버튼을 함께 사용해요.</p>
         <div class="quickBtns" id="quickEmotionBtns" aria-label="표정 빠른 선택">
           <button type="button" data-quick-emotion="기뻐요">😊 웃기</button>
           <button type="button" data-quick-emotion="놀랐어요">😮 놀라기</button>
@@ -384,7 +386,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <div class="toolRow"><button type="button" id="directFront">⬆️ 공주 앞에</button><button type="button" id="directBack">⬇️ 공주 뒤에</button><button type="button" id="directBring">⬆️ 맨 앞으로</button></div>
           <div class="toolRow"><button type="button" id="directShrink">➖ 작게</button><button type="button" id="directGrow">➕ 크게</button><button type="button" id="directRotateL">↶ 돌리기</button><button type="button" id="directRotateR">↷ 돌리기</button><button type="button" id="directFlip">↔ 뒤집기</button></div>
           <div class="toolRow"><button type="button" id="directDuplicate">📋 복제</button><button type="button" id="directDelete">🗑 지우기</button><button type="button" id="directUndo">↩ 취소</button><button type="button" id="directRedo">↪ 다시</button></div>
-          <p id="directStatus" class="tip" aria-live="polite">그림 속 소품을 눌러 선택하세요. 빈 곳을 누르면 선택이 해제돼요. 공주는 고정됩니다.</p>
+          <p id="directStatus" class="tip" aria-live="polite">그림 속 소품을 눌러 선택하세요. 빈 곳을 누르면 선택이 해제돼요. 소품이 선택되지 않았을 때 주인공을 눌러 이동·확대할 수 있어요.</p>
          </div>
          <details class="premiumPropGallery" style="margin:9px 0 12px;padding:11px;border:1px solid #ecdaf7;border-radius:14px;background:#fffafd">
           <summary style="font-weight:800;cursor:pointer">💎 공주와 어울리는 고화질 장식 21종</summary>
@@ -645,7 +647,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C3.13.0 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C3.13.2 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
 </div>
 <div id="toast"></div>
 
@@ -1163,19 +1165,83 @@ function characterAsset(panel){
  if(panel.emotion==='놀랐어요')return name+'-surprised.webp';
  return name+'-standing.webp';
 }
-// C3.13.0: expression *effects* for artwork without separately painted facial portraits.
-// These do not claim to replace the original animal's facial features.
+// C3.13.2: add gentle facial-expression overlays for the animal sprites.
+// The original character artwork stays intact; only brows, mouth and tiny marks are added.
+function animalExpressionAnchor(name,panel){
+ const pose=panel.pose||'서 있기';
+ const key=pose==='열쇠 들기'?'key':pose==='깜짝 놀라기'?'surprised':pose==='점프하기'?'jumping':((pose==='걷기'||pose==='뛰기')?'walking':'standing');
+ const map={
+  rabbit:{standing:[149,131,1],walking:[151,136,1],jumping:[149,126,1],key:[149,130,1],surprised:[149,130,1]},
+  cat:{standing:[150,137,1],walking:[152,141,1],jumping:[150,132,1],key:[150,136,1],surprised:[150,136,1]},
+  fox:{standing:[150,138,1],walking:[152,142,1],jumping:[150,133,1],key:[150,137,1],surprised:[150,137,1]},
+  fairy:{standing:[149,132,1],walking:[151,136,1],jumping:[149,127,1],key:[149,131,1],surprised:[149,131,1]},
+  bear:{standing:[149,141,.98]},
+  robot:{standing:[149,139,.98]}
+ };
+ const arr=(map[name]&&map[name][key])||(map[name]&&map[name].standing)||[150,136,1];
+ return {x:arr[0],y:arr[1],scale:arr[2]};
+}
+function animalFaceOverlay(panel,name){
+ const mood=panel.emotion||'기뻐요';
+ const a=animalExpressionAnchor(name,panel);
+ const x=a.x,y=a.y,sc=a.scale||1;
+ const s=v=>Number((v*sc).toFixed(2));
+ const outline=name==='robot'?'#4d6d8b':'#6b4b5c';
+ const blush=name==='robot'?'#b9deff':'#f7b0c3';
+ const mouthFill=name==='robot'?'#6e8bab':'#965468';
+ const tear='#68c8ff';
+ let marks='';
+ if(mood==='기뻐요')marks=`
+  <path d="M${x-s(13)} ${y+s(10)} Q${x} ${y+s(20)} ${x+s(13)} ${y+s(10)}" fill="none" stroke="${outline}" stroke-width="${s(3)}" stroke-linecap="round"/>
+  <ellipse cx="${x-s(18)}" cy="${y+s(7)}" rx="${s(5)}" ry="${s(3)}" fill="${blush}" opacity=".48"/>
+  <ellipse cx="${x+s(18)}" cy="${y+s(7)}" rx="${s(5)}" ry="${s(3)}" fill="${blush}" opacity=".48"/>`;
+ else if(mood==='놀랐어요')marks=`
+  <ellipse cx="${x}" cy="${y+s(11)}" rx="${s(5.8)}" ry="${s(7.6)}" fill="${mouthFill}" stroke="#fff3ed" stroke-width="${s(.9)}"/>
+  <path d="M${x-s(18)} ${y-s(13)} q${s(5)} ${-s(6)} ${s(13)} ${-s(1)}" fill="none" stroke="${outline}" stroke-width="${s(2.2)}" stroke-linecap="round"/>
+  <path d="M${x+s(5)} ${y-s(14)} q${s(7)} ${-s(5)} ${s(13)} ${s(1)}" fill="none" stroke="${outline}" stroke-width="${s(2.2)}" stroke-linecap="round"/>
+  <circle cx="${x+s(19)}" cy="${y-s(3)}" r="${s(2.1)}" fill="#fff"/>`;
+ else if(mood==='슬퍼요')marks=`
+  <path d="M${x-s(12)} ${y+s(14)} Q${x} ${y+s(6)} ${x+s(12)} ${y+s(14)}" fill="none" stroke="${outline}" stroke-width="${s(2.8)}" stroke-linecap="round"/>
+  <path d="M${x-s(20)} ${y-s(3)} q${s(2)} ${s(8)} 0 ${s(14)}" fill="none" stroke="${tear}" stroke-width="${s(3.1)}" stroke-linecap="round"/>
+  <path d="M${x+s(20)} ${y-s(3)} q${-s(2)} ${s(8)} 0 ${s(14)}" fill="none" stroke="${tear}" stroke-width="${s(3.1)}" stroke-linecap="round"/>`;
+ else if(mood==='화났어요')marks=`
+  <path d="M${x-s(18)} ${y-s(16)} l${s(12)} ${s(8)}" fill="none" stroke="${outline}" stroke-width="${s(2.8)}" stroke-linecap="round"/>
+  <path d="M${x+s(6)} ${y-s(8)} l${s(12)} ${-s(8)}" fill="none" stroke="${outline}" stroke-width="${s(2.8)}" stroke-linecap="round"/>
+  <path d="M${x-s(11)} ${y+s(12)} Q${x} ${y+s(9)} ${x+s(11)} ${y+s(12)}" fill="none" stroke="${outline}" stroke-width="${s(2.7)}" stroke-linecap="round"/>`;
+ else if(mood==='생각해요')marks=`
+  <path d="M${x-s(11)} ${y+s(10)} Q${x} ${y+s(14)} ${x+s(11)} ${y+s(10)}" fill="none" stroke="${outline}" stroke-width="${s(2.3)}" stroke-linecap="round"/>
+  <circle cx="${x+s(24)}" cy="${y-s(16)}" r="${s(2.4)}" fill="#fff" stroke="#9e7ab0" stroke-width="${s(.8)}"/>
+  <circle cx="${x+s(32)}" cy="${y-s(25)}" r="${s(4.1)}" fill="#fff" stroke="#9e7ab0" stroke-width="${s(.8)}"/>
+  <text x="${x+s(32)}" y="${y-s(22)}" text-anchor="middle" font-size="${s(8)}" fill="#9164a6">?</text>`;
+ else if(mood==='신나요')marks=`
+  <path d="M${x-s(15)} ${y+s(4)} Q${x} ${y+s(23)} ${x+s(15)} ${y+s(4)} Q${x} ${y+s(9)} ${x-s(15)} ${y+s(4)}" fill="${mouthFill}" stroke="#fff2ea" stroke-width="${s(1.2)}"/>
+  <ellipse cx="${x-s(19)}" cy="${y+s(1)}" rx="${s(5)}" ry="${s(3)}" fill="${blush}" opacity=".45"/>
+  <ellipse cx="${x+s(19)}" cy="${y+s(1)}" rx="${s(5)}" ry="${s(3)}" fill="${blush}" opacity=".45"/>`;
+ else if(mood==='궁금해요')marks=`
+  <path d="M${x-s(12)} ${y+s(11)} Q${x} ${y+s(16)} ${x+s(10)} ${y+s(9)}" fill="none" stroke="${outline}" stroke-width="${s(2.4)}" stroke-linecap="round"/>
+  <path d="M${x-s(18)} ${y-s(14)} q${s(6)} ${-s(7)} ${s(12)} ${-s(1)}" fill="none" stroke="${outline}" stroke-width="${s(2.1)}" stroke-linecap="round"/>
+  <text x="${x+s(26)}" y="${y-s(12)}" text-anchor="middle" font-size="${s(12)}" fill="#7d64b3">?</text>`;
+ else if(mood==='용감해요')marks=`
+  <path d="M${x-s(14)} ${y+s(9)} Q${x} ${y+s(17)} ${x+s(14)} ${y+s(9)}" fill="none" stroke="${outline}" stroke-width="${s(2.7)}" stroke-linecap="round"/>
+  <path d="M${x-s(19)} ${y-s(11)} l${s(11)} ${-s(3)}" fill="none" stroke="${outline}" stroke-width="${s(2.2)}" stroke-linecap="round"/>
+  <path d="M${x+s(8)} ${y-s(14)} l${s(11)} ${s(3)}" fill="none" stroke="${outline}" stroke-width="${s(2.2)}" stroke-linecap="round"/>`;
+ else if(mood==='자랑스러워요')marks=`
+  <path d="M${x-s(12)} ${y+s(11)} Q${x} ${y+s(18)} ${x+s(12)} ${y+s(11)}" fill="none" stroke="${outline}" stroke-width="${s(2.7)}" stroke-linecap="round"/>
+  <ellipse cx="${x-s(18)}" cy="${y+s(7)}" rx="${s(5)}" ry="${s(3)}" fill="${blush}" opacity=".48"/>
+  <ellipse cx="${x+s(18)}" cy="${y+s(7)}" rx="${s(5)}" ry="${s(3)}" fill="${blush}" opacity=".48"/>
+  <text x="${x+s(27)}" y="${y-s(14)}" text-anchor="middle" font-size="${s(11)}" fill="#f2bb42">★</text>`;
+ if(!marks)return '';
+ return `<g class="animalFaceOverlay" pointer-events="none" opacity=".96">${marks}</g>`;
+}
 function animalEmotionAccent(panel, name){
  const mood=panel.emotion||'기뻐요';
- if(mood==='기뻐요'||mood==='놀랐어요')return '';
+ if(['기뻐요','놀랐어요','슬퍼요','화났어요'].includes(mood))return '';
  const cues={
- '슬퍼요':{mark:'💧',caption:'슬픔',fill:'#e4f3ff'},
- '화났어요':{mark:'💢',caption:'화남',fill:'#fff0e8'},
- '생각해요':{mark:'💭',caption:'생각',fill:'#f1edff'},
- '신나요':{mark:'✨',caption:'신남',fill:'#fff8df'},
- '궁금해요':{mark:'❔',caption:'궁금',fill:'#f0f6ff'},
- '용감해요':{mark:'⭐',caption:'용감',fill:'#fff7e6'},
- '자랑스러워요':{mark:'🌟',caption:'뿌듯',fill:'#fff7dc'}
+ '생각해요':{mark:'💭',fill:'#f1edff'},
+ '신나요':{mark:'✨',fill:'#fff8df'},
+ '궁금해요':{mark:'❔',fill:'#f0f6ff'},
+ '용감해요':{mark:'⭐',fill:'#fff7e6'},
+ '자랑스러워요':{mark:'🌟',fill:'#fff7dc'}
  };
  const c=cues[mood];if(!c)return '';
  return `<g class="animalEmotionAccent" pointer-events="none"><circle cx="231" cy="97" r="22" fill="${c.fill}" stroke="#d9c5e5" stroke-width="1.5"/><text x="231" y="107" text-anchor="middle" font-size="26">${c.mark}</text></g>`;
@@ -1263,7 +1329,7 @@ function heroSvg(panel){
    // wings and tails after scene transforms. Use a smaller centered safe box.
    const bounds= name==='fairy'?{x:50,y:86,w:186,h:184}: {x:62,y:88,w:174,h:183};
    const img=colorizedHeroImage(sprite,panel);
-   return `<g transform="translate(${dx} ${dy}) rotate(${tilt} 150 200)"><image href="${img}" x="${bounds.x}" y="${bounds.y}" width="${bounds.w}" height="${bounds.h}" preserveAspectRatio="xMidYMid meet"/></g>${poseFx}${extra}${animalEmotionAccent(panel,name)}`;
+   return `<g transform="translate(${dx} ${dy}) rotate(${tilt} 150 200)"><image href="${img}" x="${bounds.x}" y="${bounds.y}" width="${bounds.w}" height="${bounds.h}" preserveAspectRatio="xMidYMid meet"/></g>${animalFaceOverlay(panel,name)}${poseFx}${extra}${animalEmotionAccent(panel,name)}`;
  }
  const hero=currentHero();const c=hero.colors;const pose=panel.pose, emo=panel.emotion; const y=pose==='점프하기'?28:pose==='앉기'?58:pose==='뛰기'?38:46; const x=pose==='뛰기'?110:120; const bodyTilt=pose==='뛰기'?-14:pose==='점프하기'?-4:pose==='손 흔들기'?-7:0; const eye=emo==='놀랐어요'?'7':'3'; const mouth=emo==='슬퍼요'?'M110 142 Q120 134 130 142':emo==='기뻐요'||emo==='자랑스러워요'?'M104 138 Q120 152 136 138':'M106 140 Q120 146 134 140'; const eyebrow=emo==='용감해요'||emo==='자랑스러워요'?`<path d="M96 112 l16 -4" stroke="#3b3247" stroke-width="4" stroke-linecap="round"/><path d="M128 108 l16 4" stroke="#3b3247" stroke-width="4" stroke-linecap="round"/>`:'';
  const armL= pose==='손 흔들기'?`M90 190 Q72 158 78 130`: pose==='점프하기'?`M88 188 Q74 165 64 145`: pose==='뛰기'?`M90 190 Q72 170 70 152`: pose==='앉기'?`M88 190 Q78 198 72 196`:`M90 190 Q72 170 72 150`;
@@ -1551,6 +1617,7 @@ function panelSvg(panel, idx,showControls=false){
    <ellipse cx="112" cy="181" rx="57" ry="8" fill="#29221a" opacity=".12" pointer-events="none"/>
    ${propsBack}
    <g class="fixedHero" pointer-events="none" transform="translate(${hx} ${hy}) translate(7 -22) translate(${footShiftX} ${footShiftY}) scale(${.73*hs})"><g>${hero}</g></g>
+   ${activeItemId===null?`<g class="heroTouchArea stageHandle" data-piece="hero" transform="translate(${hx} ${hy}) translate(7 -22) translate(${footShiftX} ${footShiftY}) scale(${.73*hs})"><ellipse cx="149" cy="158" rx="83" ry="104" fill="transparent" pointer-events="all"/><ellipse cx="147" cy="249" rx="71" ry="36" fill="transparent" pointer-events="all"/></g>`:''}
    ${propsFront}
    ${backHitZones}
    ${gizmo}
@@ -1626,20 +1693,42 @@ function renderPropContextMenu(){
  const originY=sr.top-ar.top+(sr.height-192*scale)/2;
  const cx=originX+(155+(Number(it.x)||0))*scale;
  const cy=originY+(122+(Number(it.y)||0))*scale;
- const itemRadius=30*scale*Math.max(.35,Math.min(4,(Number(it.size)||100)/100));
+ const propSize=Math.max(.35,Math.min(4,(Number(it.size)||100)/100));
+ // Include the resize/rotation knobs plus a finger-width breathing gap.
+ const itemRadius=(30*propSize+15)*scale+22;
  const w=menu.offsetWidth,h=menu.offsetHeight;
  const bx=sr.left-ar.left,by=sr.top-ar.top,bw=sr.width,bh=sr.height;
  // Prefer side or vertical empty space, keeping most of the artwork unobscured.
  const roomRight=bx+bw-(cx+itemRadius),roomLeft=cx-itemRadius-bx;
  const roomBottom=by+bh-(cy+itemRadius),roomTop=cy-itemRadius-by;
  let left,top;
- if(roomRight>=w+9){left=cx+itemRadius+7;top=cy-h/2;}
- else if(roomLeft>=w+9){left=cx-itemRadius-w-7;top=cy-h/2;}
- else if(roomBottom>=h+7){left=cx-w/2;top=cy+itemRadius+6;}
- else if(roomTop>=h+7){left=cx-w/2;top=cy-itemRadius-h-6;}
- else {left=roomBottom>=roomTop?cx-w/2:cx-w/2;top=roomBottom>=roomTop?by+bh-h-5:by+5;}
- left=Math.max(bx+4,Math.min(bx+bw-w-4,left));
- top=Math.max(by+4,Math.min(by+bh-h-4,top));
+ if(roomRight>=w+12){left=cx+itemRadius+12;top=cy-h/2;}
+ else if(roomLeft>=w+12){left=cx-itemRadius-w-12;top=cy-h/2;}
+ else if(roomBottom>=h+12){left=cx-w/2;top=cy+itemRadius+12;}
+ else if(roomTop>=h+12){left=cx-w/2;top=cy-itemRadius-h-12;}
+ else {left=cx-w/2;top=roomBottom>=roomTop?by+bh+14:by-h-14;}
+ // Keep popup inside the editing region (not necessarily inside the small cut).
+ // Prioritise leaving the selected item's adjustment handles uncovered.
+ left=Math.max(4,Math.min(Math.max(4,ar.width-w-4),left));
+ top=Math.max(4,Math.min(Math.max(4,ar.height-h-4),top));
+ const overlaps=(lx,ty)=>lx<cx+itemRadius+8&&lx+w>cx-itemRadius-8&&ty<cy+itemRadius+8&&ty+h>cy-itemRadius-8;
+ if(overlaps(left,top)){
+  const options=[
+    {x:cx-w/2,y:cy+itemRadius+16},
+    {x:cx-w/2,y:cy-itemRadius-h-16},
+    {x:cx+itemRadius+16,y:cy-h/2},
+    {x:cx-itemRadius-w-16,y:cy-h/2}
+  ].map(o=>({x:clamp(o.x,4,Math.max(4,ar.width-w-4)),y:clamp(o.y,4,Math.max(4,ar.height-h-4))}));
+  options.sort((a,b)=>{
+   const penalty=o=>{
+    const closeX=Math.max(0,Math.max(o.x-cx,cx-(o.x+w)));
+    const closeY=Math.max(0,Math.max(o.y-cy,cy-(o.y+h)));
+    const distance=Math.hypot(closeX,closeY);
+    return (overlaps(o.x,o.y)?10000:0)-distance;
+   };return penalty(a)-penalty(b);
+  });
+  left=options[0].x;top=options[0].y;
+ }
  menu.style.left=Math.round(left)+'px';menu.style.top=Math.round(top)+'px';
 }
 function syncItemControls(){
@@ -1700,12 +1789,12 @@ function refreshArtControls(){
  $('advancedArtTip').textContent=availablePrincess
    ?'공주는 위에서 표정을 선택하고 전신·얼굴을 바꿔요. 동작은 표정별 전신 그림에 포함됩니다. 더 꾸미려면 소품을 움직여 보세요.'
    :otherPrincess?'이 공주는 아직 표정별 전용 그림이 없어요. 원래 전신 그림과 소품·배경으로 꾸밀 수 있어요.'
-   :hero==='bear'||hero==='robot'?'곰·로봇은 아직 서 있는 원본 그림 한 장입니다. 다른 감정은 주변 효과로 표시됩니다. 없는 자세를 완성 그림처럼 표시하지 않아요.'
-   :'동물의 자세는 준비된 전신 그림으로 바뀌어요. 기쁨·놀람 외 감정은 그림 옆 효과로 표현하며 실제 얼굴 그림은 바뀌지 않아요.';
+   :hero==='bear'||hero==='robot'?'곰·로봇은 아직 서 있는 원본 그림 한 장입니다. 이번 버전에서는 얼굴 표정선과 감정 표식을 더해 감정이 잘 보이게 했어요. 없는 자세를 완성 그림처럼 표시하지 않아요.'
+   :'동물의 자세는 준비된 전신 그림으로 바뀌어요. 이번 버전부터 9가지 감정을 얼굴 표정선과 보조 효과로 더 분명하게 보여 줘요.';
  $('artCapability').textContent=availablePrincess?'👑 표정 6가지 · 전신/얼굴 전환 가능 · 한 컷씩 다르게 꾸미기':
  otherPrincess?'👑 이 공주는 기본 그림·배경·소품 꾸미기 지원 (표정 전용 그림 준비 중)':
- hero==='bear'||hero==='robot'?'🐾 서 있는 전신 그림 1종 · 감정 효과(얼굴 그림 그대로) · 배경과 소품 꾸미기':
- '🐾 전신 동작 그림 '+choices.length+'종 · 감정 효과 9종(일부는 얼굴 그림이 아닌 주변 효과) · 컷마다 따로 저장';
+ hero==='bear'||hero==='robot'?'🐾 서 있는 전신 그림 1종 · 얼굴 표정선 9종 · 배경과 소품 꾸미기':
+ '🐾 전신 동작 그림 '+choices.length+'종 · 얼굴 표정선 9종 · 컷마다 따로 저장';
  const views=$('quickCharacterView');views.style.display=availablePrincess?'flex':'none';
  $('characterColorControls').style.display=isPrincess(hero)?'none':'';
  $('princessColorInfo').hidden=!isPrincess(hero);
@@ -1725,7 +1814,7 @@ function refreshArtControls(){
 
  // Pre-existing princess variants should not misleadingly show flower princess on click.
 }
-function syncEditor(){ if(!state.panels.length)return; const p=state.panels[selected]; $('editTitle').textContent=(selected+1)+'컷 꾸미기'; $('editProgress').textContent=(selected+1)+' / '+state.panels.length; $('panelCaption').value=p.caption||''; $('panelSpeech').value=p.speech||''; $('panelEmotion').value=p.emotion||emotions[0]; $('panelPose').value=p.pose||poses[0]; $('panelAction').value=p.action||actions[0]; $('panelBg').value=p.background||'forest'; $('panelProp').value='없음'; syncItemControls(); $('panelMood').value=p.mood||'bright'; $('heroTint').value=p.heroTint||'normal'; $('heroOutfit').value=p.heroOutfit||'normal'; $('heroSize').value=p.heroSize||100; /* itemSize is controlled by syncItemControls() for the selected prop */ $('heroSizeValue').textContent=(p.heroSize||100)+'%'; /* selected prop size label is managed by syncItemControls() */ $('composerHint').textContent=p.aiImage?'GPT 완성 그림은 한 장으로 합쳐져 있어 움직일 수 없어요. 기본 그림으로 돌아가면 꾸미기가 가능합니다.':'소품을 직접 움직이고 두 손가락으로 돌리고 크기를 조절하세요. 공주는 고정됩니다.'; $('editBubbleMode').value=p.bubbleMode||'bubble';
+function syncEditor(){ if(!state.panels.length)return; const p=state.panels[selected]; $('editTitle').textContent=(selected+1)+'컷 꾸미기'; $('editProgress').textContent=(selected+1)+' / '+state.panels.length; $('panelCaption').value=p.caption||''; $('panelSpeech').value=p.speech||''; $('panelEmotion').value=p.emotion||emotions[0]; $('panelPose').value=p.pose||poses[0]; $('panelAction').value=p.action||actions[0]; $('panelBg').value=p.background||'forest'; $('panelProp').value='없음'; syncItemControls(); $('panelMood').value=p.mood||'bright'; $('heroTint').value=p.heroTint||'normal'; $('heroOutfit').value=p.heroOutfit||'normal'; $('heroSize').value=p.heroSize||100; /* itemSize is controlled by syncItemControls() for the selected prop */ $('heroSizeValue').textContent=(p.heroSize||100)+'%'; /* selected prop size label is managed by syncItemControls() */ $('composerHint').textContent=p.aiImage?'GPT 완성 그림은 한 장으로 합쳐져 있어 움직일 수 없어요. 기본 그림으로 돌아가면 꾸미기가 가능합니다.':'소품을 직접 움직이고 두 손가락으로 돌리고 크기를 조절하세요. 소품이 선택되지 않았을 때 주인공을 눌러 이동·확대할 수 있어요.'; $('editBubbleMode').value=p.bubbleMode||'bubble';
  $('editBubbleFill').value=p.bubbleFill||'white';
  $('editBubbleOpacity').value=p.bubbleOpacity??70;
  $('editOpacityValue').textContent=(p.bubbleOpacity??70)+'%';
@@ -1795,7 +1884,9 @@ function stagePointerDown(e){
  const idx=Number(panelButton.dataset.panelIndex);
  if(!Number.isInteger(idx)||idx<0||idx>=state.panels.length)return;
  const piece=knob?'item':handle.dataset.piece;
- if(piece==='hero')return; // C3.13.0: princess is locked during prop editing
+ // Keep the princess fixed while a prop is selected. When no prop is
+ // selected, the child can grab the princess directly and resize by pinching.
+ if(piece==='hero'&&activeItemId!==null)return;
  const id=knob?.dataset.itemId||handle?.dataset.itemId;
  const panel=state.panels[idx];const it=piece==='item'?ensureItems(panel).find(v=>v.id===id):null;
  if(piece==='item'&&!it)return;
@@ -1811,8 +1902,8 @@ function stagePointerDown(e){
  }
  const g=stageGesture;
  g.pointers.set(e.pointerId,point);
- if(g.pointers.size===1)g.start={points:[point],x:Number((it||panel)[it?'x':'heroX'])||0,y:Number((it||panel)[it?'y':'heroY'])||0,size:Number(it?.size)||100,rotation:Number(it?.rotation)||0,stretchX:Number(it?.stretchX)||1,stretchY:Number(it?.stretchY)||1};
- if(g.pointers.size===2){const ps=[...g.pointers.values()];g.start={points:ps,x:Number((it||panel)[it?'x':'heroX'])||0,y:Number((it||panel)[it?'y':'heroY'])||0,size:Number(it?.size)||100,rotation:Number(it?.rotation)||0,stretchX:Number(it?.stretchX)||1,stretchY:Number(it?.stretchY)||1};}
+ if(g.pointers.size===1)g.start={points:[point],x:Number((it||panel)[it?'x':'heroX'])||0,y:Number((it||panel)[it?'y':'heroY'])||0,size:Number(it?.size??panel.heroSize)||100,rotation:Number(it?.rotation)||0,stretchX:Number(it?.stretchX)||1,stretchY:Number(it?.stretchY)||1};
+ if(g.pointers.size===2){const ps=[...g.pointers.values()];g.start={points:ps,x:Number((it||panel)[it?'x':'heroX'])||0,y:Number((it||panel)[it?'y':'heroY'])||0,size:Number(it?.size??panel.heroSize)||100,rotation:Number(it?.rotation)||0,stretchX:Number(it?.stretchX)||1,stretchY:Number(it?.stretchY)||1};}
  try{svg.setPointerCapture(e.pointerId)}catch(_){}
  e.preventDefault();e.stopPropagation();
 }
@@ -1821,15 +1912,21 @@ function stagePointerMove(e){
  const pt=stagePoint(g.svg,e);if(!pt)return;
  g.pointers.set(e.pointerId,pt);const t=g.item||g.panel,s=g.start;
  const ps=[...g.pointers.values()];if(!s)return;
- if(ps.length>=2&&g.item){
+ if(ps.length>=2){
   const [a,b]=ps,[p,q]=s.points;
   if(!q)return;
   const oldDist=Math.hypot(q.x-p.x,q.y-p.y),newDist=Math.hypot(b.x-a.x,b.y-a.y);
   const oldAngle=Math.atan2(q.y-p.y,q.x-p.x),newAngle=Math.atan2(b.y-a.y,b.x-a.x);
-  t.size=Math.round(clamp(s.size*(newDist/Math.max(1,oldDist)),20,450));
-  t.rotation=Math.round(clamp(s.rotation+(newAngle-oldAngle)*180/Math.PI,-360,360));
-  t.x=clamp(s.x+(a.x+b.x-p.x-q.x)/2,-200,200);
-  t.y=clamp(s.y+(a.y+b.y-p.y-q.y)/2,-175,175);
+  if(g.item){
+   t.size=Math.round(clamp(s.size*(newDist/Math.max(1,oldDist)),20,450));
+   t.rotation=Math.round(clamp(s.rotation+(newAngle-oldAngle)*180/Math.PI,-360,360));
+   t.x=clamp(s.x+(a.x+b.x-p.x-q.x)/2,-200,200);
+   t.y=clamp(s.y+(a.y+b.y-p.y-q.y)/2,-175,175);
+  }else{
+   t.heroSize=Math.round(clamp(s.size*(newDist/Math.max(1,oldDist)),45,175));
+   t.heroX=+clamp(s.x+(a.x+b.x-p.x-q.x)/2,-200,200).toFixed(2);
+   t.heroY=+clamp(s.y+(a.y+b.y-p.y-q.y)/2,-175,175).toFixed(2);
+  }
  }else{
   const p=s.points[0],a=ps[0],dx=a.x-p.x,dy=a.y-p.y;
   if(g.handle==='rotation'&&g.item){
@@ -1857,8 +1954,12 @@ function stagePointerMove(e){
   if(elem){const z=clamp((Number(it.size)||100)/100,.15,5);elem.setAttribute('transform',`translate(${Number(it.x)||0} ${Number(it.y)||0}) translate(155 122) rotate(${Number(it.rotation)||0}) scale(${z*(it.flip?-1:1)*(Number(it.stretchX)||1)} ${z*(Number(it.stretchY)||1)})`)}
   // Old gizmo may remain until gesture ends; interaction remains on actual art.
  }else{
-  const elem=g.svg.querySelector('.stageHandle[data-piece="hero"]');
-  if(elem){const first=elem.getAttribute('transform');elem.setAttribute('transform',first.replace(/^translate\([^)]*\)/,`translate(${Number(t.heroX)||0} ${Number(t.heroY)||0})`))}
+  const hs=clamp((Number(t.heroSize)||100)/100,.45,1.75);
+  const footX=isPrincess(state.hero)?121:state.hero==='custom'?120:150;
+  const footY=state.hero==='custom'?240:isPrincess(state.hero)?276:271;
+  const tx=+(0.73*footX*(1-hs)).toFixed(3),ty=+(0.73*footY*(1-hs)).toFixed(3);
+  const transform=`translate(${Number(t.heroX)||0} ${Number(t.heroY)||0}) translate(7 -22) translate(${tx} ${ty}) scale(${.73*hs})`;
+  for(const elem of g.svg.querySelectorAll('.fixedHero, .stageHandle[data-piece="hero"]'))elem.setAttribute('transform',transform);
  }
  e.preventDefault();
 }
@@ -1869,7 +1970,7 @@ function stagePointerEnd(e){
  if(!g.pointers.size){lastPropGestureEnded=performance.now();stageGesture=null;renderComic();return;}
  // When one finger remains after pinch, start a new one-finger drag baseline.
  const p=[...g.pointers.values()][0],t=g.item||g.panel;
- g.start={points:[p],x:Number(t[g.item?'x':'heroX'])||0,y:Number(t[g.item?'y':'heroY'])||0,size:Number(g.item?.size)||100,rotation:Number(g.item?.rotation)||0,stretchX:Number(g.item?.stretchX)||1,stretchY:Number(g.item?.stretchY)||1};
+ g.start={points:[p],x:Number(t[g.item?'x':'heroX'])||0,y:Number(t[g.item?'y':'heroY'])||0,size:Number(g.item?.size??t.heroSize)||100,rotation:Number(g.item?.rotation)||0,stretchX:Number(g.item?.stretchX)||1,stretchY:Number(g.item?.stretchY)||1};
 }
 $('comicArea').addEventListener('pointerdown',stagePointerDown);
 $('comicArea').addEventListener('pointermove',stagePointerMove);
@@ -1888,7 +1989,7 @@ function syncDirectTools(it){
  if(it&&!shapeNames.includes(it.name))shape.add(new Option(it.name,it.name));
  shape.value=it?.name||'';
  color.value=it?.tint||'normal';
- status.textContent=it?`선택한 소품: ${it.name} · ${it.layer==='back'?'공주 뒤':'공주 앞'} · 크기 ${it.size||100}%`:'그림 속 소품을 눌러 선택하세요. 빈 곳을 누르면 선택이 해제돼요. 공주는 고정됩니다.';
+ status.textContent=it?`선택한 소품: ${it.name} · ${it.layer==='back'?'공주 뒤':'공주 앞'} · 크기 ${it.size||100}%`:'소품을 누르면 소품 조절, 빈 곳을 누르면 선택 해제! 그다음 주인공을 잡으면 이동·확대할 수 있어요.';
  for(const id of ['directShape','directColor','directFront','directBack','directBring','directShrink','directGrow','directRotateL','directRotateR','directFlip','directDuplicate','directDelete'])$(id).disabled=!it;
 }
 function directChange(fn){const it=currentItem();if(!it)return;rememberAction('direct-change-'+Date.now());fn(it);renderComic()}
@@ -2032,7 +2133,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.13.0 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C3.13.2 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -2674,7 +2775,7 @@ const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
 // C3.13.0: Same-origin static version manifest, no extra accounts or external service.
-const WEBTOON_APP_VERSION='3.11.1';
+const WEBTOON_APP_VERSION='3.13.2';
 let latestPublishedVersion=null;
 function versionNumbers(v){
  const match=String(v||'').match(/^C?(\d+)\.(\d+)\.(\d+)$/i);
