@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C4.1.1</title>
+<title>나만의 웹툰 창작극장 C4.2.1</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -167,7 +167,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #studio .studioFrame{background:linear-gradient(155deg,#fff5fc,#e9e4ff);position:relative}
 #studio .studioFrame:before{content:'✨ 나의 새로운 공주 ✨';display:block;color:#9b66a7;font-weight:750;font-size:14px;margin:5px}
 
-/* C4.1.1 — princess preview on top, all controls underneath.
+/* C4.2.1 — princess preview on top, all controls underneath.
    The SVG uses an intrinsic 520x620 size; override it inside the live canvas
    so that it cannot cover the neighboring fields on iPad. */
 #studio .studioGrid {
@@ -230,7 +230,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.1.1 · 고화질 소품 보강과 꾸미기 점검</span>
+    <span class="pill">MASTER C4.2.1 · 버전표시·업데이트 안정화</span>
   </header>
 
   <nav class="tabs">
@@ -241,13 +241,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.1.1)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.1.1 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.2.1)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.2.1 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
     </div>
-    <p class="hint" style="margin-top:7px">업데이트는 GitHub에 새 index.html과 version.json을 게시한 후 확인할 수 있어요. 앱을 다시 여는 것만으로 GitHub 파일이 업로드되지는 않습니다. 저장한 작품은 초기화하지 않습니다.</p>
+    <p class="hint" style="margin-top:7px">새 버전을 GitHub에 게시할 때 ZIP 안의 <b>index.html과 version.json 두 파일을 함께</b> 올려 주세요. 앱을 새로 열면 업데이트를 확인하고 새 버전으로 이동합니다. 사용 중에 새 버전이 발견되면 버튼을 눌러 이동할 수 있어요. 작품 저장공간은 초기화하지 않습니다.</p>
   </details>
 
 
@@ -690,7 +690,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.1.1 · 컷마다 표정과 자세가 달라지는 실제 웹툰형 시험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.2.1 · 버전 일치·자동 업데이트 확인 개선</div>
 </div>
 <div id="toast"></div>
 
@@ -923,7 +923,7 @@ function premiumPrincessAdornment(style,heroId,view){
  return `<g pointer-events="none" class="princessOrnaments">${star(24,112,7)}${star(211,109,7)}${star(34,197,5)}${star(203,216,6)}${star(65,45,4)}${star(190,166,5)}${star(92,243,5)}</g>`;
 }
 
-// C4.1.1: multi-slot studio wardrobe. Coordinates live within the hero SVG,
+// C4.2.1: multi-slot studio wardrobe. Coordinates live within the hero SVG,
 // so they follow the hero's drag and foot-anchored scaling (and render in exported PNG).
 const princessWearProfiles={
  princess_flower:{hair:[86,96],neck:[125,151],ears:[105,121,149,121],back:[123,162],hand:[189,139],builtIn:{crown:true,wings:false,staff:true}},
@@ -1857,7 +1857,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C4.1.1 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C4.2.1 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -2473,11 +2473,16 @@ $('quickBubbleMore').addEventListener('click',()=>{
 const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
-// C4.1.1: Same-origin static version manifest, no extra accounts or external service.
-const WEBTOON_APP_VERSION='4.2.0';
+// C4.2.1: One source of truth for installed version; manifest supplied with each ZIP.
+// A GitHub Pages deployment must publish BOTH index.html and version.json in the same folder.
+const WEBTOON_APP_VERSION='4.2.1';
 let latestPublishedVersion=null;
+let initialVersionCheck=true;
+let versionCheckInFlight=false;
+let versionLastChecked=0;
+const VERSION_RELOAD_KEY='webtoon-version-reload-attempt-v1';
 function versionNumbers(v){
- const match=String(v||'').match(/^C?(\d+)\.(\d+)\.(\d+)$/i);
+ const match=String(v||'').trim().match(/^C?(\d+)\.(\d+)\.(\d+)$/i);
  return match?match.slice(1).map(Number):null;
 }
 function compareVersions(a,b){
@@ -2486,39 +2491,85 @@ function compareVersions(a,b){
  for(let k=0;k<3;k++)if(x[k]!==y[k])return x[k]>y[k]?1:-1;
  return 0;
 }
-async function checkWebtoonVersion(quiet=false){
+function freshAppUrl(version){
+ const dest=new URL(window.location.href);
+ dest.searchParams.set('v',version.replaceAll('.',''));
+ dest.searchParams.set('updated',String(Date.now()));
+ return dest.toString();
+}
+function updateVersionLabels(){
+ const version='C'+WEBTOON_APP_VERSION;
+ document.title='나만의 웹툰 창작극장 '+version;
+ const label=document.querySelector('#versionPanel summary span');
+ if(label)label.textContent='(현재 '+version+')';
+ const st=document.getElementById('versionStatus');
+ if(st)st.textContent='설치된 버전 '+version+' · 최신 버전 확인 중';
+}
+function proceedToPublishedVersion(remote,automatic=false){
+ if(compareVersions(remote,WEBTOON_APP_VERSION)!==1)return;
+ if(automatic){
+  // Avoid an endless reload loop if a new manifest becomes visible before the HTML itself.
+  // The marker applies to this tab only and is NOT a work-data storage key.
+  const now=Date.now();
+  try{
+   const marker=JSON.parse(sessionStorage.getItem(VERSION_RELOAD_KEY)||'null');
+   if(marker?.version===remote&&now-marker.at<120000)return false;
+   sessionStorage.setItem(VERSION_RELOAD_KEY,JSON.stringify({version:remote,at:now}));
+  }catch(e){/* Private browsing/storage denial: proceed without tracking. */}
+ }
+ window.location.replace(freshAppUrl(remote));
+ return true;
+}
+async function checkWebtoonVersion(quiet=false,autoOnOpen=false){
+ if(versionCheckInFlight)return;
+ versionCheckInFlight=true;
  const st=document.getElementById('versionStatus');
  const install=document.getElementById('installLatestVersion');
  const panel=document.getElementById('versionPanel');
- if(!st||!install)return;
+ if(!st||!install){versionCheckInFlight=false;return}
  if(!quiet)st.textContent='게시된 버전을 확인하고 있어요…';
- install.hidden=true;
  try{
-  const res=await fetch('./version.json?check='+Date.now(),{cache:'no-store'});
-  if(!res.ok)throw new Error('버전 정보 없음');
+  const res=await fetch(new URL('./version.json?check='+Date.now(),location.href),{cache:'no-store'});
+  if(!res.ok)throw new Error('version.json 없음');
   const manifest=await res.json();
-  const remote=String(manifest.version||'');
-  if(!versionNumbers(remote))throw new Error('버전 정보 형식 오류');
+  const remote=String(manifest.version||'').replace(/^C/i,'');
+  if(!versionNumbers(remote))throw new Error('버전 형식 오류');
   latestPublishedVersion=remote;
+  versionLastChecked=Date.now();
   const cmp=compareVersions(remote,WEBTOON_APP_VERSION);
   if(cmp>0){
-   st.textContent='✨ 새 버전 C'+remote+'이(가) 게시되었습니다. 업데이트 버튼을 눌러 주세요.';
    install.hidden=false;
-   if(quiet&&panel)panel.open=true;
-  }else if(cmp===0){st.textContent='✅ 최신 버전 C'+WEBTOON_APP_VERSION+'을 사용 중입니다.';}
-  else{st.textContent='현재 앱 C'+WEBTOON_APP_VERSION+' · 게시된 버전 C'+remote+' (게시 정보가 이전 버전입니다).';}
+   st.textContent='✨ 최신 게시 버전 C'+remote+' / 현재 실행 버전 C'+WEBTOON_APP_VERSION+'. 업데이트가 준비되었습니다.';
+   if(autoOnOpen && proceedToPublishedVersion(remote,true))return;
+   if(panel)panel.open=true;
+  }else if(cmp===0){
+   install.hidden=true;
+   st.textContent='✅ 현재 C'+WEBTOON_APP_VERSION+' · 게시 버전과 일치합니다.';
+   try{sessionStorage.removeItem(VERSION_RELOAD_KEY)}catch(e){}
+  }else{
+   install.hidden=true;
+   st.textContent='현재 C'+WEBTOON_APP_VERSION+' · 게시 정보 C'+remote+' (index.html보다 오래된 version.json입니다. 두 파일을 함께 게시하세요.)';
+  }
  }catch(e){
-  st.textContent='현재 앱 C'+WEBTOON_APP_VERSION+' · 버전 정보를 확인할 수 없습니다. GitHub의 webtoon 폴더에 version.json을 함께 올렸는지 확인해 주세요.';
- }
+  st.textContent='현재 C'+WEBTOON_APP_VERSION+' · 게시 버전 확인 불가. index.html과 version.json이 같은 폴더에 있는지 확인하세요.';
+ }finally{versionCheckInFlight=false;initialVersionCheck=false}
 }
-document.getElementById('checkVersionNow')?.addEventListener('click',()=>checkWebtoonVersion(false));
+document.getElementById('checkVersionNow')?.addEventListener('click',()=>checkWebtoonVersion(false,false));
 document.getElementById('installLatestVersion')?.addEventListener('click',()=>{
  if(!latestPublishedVersion||compareVersions(latestPublishedVersion,WEBTOON_APP_VERSION)<=0)return;
- const dest=new URL(window.location.href);
- dest.searchParams.set('v',latestPublishedVersion.replaceAll('.',''));
- dest.searchParams.set('refresh',String(Date.now()));
- window.location.assign(dest.toString());
+ // On-demand refresh never clears any app storage. Warn about unsaved edits.
+ if(!confirm('새 버전 C'+latestPublishedVersion+'을 열까요? 저장하지 않은 현재 편집 내용은 사라질 수 있습니다. 작품을 먼저 저장했다면 확인을 눌러 주세요.'))return;
+ proceedToPublishedVersion(latestPublishedVersion,false);
 });
+// When the user RETURNS to an already-open iPad home-screen app, only show the
+// update button: don't abruptly discard a work that is being edited.
+document.addEventListener('visibilitychange',()=>{
+ if(document.visibilityState==='visible'&&Date.now()-versionLastChecked>60000)checkWebtoonVersion(true,false);
+});
+window.addEventListener('pageshow',e=>{
+ if(e.persisted&&Date.now()-versionLastChecked>60000)checkWebtoonVersion(true,false);
+});
+updateVersionLabels();
 
 init();
 
@@ -2776,7 +2827,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
  b.prepend(thumbnail);
 }
 // After the first screen is ready, verify the published version without blocking editing.
-setTimeout(()=>checkWebtoonVersion(true),700);
+setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
 </body>
 </html>

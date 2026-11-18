@@ -1,4 +1,5 @@
 {
-  "version": "4.1.0",
-  "file": "index.html"
+  "version": "4.2.1",
+  "app": "나만의 웹툰 창작극장",
+  "description": "버전 표시와 업데이트 안정화"
 }
