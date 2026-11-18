@@ -156,6 +156,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .studioExpressionButton{border:2px solid #ead7f6;background:white;border-radius:13px;padding:6px 4px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:750;color:#51365f;font-size:12px}
 .studioExpressionButton.selected{border-color:#8d55c6;background:#f3e7ff;box-shadow:inset 0 0 0 1px #8d55c6}
 .studioExpressionButton svg{height:72px;width:100%;max-width:95px;display:block}.studioExpressionButton:focus-visible{outline:3px solid #8d55c6;outline-offset:2px}
+.studioPoseBox{padding:12px;border-radius:17px;background:#f9fbff;border:1px solid #dce8f8;margin-top:13px}
+.studioPoseButtons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.studioPoseButton{border:2px solid #d8e5f3;background:white;border-radius:13px;padding:10px 6px;min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:800;color:#46627d;font-size:13px}
+.studioPoseButton.selected{border-color:#5e8fe0;background:#eef5ff;box-shadow:inset 0 0 0 1px #5e8fe0}
+.studioPoseButton:disabled{opacity:.4;cursor:not-allowed;background:#f6f6fa}
+.studioPoseIcon{font-size:25px;line-height:1}
+.studioPoseHint{margin:8px 0 0;color:#6b7f98;font-size:12px;line-height:1.5}
 #studioArtHint{line-height:1.5}
 #studio .studioFrame{background:linear-gradient(155deg,#fff5fc,#e9e4ff);position:relative}
 #studio .studioFrame:before{content:'✨ 나의 새로운 공주 ✨';display:block;color:#9b66a7;font-weight:750;font-size:14px;margin:5px}
@@ -295,6 +302,11 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <div class="studioExpressionBox">
             <div class="studioExprHeader"><b>😊 자동으로 만든 여섯 표정</b><span>표정을 누르면 큰 그림도 바뀌어요</span></div>
             <div class="studioExpressions" id="studioExpressions" role="group" aria-label="공주 여섯 표정"></div>
+          </div>
+          <div class="studioPoseBox">
+            <div class="studioExprHeader"><b>🏃 자세 고르기</b><span>표정에 따라 고를 수 있는 자세가 달라요</span></div>
+            <div class="studioPoseButtons" id="studioPoseButtons" role="group" aria-label="공주 자세 고르기"></div>
+            <p class="studioPoseHint" id="studioPoseHint">생각하기는 서 있기만, 신나기는 서 있기와 뛰어오르기를 고를 수 있어요.</p>
           </div>
           <div class="studioActions">
             <button type="button" id="studioSave" class="primary">💝 공주와 여섯 표정 저장</button>
@@ -1248,7 +1260,7 @@ function colorizedHeroImage(sprite,panel){
 }
 
 function heroSvg(panel){
- if(state.hero==='custom'&&state.studioRecipe){return studioCharacterSvg(state.studioRecipe,studioEmotionNormalize(panel.emotion),false);}
+ if(state.hero==='custom'&&state.studioRecipe){return studioCharacterSvg(state.studioRecipe,{emotion:studioEmotionNormalize(panel.emotion),pose:panel.pose},false);}
  if(isPrincess(state.hero))return premiumPrincessSvg(panel,state.hero);
  const sprite=characterAsset(panel);
  if(sprite){
@@ -1603,44 +1615,38 @@ function refreshArtControls(){
  const animal=!isPrincess(hero);
  const availableEmotions=(availablePrincess||isNewStudio)?['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요']
    :animal?illustratedAnimalEmotions:['기뻐요'];
- const allPoseOptions=availablePrincess?[]:(supportedPoseMap[hero]||['서 있기']);
  document.querySelectorAll('[data-quick-emotion]').forEach(btn=>{
    const yes=availableEmotions.includes(btn.dataset.quickEmotion);
    btn.disabled=!yes;btn.title=yes?'이 표정은 선택할 수 있어요':'이 주인공은 아직 해당 전용 표정 그림이 없어요';
    btn.style.opacity=yes?'1':'.35';
  });
- // Leave saved values untouched; render choices from actual source art only.
  const emotionSelect=$('panelEmotion'),savedEmotion=p.emotion||'기뻐요';
  emotionSelect.replaceChildren();availableEmotions.forEach(v=>emotionSelect.add(new Option(v,v)));
  if(!availableEmotions.includes(savedEmotion))emotionSelect.add(new Option(savedEmotion+' (이전 설정 · 전용 그림 없음)',savedEmotion));
  emotionSelect.value=savedEmotion;
  const pose=$('panelPose'),savedPose=p.pose||'서 있기';
- const choices=allPoseOptions.length?allPoseOptions:['서 있기'];
- pose.replaceChildren();choices.forEach(v=>pose.add(new Option(v,v)));
- if(!choices.includes(savedPose))pose.add(new Option(savedPose+' (이전 설정 · 전용 그림 없음)',savedPose));
+ const poseChoices=isNewStudio?studioPanelPoseChoices(savedEmotion):(availablePrincess?[]:(supportedPoseMap[hero]||['서 있기']));
+ const choices=poseChoices.length?poseChoices:['서 있기'];
+ pose.replaceChildren();choices.forEach(v=>pose.add(new Option(studioPanelPoseLabel(v),v)));
+ if(!choices.includes(savedPose))pose.add(new Option(studioPanelPoseLabel(savedPose)+' (이전 설정 · 전용 그림 없음)',savedPose));
  pose.value=savedPose; pose.disabled=otherPrincess||availablePrincess||choices.length===1;
  const poseWrapper=pose.parentElement;
- poseWrapper.style.display=(isPrincess(hero)||isNewStudio)?'none':'';
- const action=$('panelAction');action.parentElement.style.display='none'; // Use clearly described quick action buttons for all characters.
- // Animal action is interpreted as a prop/staging cue, not a new body pose.
- $('advancedArtTip').textContent=isNewStudio?'내가 만든 공주는 같은 머리·드레스·장식으로 표정 여섯 가지를 사용할 수 있어요. 각 컷에서 표정 버튼을 눌러 보세요.':availablePrincess
+ poseWrapper.style.display=isPrincess(hero)&&!isNewStudio?'none':'';
+ const action=$('panelAction');action.parentElement.style.display='none';
+ $('advancedArtTip').textContent=isNewStudio?'내가 만든 공주는 같은 머리·드레스·장식으로 표정 6가지와 자세 3가지를 조합해요. 생각하기·슬프기는 서 있기만, 신나기는 서 있기·뛰어오르기만 지원해요.':availablePrincess
    ?'공주는 위에서 표정을 선택하고 전신·얼굴을 바꿔요. 동작은 표정별 전신 그림에 포함됩니다. 더 꾸미려면 소품을 움직여 보세요.'
    :otherPrincess?'이 공주는 아직 표정별 전용 그림이 없어요. 원래 전신 그림과 소품·배경으로 꾸밀 수 있어요.'
    :hero==='bear'||hero==='robot'?'이 주인공은 전신 서 있기 그림만 준비되어 있어요. 놀람은 효과로 표시되며, 다른 동작은 아직 없어요.'
    :'표정은 웃기·놀라기, 자세는 실제 준비된 동작 그림만 선택할 수 있어요. 나머지 표정은 제작 후 추가됩니다.';
- $('artCapability').textContent=isNewStudio?'👑 내가 만든 공주 · 표정 6가지 자동 적용 · 컷마다 표정 선택 가능':availablePrincess?'👑 표정 6가지 · 전신/얼굴 전환 가능 · 한 컷씩 다르게 꾸미기':
+ $('artCapability').textContent=isNewStudio?`👑 내가 만든 공주 · 표정 6가지 · 지금 표정의 자세 ${choices.length}종 선택 가능`:availablePrincess?'👑 표정 6가지 · 전신/얼굴 전환 가능 · 한 컷씩 다르게 꾸미기':
  otherPrincess?'👑 이 공주는 기본 그림·배경·소품 꾸미기 지원 (표정 전용 그림 준비 중)':
  hero==='bear'||hero==='robot'?'🐾 기본 자세 1종 · 놀람 효과 · 배경과 소품 꾸미기':
  '🐾 웃기·놀라기 · 준비된 동작 '+choices.length+'종 · 배경과 소품 꾸미기 (일부 자세와 표정은 조합 불가)';
  const views=$('quickCharacterView');views.style.display=availablePrincess?'flex':'none';
  $('characterColorControls').style.display=(isPrincess(hero)||isNewStudio)?'none':'';
  $('princessColorInfo').hidden=!isPrincess(hero);
- // Most premium sprites are already finished 3D paintings: do not show controls
- // that fail silently or would replace the face. Hair decoration/sparkles are real.
  const paintedPremium=isPrincess(hero)&&!!premiumPrincessImages[hero];
  const expressionPainting=paintedPremium && (p.useExpressionArt!==false);
- // A flat painted character does not expose independently tintable hair or gown.
- // Hide misleading controls even for the first six princess variants.
  for(const id of ['premiumHairColorSetting','premiumDressColorSetting']){
   const el=$(id);if(el)el.style.display=paintedPremium?'none':'';
  }
@@ -1667,6 +1673,16 @@ function updatePanel(field,value){ if(!state.panels.length)return; state.panels[
 ['panelCaption','panelSpeech'].forEach(id=>$(id).addEventListener('input',e=>updatePanel(id==='panelCaption'?'caption':'speech',e.target.value)));
 [['panelEmotion','emotion'],['panelPose','pose'],['panelAction','action'],['panelMood','mood']].forEach(([id,field])=>$(id).addEventListener('change',e=>{
  if(field==='emotion'&&isPrincess(state.hero)){rememberAction('emotion-select-'+Date.now());state.panels[selected].useExpressionArt=true;}
+ if(field==='emotion'&&state.hero==='custom'&&state.studioRecipe){
+  state.panels[selected].emotion=e.target.value;
+  syncStudioPanelPose(state.panels[selected],true);
+  return renderComic();
+ }
+ if(field==='pose'&&state.hero==='custom'&&state.studioRecipe){
+  state.panels[selected].pose=e.target.value;
+  syncStudioPanelPose(state.panels[selected],true);
+  return renderComic();
+ }
  if(field==='pose' && ['rabbit','cat','fox','fairy'].includes(state.hero) && ['점프하기','뛰기'].includes(e.target.value) && state.panels[selected].emotion==='놀랐어요'){
   state.panels[selected].emotion='기뻐요';
   toast('이 자세의 놀란 표정 그림은 아직 없어서 웃는 동작 그림으로 바꿨어요.');
@@ -2436,6 +2452,7 @@ for(const btn of document.querySelectorAll('[data-quick-emotion]'))btn.addEventL
  const p=state?.panels?.[selected];if(!p||btn.disabled)return;
  rememberAction('quick-emotion-'+Date.now());
  p.emotion=btn.dataset.quickEmotion;
+ if(state.hero==='custom'&&state.studioRecipe)syncStudioPanelPose(p,true);
  if(['rabbit','cat','fox','fairy'].includes(state.hero)&&p.emotion==='놀랐어요'&&['뛰기','점프하기'].includes(p.pose)){
    p.pose=state.hero==='rabbit'?'서 있기':'걷기';
    toast('놀란 표정 전용 달리기·점프 그림은 아직 없어요. 놀란 얼굴이 보이는 자세로 바꿨어요.');
@@ -2457,7 +2474,7 @@ const previousSyncEditor=syncEditor;
 syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
 // C4.1.1: Same-origin static version manifest, no extra accounts or external service.
-const WEBTOON_APP_VERSION='4.1.0';
+const WEBTOON_APP_VERSION='4.2.0';
 let latestPublishedVersion=null;
 function versionNumbers(v){
  const match=String(v||'').match(/^C?(\d+)\.(\d+)\.(\d+)$/i);
@@ -2509,7 +2526,42 @@ init();
 const STUDIO_STORAGE_KEY='family-webtoon-princess-studio-v1';
 const STUDIO_FIELDS=['studioBaseModel','studioName','studioBackground','studioPremiumHero','studioHair','studioHairColor','studioDress','studioCrown','studioWings','studioStaff','studioShoes','studioEmotion','studioFace','studioEyes'];
 const studioColors={rose:['#fff2f9','#e9c7ed'],lavender:['#f6edff','#d7cbff'],mint:['#f0fff6','#c9f0e8'],sky:['#f1fbff','#d3eafb'],white:['#ffffff','#f6f0ff']};
-const studioDefaults={mode:'modular',baseModel:'rose3d',name:'나의 꽃빛 공주',background:'rose',hero:'princess_flower',hairStyle:'long',hairColor:'rose',dress:'pink',crown:'crown',wings:'none',staff:'none',shoes:'pink',face:'round',eyes:'jewel',emotion:'기뻐요',sparkles:true};
+const studioDefaults={mode:'modular',baseModel:'rose3d',name:'나의 꽃빛 공주',background:'rose',hero:'princess_flower',hairStyle:'long',hairColor:'rose',dress:'pink',crown:'crown',wings:'none',staff:'none',shoes:'pink',face:'round',eyes:'jewel',emotion:'기뻐요',pose:'서 있기',sparkles:true};
+const studioPoseCatalog=[{id:'서 있기',label:'서 있기',icon:'🧍'},{id:'걷기',label:'걷기',icon:'🚶'},{id:'뛰어오르기',label:'뛰어오르기',icon:'✨'}];
+const studioEmotionPoseMap={
+ '기뻐요':['서 있기','걷기'],
+ '놀랐어요':['서 있기','걷기'],
+ '슬퍼요':['서 있기'],
+ '화났어요':['서 있기','걷기'],
+ '생각해요':['서 있기'],
+ '신나요':['서 있기','뛰어오르기']
+};
+function studioPoseNormalize(v){
+ const pose=String(v||'').trim();
+ if(['점프하기','뛰기','뛰어 오르기','뛰어오르기'].includes(pose))return '뛰어오르기';
+ if(pose==='걷기')return '걷기';
+ return '서 있기';
+}
+function studioAllowedPoses(emotion){
+ return (studioEmotionPoseMap[studioEmotionNormalize(emotion)]||['서 있기']).slice();
+}
+function studioEnsurePose(emotion,pose){
+ const allowed=studioAllowedPoses(emotion);
+ const current=studioPoseNormalize(pose);
+ return allowed.includes(current)?current:allowed[0];
+}
+function studioPoseToPanelPose(pose){return studioPoseNormalize(pose)==='뛰어오르기'?'점프하기':studioPoseNormalize(pose);}
+function studioPanelPoseChoices(emotion){return studioAllowedPoses(emotion).map(studioPoseToPanelPose);}
+function studioPanelPoseLabel(value){return value==='점프하기'?'뛰어오르기':value;}
+function syncStudioPanelPose(panel,shouldToast=false){
+ if(!panel)return;
+ const before=panel.pose||'서 있기';
+ const choices=studioPanelPoseChoices(panel.emotion);
+ if(!choices.includes(before)){
+  panel.pose=choices[0];
+  if(shouldToast)toast('이 표정에서 고를 수 있는 자세로 바꿨어요.');
+ }
+}
 let studio={...studioDefaults};
 function studioSafeName(){return (document.getElementById('studioName').value.trim()||'나의 공주').slice(0,28)}
 function studioRecipe(){return {...studio,name:studioSafeName()}}
@@ -2522,10 +2574,18 @@ function studioEmotionNormalize(emotion){
  return ['놀랐어요','슬퍼요','화났어요','생각해요','신나요','기뻐요'].includes(s)?s:
    s==='궁금해요'?'생각해요':s==='자랑스러워요'?'신나요':'기뻐요';
 }
-function studioCharacterSvg(recipe, rawEmotion, includeBackground=false){
+function studioCharacterSvg(recipe, rawEmotion, includeBackground=false, poseOverride=null){
  const r={...studioDefaults,...(recipe||{}),mode:'modular'};
- const e=studioEmotionNormalize(rawEmotion||r.emotion);
- if(r.baseModel==='rose3d'){const src=studioRoseExpressionAssets[e]||studioRoseExpressionAssets['기뻐요'];return `<image href="${src}" x="3" y="4" width="254" height="290" preserveAspectRatio="xMidYMid meet"/>`;}
+ const incoming=rawEmotion&&typeof rawEmotion==='object'?rawEmotion:{emotion:rawEmotion,pose:poseOverride};
+ const e=studioEmotionNormalize(incoming.emotion||r.emotion);
+ const pose=studioEnsurePose(e,incoming.pose||r.pose);
+ const walking=pose==='걷기';
+ const jumping=pose==='뛰어오르기';
+ const poseTilt=jumping?-6:(walking?-4:0);
+ const poseDx=walking?4:0;
+ const poseDy=jumping?-16:0;
+ const poseFx=jumping?'<path d="M92 282 Q129 266 167 282" stroke="#fff" stroke-width="5" fill="none" opacity=".68"/><text x="202" y="138" font-size="24">✨</text>':walking?'<path d="M45 229 l30 -5 M45 244 l25 -4" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".75"/>':'';
+ if(r.baseModel==='rose3d'){const src=studioRoseExpressionAssets[e]||studioRoseExpressionAssets['기뻐요'];return `<g transform="translate(${poseDx} ${poseDy}) rotate(${poseTilt} 130 185)"><image href="${src}" x="3" y="4" width="254" height="290" preserveAspectRatio="xMidYMid meet"/></g>${poseFx}`;}
 
  const color=(key,table,fallback)=>table[key]||fallback;
  const h=color(r.hairColor,princessColors.hair,'#e9b847');
@@ -2563,8 +2623,8 @@ function studioCharacterSvg(recipe, rawEmotion, includeBackground=false){
  <path d="M111 188 Q130 195 149 188 L149 210 Q130 221 111 210Z" fill="${dress}" stroke="#cf9fbb" stroke-width="2"/>
  <path d="M108 198 Q130 207 153 197" fill="none" stroke="#fff7fa" stroke-width="7"/>
  <path d="M116 211 Q129 205 141 211" fill="none" stroke="#ffeab4" stroke-width="2.6"/><path d="M116 205 L130 215 L144 205" fill="none" stroke="#fff" stroke-width="2"/><ellipse cx="130" cy="209" rx="6" ry="7.5" fill="${gem}" stroke="#fff3c8" stroke-width="2"/>`;
- const shoes=`<path d="M112 271 L111 283 M150 271 L151 283" fill="none" stroke="#f4c2b6" stroke-width="9" stroke-linecap="round"/><ellipse cx="105" cy="283" rx="15" ry="7" fill="${shoe}" stroke="#c19b9d" stroke-width="1.5"/><ellipse cx="158" cy="283" rx="15" ry="7" fill="${shoe}" stroke="#c19b9d" stroke-width="1.5"/><path d="M98 279 l11 0 M151 279 l12 0" stroke="#fff" stroke-width="2"/>`;
- const arms=`<path d="M109 199 Q80 216 80 238 M151 199 Q179 215 181 236" stroke="#e5aab6" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M109 199 Q80 216 80 238 M151 199 Q179 215 181 236" stroke="#ffddd0" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M106 201 Q98 210 95 220 M154 201 Q163 211 166 221" stroke="#fff" stroke-width="9" opacity=".9" fill="none"/>`;
+ const shoes=jumping?`<path d="M114 262 L104 276 M149 262 L159 276" fill="none" stroke="#f4c2b6" stroke-width="9" stroke-linecap="round"/><ellipse cx="98" cy="276" rx="15" ry="7" fill="${shoe}" stroke="#c19b9d" stroke-width="1.5" transform="rotate(-18 98 276)"/><ellipse cx="165" cy="276" rx="15" ry="7" fill="${shoe}" stroke="#c19b9d" stroke-width="1.5" transform="rotate(18 165 276)"/><path d="M91 273 l10 -2 M159 273 l10 2" stroke="#fff" stroke-width="2"/>`:walking?`<path d="M114 270 L109 283 M149 269 L155 281" fill="none" stroke="#f4c2b6" stroke-width="9" stroke-linecap="round"/><ellipse cx="103" cy="283" rx="15" ry="7" fill="${shoe}" stroke="#c19b9d" stroke-width="1.5" transform="rotate(-10 103 283)"/><ellipse cx="161" cy="280" rx="15" ry="7" fill="${shoe}" stroke="#c19b9d" stroke-width="1.5" transform="rotate(12 161 280)"/><path d="M96 279 l11 -1 M154 277 l12 1" stroke="#fff" stroke-width="2"/>`:`<path d="M112 271 L111 283 M150 271 L151 283" fill="none" stroke="#f4c2b6" stroke-width="9" stroke-linecap="round"/><ellipse cx="105" cy="283" rx="15" ry="7" fill="${shoe}" stroke="#c19b9d" stroke-width="1.5"/><ellipse cx="158" cy="283" rx="15" ry="7" fill="${shoe}" stroke="#c19b9d" stroke-width="1.5"/><path d="M98 279 l11 0 M151 279 l12 0" stroke="#fff" stroke-width="2"/>`;
+ const arms=jumping?`<path d="M109 199 Q82 168 80 149 M151 199 Q180 171 185 152" stroke="#e5aab6" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M109 199 Q82 168 80 149 M151 199 Q180 171 185 152" stroke="#ffddd0" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M109 191 Q99 182 94 173 M151 191 Q163 182 169 173" stroke="#fff" stroke-width="8" opacity=".86" fill="none"/>`:walking?`<path d="M109 199 Q83 211 74 233 M151 199 Q174 207 185 223" stroke="#e5aab6" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M109 199 Q83 211 74 233 M151 199 Q174 207 185 223" stroke="#ffddd0" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M104 203 Q96 211 92 221 M154 200 Q162 208 169 215" stroke="#fff" stroke-width="9" opacity=".9" fill="none"/>`:`<path d="M109 199 Q80 216 80 238 M151 199 Q179 215 181 236" stroke="#e5aab6" stroke-width="14" fill="none" stroke-linecap="round"/><path d="M109 199 Q80 216 80 238 M151 199 Q179 215 181 236" stroke="#ffddd0" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M106 201 Q98 210 95 220 M154 201 Q163 211 166 221" stroke="#fff" stroke-width="9" opacity=".9" fill="none"/>`;
  const faceCut=eyes==='bright'?{rx:9.7,ry:12.6}:eyes==='soft'?{rx:7.5,ry:9.6}:{rx:8.5,ry:11.3};
  const surprised=e==='놀랐어요',sad=e==='슬퍼요',angry=e==='화났어요',thinking=e==='생각해요',excited=e==='신나요';
  const eyelids=sad?`<path d="M105 138 Q113 144 119 142 M143 142 Q151 144 159 138" stroke="#80515b" stroke-width="2.5" fill="none"/>`:angry?`<path d="M104 133 L119 140 M144 140 L159 133" stroke="#80515b" stroke-width="3" fill="none"/>`:thinking?`<path d="M103 138 Q110 134 119 138 M143 137 Q151 132 159 135" stroke="#80515b" stroke-width="2.5" fill="none"/>`:
@@ -2592,14 +2652,14 @@ function studioCharacterSvg(recipe, rawEmotion, includeBackground=false){
  `<g><path d="M96 110 L98 89 L111 99 L130 76 L147 99 L162 89 L164 110Z" fill="#f1cc78" stroke="#bd8c4a" stroke-width="2"/><path d="M99 106 Q131 117 161 106" fill="none" stroke="#fff4cd" stroke-width="3"/><circle cx="130" cy="95" r="7" fill="${gem}" stroke="#fff" stroke-width="1"/><circle cx="110" cy="103" r="4" fill="#ffacc9"/><circle cx="150" cy="103" r="4" fill="#b3e8ff"/></g>`;
  const staff=r.staff==='none'?'':`<g transform="translate(193 172) rotate(12)"><path d="M0 0 L-15 80" stroke="#b68a49" stroke-width="5" stroke-linecap="round"/><path d="M0 0 L-15 80" stroke="#fff5c3" stroke-width="1.4" stroke-linecap="round"/><g transform="translate(0 -4)">${r.staff==='heart'?`<path d="M0 21 Q-26 0 -14 -10 Q-4 -20 0 -7 Q8 -22 18 -10 Q29 0 0 21Z" fill="#ff97cc"/>`:r.staff==='flower'?`${[0,60,120,180,240,300].map(a=>`<ellipse cy="-11" ry="12" rx="8" transform="rotate(${a})" fill="#f6a9d9"/>`).join('')}`:`<path d="M0 -23 L7 -6 L25 -4 L12 8 L15 25 L0 16 L-15 25 L-12 8 L-25 -4 L-7 -6Z" fill="#ffe29a"/>`}<circle r="6" fill="${gem}" stroke="#fff" stroke-width="1.6"/></g></g>`;
  const sparkles=r.sparkles===false||r.sparkles==='no'?'':`<g fill="#fff8b3" stroke="#fff" stroke-width="1"><path d="M55 139 l4 -12 4 12 12 4 -12 4 -4 12 -4 -12 -12 -4Z"/><path d="M198 108 l3 -10 3 10 10 3 -10 3 -3 10 -3 -10 -10 -3Z"/><circle cx="47" cy="221" r="3"/><circle cx="212" cy="239" r="3"/></g>`;
- const ground=includeBackground?`<ellipse cx="132" cy="288" rx="74" ry="8" fill="#bba2cb" opacity=".23"/>`:'';
- return `${defs}${ground}<g>${wing}${backHair}${shoes}${arms}${skirt}${faceArt}${fringe}${ornament}${staff}${sparkles}</g>`;
+ const ground=includeBackground?`<ellipse cx="132" cy="${jumping?292:288}" rx="${walking?70:(jumping?62:74)}" ry="8" fill="#bba2cb" opacity=".23"/>`:'';
+ return `${defs}${ground}<g transform="translate(${poseDx} ${poseDy}) rotate(${poseTilt} 130 210)">${wing}${backHair}${shoes}${arms}${skirt}${faceArt}${fringe}${ornament}${staff}${sparkles}</g>${poseFx}`;
 }
 function studioArtSvg(transparent=false,recipe=studio){
  const r={...studioDefaults,...(recipe||{}),mode:'modular'};
  const bg=studioColors[r.background]||studioColors.rose;
  const grad=`<defs><linearGradient id="studioBk" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${bg[0]}"/><stop offset="1" stop-color="${bg[1]}"/></linearGradient></defs>`;
- return `<svg xmlns="http://www.w3.org/2000/svg" width="520" height="620" viewBox="0 0 260 310" role="img" aria-label="${safe(r.name||'나의 공주')} ${studioEmotionNormalize(r.emotion)}">${grad}${transparent?'':'<rect width="260" height="310" fill="url(#studioBk)"/>'}${studioCharacterSvg(r,r.emotion,!transparent)}</svg>`;
+ return `<svg xmlns="http://www.w3.org/2000/svg" width="520" height="620" viewBox="0 0 260 310" role="img" aria-label="${safe(r.name||'나의 공주')} ${studioEmotionNormalize(r.emotion)} ${studioEnsurePose(r.emotion,r.pose)}">${grad}${transparent?'':'<rect width="260" height="310" fill="url(#studioBk)"/>'}${studioCharacterSvg(r,{emotion:r.emotion,pose:r.pose},!transparent)}</svg>`;
 }
 
 function studioRender(){
@@ -2608,13 +2668,13 @@ function studioRender(){
  document.getElementById('studioModularFields').hidden=studio.baseModel!=='modular';
  document.getElementById('studioPremium').classList.toggle('isActive',studio.mode==='premium');
  document.getElementById('studioModular').classList.toggle('isActive',studio.mode==='modular');
- document.getElementById('studioArtHint').textContent=studio.baseModel==='rose3d'?'🌹 고화질 꽃빛 공주: 같은 공주의 여섯 가지 완성 표정 그림을 사용해요. 머리·드레스는 변경되지 않아요.':'🎀 조립 공주: 머리·드레스·장식을 선택하면 같은 부품을 유지한 채 여섯 표정이 자동으로 바뀌어요. 고화질 그림은 계속 보강할 예정이에요.';document.getElementById('studioBaseNote').textContent=studio.baseModel==='rose3d'?'고화질 그림의 머리·드레스·왕관은 완성형으로 고정돼요. 조립해서 바꾸려면 아래에서 「나만의 조립 공주」를 선택하세요.':'조립 공주는 얼굴형, 눈, 머리, 드레스, 장신구를 바꿀 수 있습니다. 여섯 표정은 별도 그림 제작 없이 자동 구성됩니다.';studioRenderExpressions();
+ document.getElementById('studioArtHint').textContent=studio.baseModel==='rose3d'?'🌹 고화질 꽃빛 공주: 같은 공주의 여섯 가지 표정 그림을 사용하고, 자세는 서 있기·걷기·뛰어오르기로 조합해요.':'🎀 조립 공주: 머리·드레스·장식을 선택하면 같은 부품을 유지한 채 표정 6가지와 자세 3가지를 조합해요.';document.getElementById('studioBaseNote').textContent=studio.baseModel==='rose3d'?'고화질 그림도 표정에 따라 자세 조합을 달리할 수 있어요. 생각하기는 서 있기만, 신나기는 서 있기·뛰어오르기를 사용해요.':'조립 공주는 얼굴형, 눈, 머리, 드레스, 장신구를 바꿀 수 있고, 표정마다 맞는 자세를 골라 조합할 수 있습니다.';studioRenderExpressions();studioRenderPoseButtons();
 }
 function studioReadControls(){
  const fieldMap={studioBaseModel:'baseModel',studioBackground:'background',studioPremiumHero:'hero',studioHair:'hairStyle',studioHairColor:'hairColor',studioDress:'dress',studioCrown:'crown',studioWings:'wings',studioStaff:'staff',studioShoes:'shoes',studioEmotion:'emotion',studioFace:'face',studioEyes:'eyes'};
  Object.entries(fieldMap).forEach(([id,key])=>{const el=document.getElementById(id);studio[key]=el.value});
  studio.sparkles=document.getElementById('studioSparkle').checked;
- studio.name=studioSafeName();studioRender();
+ studio.name=studioSafeName();studio.pose=studioEnsurePose(studio.emotion,studio.pose);studioRender();
 }
 function studioPopulateControls(){
  const fields={studioName:'name',studioBaseModel:'baseModel',studioBackground:'background',studioPremiumHero:'hero',studioHair:'hairStyle',studioHairColor:'hairColor',studioDress:'dress',studioCrown:'crown',studioWings:'wings',studioStaff:'staff',studioShoes:'shoes',studioEmotion:'emotion',studioFace:'face',studioEyes:'eyes'};
@@ -2656,13 +2716,28 @@ function studioRenderExpressions(){
  root.replaceChildren();
  for(const emotion of studioEmotions){
   const button=document.createElement('button');button.type='button';button.className='studioExpressionButton'+(studio.emotion===emotion?' selected':'');button.setAttribute('aria-pressed',String(studio.emotion===emotion));
-  const art=document.createElement('div');art.innerHTML=studioArtSvg(true,{...studio,emotion});
+  const safePose=studioEnsurePose(emotion,studio.pose);
+  const art=document.createElement('div');art.innerHTML=studioArtSvg(true,{...studio,emotion,pose:safePose});
   const svg=art.firstElementChild;svg?.removeAttribute('width');svg?.removeAttribute('height');
   button.appendChild(svg);
   const label=document.createElement('span');label.textContent=emotion;button.appendChild(label);
-  button.onclick=()=>{studio.emotion=emotion;document.getElementById('studioEmotion').value=emotion;studioRender();};
+  button.onclick=()=>{studio.emotion=emotion;studio.pose=studioEnsurePose(emotion,studio.pose);document.getElementById('studioEmotion').value=emotion;studioRender();};
   root.appendChild(button);
  }
+}
+function studioRenderPoseButtons(){
+ const root=document.getElementById('studioPoseButtons');if(!root)return;
+ const hint=document.getElementById('studioPoseHint');
+ const allowed=studioAllowedPoses(studio.emotion);
+ studio.pose=studioEnsurePose(studio.emotion,studio.pose);
+ root.replaceChildren();
+ studioPoseCatalog.forEach(item=>{
+  const button=document.createElement('button');button.type='button';button.className='studioPoseButton'+(studio.pose===item.id?' selected':'');button.disabled=!allowed.includes(item.id);button.setAttribute('aria-pressed',String(studio.pose===item.id));
+  button.innerHTML=`<span class="studioPoseIcon">${item.icon}</span><span>${item.label}</span>`;
+  button.onclick=()=>{if(button.disabled)return;studio.pose=item.id;studioRender();};
+  root.appendChild(button);
+ });
+ if(hint)hint.textContent=`${studioEmotionNormalize(studio.emotion)} 표정에서는 ${allowed.join(' · ')} 자세를 고를 수 있어요.`;
 }
 function studioInit(){
  document.getElementById('studioPremium').onclick=()=>{studio.mode='modular';studioRender()};
@@ -2673,9 +2748,9 @@ function studioInit(){
   const pick=a=>a[Math.floor(Math.random()*a.length)];
   if(false){}
   else{
-   studio.face=pick(['round','oval','heart']);studio.eyes=pick(['jewel','soft','bright']);studio.hairStyle=pick(['long','curl','twintail','bob']);studio.hairColor=pick(Object.keys(princessColors.hair));studio.dress=pick(Object.keys(princessColors.dress));studio.crown=pick(['crown','tiara','bow','flower','none']);studio.wings=pick(['none','butterfly','angel']);studio.staff=pick(['none','star','heart','flower']);studio.shoes=pick(Object.keys(princessColors.shoes));studio.emotion=pick(['기뻐요','놀랐어요','슬퍼요']);
+   studio.face=pick(['round','oval','heart']);studio.eyes=pick(['jewel','soft','bright']);studio.hairStyle=pick(['long','curl','twintail','bob']);studio.hairColor=pick(Object.keys(princessColors.hair));studio.dress=pick(Object.keys(princessColors.dress));studio.crown=pick(['crown','tiara','bow','flower','none']);studio.wings=pick(['none','butterfly','angel']);studio.staff=pick(['none','star','heart','flower']);studio.shoes=pick(Object.keys(princessColors.shoes));studio.emotion=pick(['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요']);studio.pose=studioEnsurePose(studio.emotion,pick(studioPoseCatalog.map(v=>v.id)));
   }
-  studio.background=pick(Object.keys(studioColors));if(studio.baseModel==='rose3d')studio.emotion=pick(['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요']);studioPopulateControls();
+  studio.background=pick(Object.keys(studioColors));if(studio.baseModel==='rose3d')studio.emotion=pick(['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요']);studio.pose=studioEnsurePose(studio.emotion,studio.pose);studioPopulateControls();
  };
  document.getElementById('studioSave').onclick=()=>{
   const entry={id:'studio-'+Date.now(),name:studioSafeName(),recipe:{...studioRecipe(),mode:'modular'},expressionSet:['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요'],createdAt:Date.now()};
