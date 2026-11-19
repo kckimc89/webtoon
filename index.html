@@ -3305,9 +3305,16 @@ function roseTransformAround(cx,cy,sx=1,sy=1,dx=0,dy=0){
  return `translate(${dx} ${dy}) translate(${cx} ${cy}) scale(${sx} ${sy}) translate(${-cx} ${-cy})`;
 }
 function rose3dFigureSvg(r,src){
- // C4.4.8: crucial fix. Always render a single complete image, never a stack
- // of mismatched clipped, scaled face/hair/torso/dress fragments.
- return `<image href="${src}" x="3" y="4" width="254" height="290" preserveAspectRatio="xMidYMid meet" pointer-events="none"/>`;
+ // C4.4.8 hand-safe hotfix: keep one full artwork image, then restore the
+ // original untinted hand skin over a tiny mask so dress recoloring never
+ // bleeds into the clasped hands.
+ const base=`<image href="${src}" x="3" y="4" width="254" height="290" preserveAspectRatio="xMidYMid meet" pointer-events="none"/>`;
+ if(r.dress==='pink')return base;
+ const baseSkin=studioRoseExpressionAssets[roseArtworkFallbackEmotion(r,r.emotion||'기뻐요')]||studioRoseExpressionAssets['기뻐요'];
+ const patchId='roseHandPatch'+Math.random().toString(36).slice(2,8);
+ const defs=`<defs><clipPath id="${patchId}"><ellipse cx="122" cy="171" rx="11.5" ry="9.5"/><ellipse cx="137" cy="171" rx="11.5" ry="9.5"/><ellipse cx="129.5" cy="167" rx="13" ry="7.5"/><ellipse cx="119" cy="162" rx="7" ry="6"/><ellipse cx="141" cy="162" rx="7" ry="6"/></clipPath></defs>`;
+ const safeHands=`<image href="${baseSkin}" x="3" y="4" width="254" height="290" preserveAspectRatio="xMidYMid meet" clip-path="url(#${patchId})" pointer-events="none"/>`;
+ return defs+base+safeHands;
 }
 
 function studioCharacterSvg(recipe, rawEmotion, includeBackground=false, poseOverride=null){
