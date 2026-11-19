@@ -3312,7 +3312,16 @@ function rose3dFigureSvg(r,src){
  if(r.dress==='pink')return base;
  const baseSkin=studioRoseExpressionAssets[roseArtworkFallbackEmotion(r,r.emotion||'기뻐요')]||studioRoseExpressionAssets['기뻐요'];
  const patchId='roseHandPatch'+Math.random().toString(36).slice(2,8);
- const defs=`<defs><clipPath id="${patchId}"><ellipse cx="122" cy="171" rx="11.5" ry="9.5"/><ellipse cx="137" cy="171" rx="11.5" ry="9.5"/><ellipse cx="129.5" cy="167" rx="13" ry="7.5"/><ellipse cx="119" cy="162" rx="7" ry="6"/><ellipse cx="141" cy="162" rx="7" ry="6"/></clipPath></defs>`;
+ const defs=`<defs><clipPath id="${patchId}">
+  <ellipse cx="110" cy="136" rx="12" ry="9" transform="rotate(-18 110 136)"/>
+  <ellipse cx="146" cy="136" rx="12" ry="9" transform="rotate(18 146 136)"/>
+  <ellipse cx="118" cy="145" rx="13" ry="10"/>
+  <ellipse cx="138" cy="145" rx="13" ry="10"/>
+  <ellipse cx="128" cy="149" rx="18" ry="11"/>
+  <ellipse cx="116" cy="154" rx="10" ry="8"/>
+  <ellipse cx="140" cy="154" rx="10" ry="8"/>
+  <ellipse cx="128" cy="159" rx="11" ry="7"/>
+ </clipPath></defs>`;
  const safeHands=`<image href="${baseSkin}" x="3" y="4" width="254" height="290" preserveAspectRatio="xMidYMid meet" clip-path="url(#${patchId})" pointer-events="none"/>`;
  return defs+base+safeHands;
 }
