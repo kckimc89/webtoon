@@ -35,6 +35,40 @@ function drawShape(it){const x=it.x,y=it.y,w=it.w||90,h=it.h||90,shape=it.shape;
  if(shape==='flower'){ctx.beginPath();ctx.arc(0,0,Math.min(w,h)*.11,0,Math.PI*2);ctx.fillStyle='#ffe8a1';ctx.fill();}
  if(shape==='gem'){ctx.beginPath();ctx.moveTo(-w*.3,-h*.15);ctx.lineTo(0,h*.33);ctx.lineTo(w*.3,-h*.15);ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=3;ctx.stroke();}
  ctx.restore();}
+// Share high quality, embedded illustrated props from the existing webtoon decorator.
+// Store stable keys only (not giant base64 images) in the IndexedDB work record.
+const premiumNames=['화관','리본장식','장미','보석나비','황금열쇠','수정보석','별지팡이','요정날개','빛가루','무지개','문','책','하트','선물','구름','달','사탕','지도','물고기','풍선','축구공'];
+const premiumCache=new Map();
+function propSource(key){return typeof premiumPropImages!=='undefined'?premiumPropImages[key]:null;}
+function premiumImage(key){
+ if(premiumCache.has(key))return premiumCache.get(key);
+ const src=propSource(key);if(!src)return null;
+ const img=new Image();const entry={img,ready:false,error:false};premiumCache.set(key,entry);
+ img.onload=()=>{entry.ready=true;paint();};img.onerror=()=>{entry.error=true;};img.src=src;return entry;
+}
+function drawPremium(it){
+ const entry=premiumImage(it.premiumKey);if(!entry||!entry.ready)return;
+ ctx.save();ctx.translate(it.x,it.y);ctx.rotate((it.rotation||0)*Math.PI/180);
+ ctx.scale(it.flip?-1:1,1);ctx.globalAlpha=Math.max(0,Math.min(1,it.opacity??1));
+ ctx.drawImage(entry.img,-(it.w||115)/2,-(it.h||115)/2,it.w||115,it.h||115);ctx.restore();
+}
+function setupPremiumGallery(){
+ const gallery=$('fpPremiumGallery');if(!gallery)return;
+ for(const key of premiumNames){const src=propSource(key);if(!src)continue;
+  const btn=document.createElement('button');btn.className='fp-premium-btn';btn.type='button';btn.title=key+' 추가';
+  const pic=document.createElement('img');pic.alt='';pic.loading='lazy';pic.src=src;
+  const label=document.createElement('span');label.textContent=key;btn.append(pic,label);
+  btn.addEventListener('click',()=>addPremium(key));gallery.append(btn);
+ }
+}
+function addPremium(key){
+ if(!propSource(key))return notice('이 장식 그림을 찾지 못했어요.');
+ saveHistory();const locations={'화관':[360,162,190,115],'리본장식':[402,260,115,90],'장미':[360,510,115,125],'보석나비':[480,400,150,140],'황금열쇠':[460,550,100,155],'수정보석':[360,460,110,110],'별지팡이':[530,490,120,225],'요정날개':[360,390,260,210],'빛가루':[360,355,230,180]};
+ const [x,y,w,h]=locations[key]||[W/2+((state.items.length%3)-1)*55,H*.54,135,135];
+ const it={id:ID(),type:'premium',premiumKey:key,name:key,x,y,w,h,rotation:0,visible:true,locked:false,opacity:1};
+ state.items.push(it);selected=it.id;premiumImage(key);setTool('select');
+ notice('💎 '+key+' 장식을 추가했어요. 끌어서 위치를 맞추고 모서리 손잡이로 크기를 바꿔요.');render();
+}
 function drawStroke(it,c=ctx){if(it.points.length<1)return;c.save();c.globalCompositeOperation=it.erase?'destination-out':'source-over';c.lineCap='round';c.lineJoin='round';c.strokeStyle=it.color||'#d65d9a';c.lineWidth=it.size||7;c.beginPath();it.points.forEach((a,i)=>i?c.lineTo(a[0],a[1]):c.moveTo(a[0],a[1]));if(it.points.length===1){c.lineTo(it.points[0][0]+.01,it.points[0][1]+.01);}c.stroke();c.restore();}
 function princessImage(){
  const hair=['rose','gold','violet'].includes(state.hair)?state.hair:'rose';
@@ -72,7 +106,7 @@ function syncLooks(){
 function paint(forExport=false){ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff9fc';ctx.fillRect(0,0,W,H);
  // Fixed original is always a locked, independent lowest layer.
  if(state.baseVisible&&image&&loaded){const use=princessImage();const capW=620,capH=790;const ratio=Math.min(capW/use.width,capH/use.height);const w=use.width*ratio,h=use.height*ratio;const px=(W-w)/2,py=(H-h)/2;ctx.drawImage(use,px,py,w,h);outfitDetails(ctx,px,py,w,h);}
- for(const it of state.items){if(it.visible===false||it.type==='stroke')continue;drawShape(it);}
+ for(const it of state.items){if(it.visible===false||it.type==='stroke')continue;if(it.type==='premium')drawPremium(it);else drawShape(it);}
  // Ink stays independent of the original and decorations: the eraser cannot erase the princess.
  inkCtx.clearRect(0,0,W,H);for(const it of state.items){if(it.visible!==false&&it.type==='stroke')drawStroke(it,inkCtx);}ctx.drawImage(inkCanvas,0,0);
  if(!forExport&&tool==='select'&&selected){const it=state.items.find(i=>i.id===selected);if(it&&it.visible!==false){let b=it.type==='stroke'?strokeBounds(it):bounds(it);ctx.save();ctx.strokeStyle='#7950b5';ctx.lineWidth=2.5;ctx.setLineDash([9,6]);ctx.strokeRect(b.l-8,b.t-8,b.r-b.l+16,b.b-b.t+16);ctx.setLineDash([]);ctx.fillStyle='#fff';ctx.strokeStyle='#7950b5';for(const [x,y] of [[b.l-8,b.t-8],[b.r+8,b.b+8]]){ctx.fillRect(x-7,y-7,14,14);ctx.strokeRect(x-7,y-7,14,14);}ctx.restore();}}}
@@ -83,7 +117,7 @@ function renderLayers(){const node=$('fpLayers');node.replaceChildren();const ba
  for(const it of [...state.items].reverse()){const row=document.createElement('div');row.className='fp-layer'+(selected===it.id?' selected':'');let nm=document.createElement('strong');nm.textContent=(it.type==='stroke'?'✏️ ':'💎 ')+itemLabel(it);row.append(nm);
  for(const [caption,fn] of [[it.visible===false?'보기':'숨기기',()=>{saveHistory();it.visible=it.visible===false?true:false;}],[it.locked?'풀기':'잠그기',()=>{saveHistory();it.locked=!it.locked;}],['지우기',()=>{if(!confirm('이 그림 층만 지울까요? 다른 그림은 그대로예요.'))return;saveHistory();state.items=state.items.filter(a=>a.id!==it.id);if(selected===it.id)selected=null;}]]){const btn=document.createElement('button');btn.textContent=caption;btn.onclick=()=>{fn();render();};row.append(btn);}nm.onclick=()=>{selected=it.id;setTool('select');render();};node.append(row);}
 }
-function syncSelected(){const it=state.items.find(i=>i.id===selected);$('fpSelected').textContent=it?'선택: '+itemLabel(it):'장식을 선택하거나 그림 층에서 골라 주세요';$('fpEdit').hidden=!it;$('fpFill').value=it?.fill||color;$('fpLine').value=it?.stroke||lineColor;$('fpOutline').checked=it?.outline!==false;$('fpAngle').value=it?.rotation||0;}
+function syncSelected(){const it=state.items.find(i=>i.id===selected);$('fpSelected').textContent=it?'선택: '+itemLabel(it):'장식을 선택하거나 그림 층에서 골라 주세요';$('fpEdit').hidden=!it;const isPremium=it?.type==='premium';const colorRow=document.querySelector('#fpEdit .fp-color-edit');if(colorRow)colorRow.hidden=!!isPremium;$('fpFill').value=it?.fill||color;$('fpLine').value=it?.stroke||lineColor;$('fpOutline').checked=it?.outline!==false;$('fpAngle').value=it?.rotation||0;}
 function addShape(shape){saveHistory();const names={star:'별',heart:'하트',flower:'꽃',ribbon:'리본',gem:'보석',circle:'원',ellipse:'타원',rect:'네모'};let it={id:ID(),type:'shape',shape,name:names[shape]||shape,x:W/2+((state.items.length%3)-1)*38,y:H*.54,w:shape==='ribbon'?130:100,h:shape==='ribbon'?85:100,fill:color,stroke:lineColor,outline,rotation:0,visible:true,locked:false};state.items.push(it);selected=it.id;setTool('select');notice('추가했어요. 그림을 끌어서 위치를 바꾸세요.');render();}
 canvas.addEventListener('pointerdown',e=>{e.preventDefault();canvas.setPointerCapture(e.pointerId);const p=getPoint(e);
  if(tool==='draw'||tool==='erase'){saveHistory();const it={id:ID(),type:'stroke',name:'손그림',color,erase:tool==='erase',size:tool==='erase'?penSize*3:penSize,points:[[p.x,p.y]],visible:true,locked:false};state.items.push(it);pointer={kind:'stroke',id:it.id};}
@@ -122,7 +156,7 @@ for(const b of document.querySelectorAll('[data-fp-look]')){
 $('fpResetLooks').onclick=()=>{saveHistory();state.hair='rose';state.dress='pink';state.shoes='classic';render();notice('기본 모습으로 돌아왔어요. 장식과 손그림은 그대로예요.');};
 $('fpName').oninput=()=>{state.name=$('fpName').value;};$('fpColor').oninput=e=>{color=validColor(e.target.value);};$('fpPenSize').oninput=e=>{penSize=Number(e.target.value);$('fpPenLabel').textContent=penSize+'px';};
 document.querySelectorAll('[data-fp-tool]').forEach(btn=>btn.onclick=()=>setTool(btn.dataset.fpTool));
-document.querySelectorAll('[data-fp-shape]').forEach(btn=>btn.onclick=()=>addShape(btn.dataset.fpShape));
+document.querySelectorAll('[data-fp-shape]').forEach(btn=>btn.onclick=()=>addShape(btn.dataset.fpShape));setupPremiumGallery();
 $('fpFill').oninput=e=>selectedEdit(it=>it.fill=e.target.value);$('fpLine').oninput=e=>selectedEdit(it=>it.stroke=e.target.value);$('fpOutline').onchange=e=>selectedEdit(it=>it.outline=e.target.checked);$('fpAngle').oninput=e=>selectedEdit(it=>it.rotation=Number(e.target.value));
 $('fpFlip').onclick=()=>selectedEdit(it=>it.flip=!it.flip);$('fpCopy').onclick=()=>selectedEdit(it=>{const c=clone(it);c.id=ID();c.x=(c.x||W/2)+28;c.y=(c.y||H/2)+28;if(c.type==='stroke')c.points=c.points.map(p=>[p[0]+28,p[1]+28]);state.items.push(c);selected=c.id;});
 $('fpForward').onclick=()=>selectedEdit(it=>{state.items=state.items.filter(a=>a.id!==it.id);state.items.push(it);});$('fpBack').onclick=()=>selectedEdit(it=>{state.items=state.items.filter(a=>a.id!==it.id);state.items.unshift(it);});
