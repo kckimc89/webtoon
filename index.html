@@ -456,6 +456,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 @media(min-width:850px){#studio>.fp-workshop{padding:10px 14px 14px}#fixedPrincessWorkshop .fp-premium-btn{flex-basis:100px}}
 @media(max-width:600px){#fixedPrincessWorkshop .fp-premium-btn{flex-basis:82px}#fixedPrincessWorkshop .fp-look-row>strong{flex-basis:60px;min-width:60px}#fixedPrincessWorkshop .fp-look-options button{font-size:12px!important}#fixedPrincessWorkshop .fp-top button{font-size:12px}#fixedPrincessWorkshop .fp-shapes{grid-template-columns:repeat(3,1fr)}}
 </style>
+<style>
+#fixedPrincessWorkshop .fp-quick-edit{display:flex;flex-wrap:wrap;align-items:center;gap:5px;background:#f1e8fc;border:1px solid #c5a4e7;border-radius:12px;padding:7px;margin-top:6px}
+#fixedPrincessWorkshop .fp-quick-edit[hidden]{display:none!important}
+#fixedPrincessWorkshop .fp-quick-edit>span{font-weight:800;color:#654181;padding:0 6px}
+#fixedPrincessWorkshop .fp-quick-edit button{min-height:39px;padding:6px 10px;font-size:13px;background:white}
+#fixedPrincessWorkshop .fp-quick-edit small{width:100%;font-size:12px;color:#715b7c}
+</style>
 </head>
 <body>
 <div class="app">
@@ -463,7 +470,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.14 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
+    <span class="pill">MASTER C4.5.15 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
   </header>
 
   <nav class="tabs">
@@ -475,8 +482,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.14)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.14 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.15)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.15 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -514,8 +521,14 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
  <div class="fp-layout">
       <div class="fp-art">
         <canvas id="fpCanvas" width="720" height="840" aria-label="꽃빛공주 꾸미기 도화지"></canvas>
-        <div class="fp-tools">
-          <button data-fp-tool="select" class="isOn">👆 선택·이동</button><button data-fp-tool="draw">✏️ 펜 그리기</button><button data-fp-tool="erase">🧽 지우개</button>
+        <div id="fpQuickEdit" class="fp-quick-edit" hidden aria-label="선택한 장식 빠른 조절">
+          <span>💎 선택한 장식</span><button id="fpShrink" type="button">− 작게</button><button id="fpGrow" type="button">＋ 크게</button>
+          <button id="fpTurnLeft" type="button">↶ 왼쪽 회전</button><button id="fpTurnRight" type="button">↷ 오른쪽 회전</button>
+          <button id="fpDeselect" type="button">선택 해제</button>
+          <small>장식 끌기 · 모서리 크기 · 둥근 손잡이 회전 · 두 손가락 확대/회전</small>
+         </div>
+         <div class="fp-tools">
+           <button data-fp-tool="select" class="isOn">👆 선택·이동</button><button data-fp-tool="draw">✏️ 펜 그리기</button><button data-fp-tool="erase">🧽 지우개</button>
           <button id="fpUndo">↩ 되돌리기</button><button id="fpRedo">↪ 다시하기</button>
         </div>
         <div class="fp-tools"><label>펜 색 <input type="color" id="fpColor" value="#ed83ba"></label><label>굵기 <input id="fpPenSize" type="range" min="2" max="35" value="7"> <span id="fpPenLabel">7px</span></label><button id="fpOriginal">공주 원화 보기/숨기기</button></div>
@@ -1127,7 +1140,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.11 · 고정형 꽃빛공주 꾸미기 실험판</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.15 · 고품질 장식품 직접 조절</div>
 </div>
 <div id="toast"></div>
 
@@ -3234,7 +3247,7 @@ syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
 // C4.5.9: One source of truth for installed version; manifest supplied with each ZIP.
 // A GitHub Pages deployment must publish BOTH index.html and version.json in the same folder.
-const WEBTOON_APP_VERSION='4.5.14';
+const WEBTOON_APP_VERSION='4.5.15';
 let latestPublishedVersion=null;
 let initialVersionCheck=true;
 let versionCheckInFlight=false;
@@ -4043,7 +4056,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
-<script src="drawing-workshop.js?v=4514"></script>
-<script src="fixed-princess.js?v=4514"></script>
+<script src="drawing-workshop.js?v=4515"></script>
+<script src="fixed-princess.js?v=4515"></script>
 </body>
 </html>
