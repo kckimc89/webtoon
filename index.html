@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C4.5.9</title>
+<title>나만의 웹툰 창작극장 C4.5.10</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -367,7 +367,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .dw-layer-row{display:flex;gap:6px;align-items:center;padding:5px;border:1px solid #e2d8e9;border-radius:8px;background:#fff}
 .dw-layer-row.selected{border:2px solid #855cc0;background:#f2eafd}
 .dw-layer-row .dw-layer-name{flex:1;text-align:left;font-size:13px;min-height:38px;background:none;color:#403249;border:none;padding:6px}
-.dw-layer-row .dw-layer-action{min-width:42px;min-height:38px;font-size:16px;padding:5px 7px}
+/* C4.5.10: labels display current state and the next action in readable text. */
+.dw-layer-row .dw-layer-name{min-width:0;overflow-wrap:anywhere;font-weight:600}
+.dw-layer-row .dw-layer-action{flex:0 0 auto;min-width:60px;min-height:42px;font-size:13px;font-weight:700;padding:7px 9px;border:1px solid #d9cde2;border-radius:9px;background:#fff;color:#493752;white-space:nowrap}
+.dw-layer-row .dw-layer-action.is-hidden{background:#f2eaf8;border-color:#b99ed6;color:#674293}
+.dw-layer-row .dw-layer-action.is-locked{background:#e7e5f7;border-color:#9f96d0;color:#514591}
+.dw-layer-row .dw-layer-action.is-delete{background:#fff8f8;border-color:#edcbd1;color:#963b55}
+@media(max-width:500px){.dw-layer-row{gap:4px;padding:4px}.dw-layer-row .dw-layer-action{min-width:48px;padding:6px 5px;font-size:12px}.dw-layer-row .dw-layer-name{font-size:12px;padding:3px}}
 </style>
 <style>
 .draw-workshop{max-width:1120px;margin:0 auto}.draw-actions,.dw-tools,.dw-options,.dw-savebar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:12px 0}.draw-workshop button,.dw-label{touch-action:manipulation}.dw-label{font-weight:700}.draw-workshop select,.draw-workshop input[type=text]{max-width:210px}.dw-tools .active{background:#8052bc;color:#fff;border-color:#8052bc}.dw-colors{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.dw-swatch{width:33px;height:33px!important;min-height:33px!important;border:2px solid #d4ccdc;border-radius:50%;padding:0!important}.dw-swatch.selected{outline:3px solid #8a5acb;outline-offset:2px}.dw-options label{display:flex;gap:7px;align-items:center}.dw-options input[type=range]{width:130px}.dw-canvas-wrap{max-width:660px;margin:12px auto;border:2px solid #c8afdd;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 3px 10px #76518d25;line-height:0;touch-action:none}.dw-canvas-wrap canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;touch-action:none;cursor:crosshair}.dw-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.dw-card{border:1px solid #e2d2eb;border-radius:12px;padding:8px;background:#fff}.dw-card img{width:100%;aspect-ratio:1;object-fit:contain;background:linear-gradient(45deg,#f6f3f9 25%,transparent 25%),linear-gradient(-45deg,#f6f3f9 25%,transparent 25%);background-size:22px 22px}.dw-card b{display:block;margin:7px 0;word-break:break-word}.dw-card .actions{display:flex;flex-wrap:wrap;gap:4px}.dw-card button{padding:7px 9px;font-size:12px}.dw-savebar input{min-width:135px}.dw-layer-tools{padding:10px;border:1px solid #e0cee9;border-radius:12px;background:#fdf8ff}.dw-layer-tools select{max-width:180px}.dw-object-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;background:#f5ebfc;border:2px solid #d3b5e7;border-radius:12px;padding:9px;margin:10px 0}.dw-object-controls[hidden]{display:none}.dw-object-controls button{padding:8px 10px;font-size:13px}.dw-object-controls label{display:flex;align-items:center;gap:5px;font-size:13px}.dw-object-controls input[type=range]{width:95px}.dw-hero-item{border:1px solid #e1d6e6;border-radius:12px;padding:5px;min-width:0}.dw-hero-item .choice{width:100%}.dw-remove-hero{width:100%;margin-top:5px;background:#fff5f5;color:#98424f;border:1px solid #e5bbc5}.dw-hero-item img{max-height:110px;object-fit:contain}@media(max-width:680px){.dw-tools button,.draw-actions button{padding:9px}.dw-savebar button{flex:1}.dw-canvas-wrap{margin:8px -5px}}
@@ -990,7 +996,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.9 · 버전 일치·자동 업데이트 확인 개선</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.10 · 버전 일치·자동 업데이트 확인 개선</div>
 </div>
 <div id="toast"></div>
 
@@ -2454,7 +2460,7 @@ $('applyIdea').onclick=()=>{
  $('ideaResult').textContent='✅ 반영: '+(done.join(' · ')||'장면 설명만 반영')+(notDone.length?'\n⚠️ 제한: '+notDone.join(' '):'')+'\n※ 준비된 그림을 조합하기 때문에 표정·자세 선택이 그림에 똑같이 드러나지 않을 수 있어요.';
  $('panelIdea').value='';renderComic();toast(done.length?'알아들은 선택을 적용했어요!':'장면 설명만 적었어요. 아래 안내를 확인해 주세요.');
 };
-function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C4.5.9 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
+function promptText(){const p=state.panels[selected]; const heroName=state.heroName||'주인공'; const heroDesc=state.hero==='custom'?'첨부한 어린이의 직접 그린 캐릭터':'귀여운 '+(heroes.find(h=>h.id===state.hero)?.name||'캐릭터'); return `[나만의 웹툰 창작극장 C4.5.10 · 웹툰 한 컷 그림 요청]\n작품 제목: ${state.title}\n주인공 이름: ${heroName}\n주인공 특징: ${state.heroTrait||'밝고 사랑스러움'}\n주인공 종류: ${heroDesc}\n전체 이야기 시작: ${settings.idea}\n현재 그릴 컷: ${selected+1}컷\n장면 설명: ${p.caption}\n말풍선: ${p.speech || '없음'}\n표정: ${p.emotion}\n자세: ${p.pose}\n행동: ${p.action}\n배경: ${bgMeta[p.background].name}\n소품: ${p.prop}\n분위기: ${p.mood}\n요청: 어린이 웹툰 한 컷처럼, 같은 주인공으로 알아볼 수 있게 그리고, 이 컷의 표정·자세·행동이 분명히 보이게 그려 주세요. 색감은 밝고 선명하게, 한국 어린이용 웹툰처럼 친근하고 또렷하게 표현해 주세요. 실제 사람의 얼굴이나 가족사진은 사용하지 않습니다. 주인공이 직접 그린 캐릭터라면 첨부된 그림의 특징을 유지해 주세요.`}
 // C3.9.6: IndexedDB supports works containing embedded photos; localStorage may hit its ~5MB quota.
 // Keep the old key intact and migrate by reading it when no IndexedDB data exists.
 const worksDbName='family-webtoon-theater-gallery';
@@ -3906,6 +3912,6 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
-<script src="drawing-workshop.js?v=459"></script>
+<script src="drawing-workshop.js?v=4510"></script>
 </body>
 </html>

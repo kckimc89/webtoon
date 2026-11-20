@@ -1,4 +1,4 @@
-/* C4.5.9 layer management and save fix.  Reuses C4.5.7 IndexedDB records without migration. */
+/* C4.5.10 legible layer state controls. Reuses existing IndexedDB records without migration. */
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id),W=640,H=640, canvas=$('dwCanvas');if(!canvas)return;
@@ -21,11 +21,12 @@ function selected(){return elements.find(e=>e.id===selection)}
 function layerName(e){if(e.origin){const opt=[...$('dwHeroSource').options].find(o=>o.value===e.origin);return (opt?.textContent||'주인공')+' 밑그림'}if(e.kind==='shape'){const names={circle:'원',ellipse:'타원',rect:'네모',round:'둥근 네모',triangle:'세모',star:'별',heart:'하트',cloud:'구름',bubble:'말풍선'};return (names[e.shape]||'도형')+' 도형'}return e.template?'연습 밑그림':'가져온 그림'}
 function layerList(){const target=$('dwLayerList');if(!target)return;target.replaceChildren();if(!elements.length){target.textContent='추가한 도형과 밑그림이 이곳에 표시됩니다.';return}for(const e of [...elements].reverse()){
  const line=document.createElement('div');line.className='dw-layer-row'+(e.id===selection?' selected':'');
- const name=document.createElement('button');name.type='button';name.className='dw-layer-name';name.textContent=(e.visible===false?'🙈 ':'🖼 ')+layerName(e);name.title='이 그림 층을 선택';name.onclick=()=>{selection=e.id;setTool('select')};line.append(name);
- const button=(label,title,fn)=>{const b=document.createElement('button');b.type='button';b.className='dw-layer-action';b.textContent=label;b.title=title;b.setAttribute('aria-label',layerName(e)+' '+title);b.onclick=fn;line.append(b)};
- button(e.visible===false?'👁‍🗨':'👁','표시·숨기기',()=>{remember();e.visible=e.visible===false?true:false;render()});
- button(e.locked?'🔒':'🔓','잠금 전환',()=>{remember();e.locked=!e.locked;render()});
- button('🗑','이 층 삭제',()=>removeLayer(e.id));target.append(line)
+ const name=document.createElement('button');name.type='button';name.className='dw-layer-name';name.textContent=layerName(e);name.title='이 그림 층을 선택';name.onclick=()=>{selection=e.id;setTool('select')};line.append(name);
+ const button=(label,title,fn,state)=>{const b=document.createElement('button');b.type='button';b.className='dw-layer-action'+(state?' is-'+state:'');b.textContent=label;b.title=title;b.setAttribute('aria-label',layerName(e)+' '+title);b.onclick=fn;line.append(b)};
+ const hidden=e.visible===false,locked=!!e.locked;
+ button(hidden?'보기':'숨기기',hidden?'현재 숨김 · 누르면 다시 보기':'현재 보임 · 누르면 숨기기',()=>{remember();e.visible=hidden;render()},hidden?'hidden':'visible');
+ button(locked?'풀기':'잠그기',locked?'현재 잠김 · 누르면 잠금 풀기':'현재 편집 가능 · 누르면 잠그기',()=>{remember();e.locked=!locked;render()},locked?'locked':'unlocked');
+ button('지우기','이 층만 지우기',()=>removeLayer(e.id),'delete');target.append(line)
  }}
 function removeLayer(id){const e=elements.find(q=>q.id===id);if(!e||!confirm('「'+layerName(e)+'」만 삭제할까요? 펜으로 그린 선과 다른 도형은 그대로 남아요.'))return;remember();elements=elements.filter(q=>q.id!==id);images.delete(id);if(selection===id)selection=null;render()}
 
