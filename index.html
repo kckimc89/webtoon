@@ -387,6 +387,14 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .dw-layer-row.selected{border:2px solid #855cc0;background:#f2eafd}
 .dw-layer-row .dw-layer-name{flex:1;text-align:left;font-size:13px;min-height:38px;background:none;color:#403249;border:none;padding:6px}
 .dw-layer-row .dw-layer-action{min-width:42px;min-height:38px;font-size:16px;padding:5px 7px}
+
+/* C4.5.16: one edit toolbar for decorations; color editing is separate for shapes only. */
+#fixedPrincessWorkshop .fp-quick-edit{position:sticky;bottom:5px;z-index:7;box-shadow:0 3px 12px #6d45802b;gap:6px;padding:8px 10px}
+#fixedPrincessWorkshop .fp-quick-edit button{min-height:42px;font-weight:700;padding:7px 11px}
+#fixedPrincessWorkshop .fp-quick-edit button.isOn{background:#7c50b2;color:white;border-color:#7c50b2}
+#fixedPrincessWorkshop .fp-quick-edit small{flex-basis:100%;font-size:12px}
+#fixedPrincessWorkshop .fp-legacy-edit-controls[hidden]{display:none!important}
+#fixedPrincessWorkshop .fp-placement-layer{background:#f1e6fc;color:#69458a;white-space:nowrap}
 </style>
 <style>
 .fp-workshop{margin-bottom:18px}.fp-top,.fp-tools,.fp-shapes,.fp-color-edit{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}.fp-workshop button{min-height:43px;padding:9px 11px;border-radius:11px}.fp-workshop input[type="color"]{width:46px;height:40px;vertical-align:middle;border:0;background:transparent}.fp-workshop input[type="range"]{vertical-align:middle;max-width:150px}.fp-workshop input[type="text"],.fp-top input{max-width:240px}.fp-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(265px,360px);gap:18px;align-items:start}.fp-art{min-width:0}.fp-art canvas{display:block;width:100%;height:auto;max-height:690px;object-fit:contain;border:2px solid #e5cde7;border-radius:14px;background:#fff8fb;touch-action:none;user-select:none}.fp-side{min-width:0}.fp-side h3{margin:14px 0 6px}.fp-shapes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.fp-shapes button{min-width:0}.fp-tools .isOn{background:#8052bc!important;color:white!important;border-color:#8052bc!important}.fp-edit{padding:10px;border:1px solid #decce9;border-radius:12px;background:#faf5ff}.fp-color-edit label{display:flex;align-items:center;gap:4px}.fp-angle{display:block;margin:8px 0}.fp-layer{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:8px 4px;border-bottom:1px solid #eee1f0}.fp-layer strong{flex:1 1 110px;font-size:13px;cursor:pointer}.fp-layer .fp-sub{font-size:11px;color:#715b7c}.fp-layer button{font-size:12px;min-height:35px;padding:6px 7px}.fp-layer.selected{background:#f0e5fa;border-radius:8px}.fp-layers{max-height:360px;overflow-y:auto}.fp-saved{margin-top:14px;border-top:1px solid #eee1f0;padding-top:12px}.fp-saved summary{font-weight:800;cursor:pointer}.fp-works{display:grid;gap:8px;padding:10px 0}.fp-work{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;border-radius:9px;background:#f8f1fa}.fp-work span{flex:1 1 160px}.fp-status{background:#f8f1fa;border-radius:9px;padding:9px;color:#6d447e;min-height:38px}.fp-workshop [hidden]{display:none!important}
@@ -470,7 +478,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.15 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
+    <span class="pill">MASTER C4.5.16 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
   </header>
 
   <nav class="tabs">
@@ -482,8 +490,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.15)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.15 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.16)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.16 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -521,11 +529,12 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
  <div class="fp-layout">
       <div class="fp-art">
         <canvas id="fpCanvas" width="720" height="840" aria-label="꽃빛공주 꾸미기 도화지"></canvas>
-        <div id="fpQuickEdit" class="fp-quick-edit" hidden aria-label="선택한 장식 빠른 조절">
-          <span>💎 선택한 장식</span><button id="fpShrink" type="button">− 작게</button><button id="fpGrow" type="button">＋ 크게</button>
-          <button id="fpTurnLeft" type="button">↶ 왼쪽 회전</button><button id="fpTurnRight" type="button">↷ 오른쪽 회전</button>
-          <button id="fpDeselect" type="button">선택 해제</button>
-          <small>장식 끌기 · 모서리 크기 · 둥근 손잡이 회전 · 두 손가락 확대/회전</small>
+        <div id="fpQuickEdit" class="fp-quick-edit" hidden aria-label="선택한 장식 조절">
+          <span id="fpQuickLabel">🎀 선택한 장식</span>
+          <button id="fpPlacementFront" type="button">공주 앞</button><button id="fpPlacementBack" type="button">공주 뒤</button>
+          <button id="fpQuickFlip" type="button">↔ 반전</button><button id="fpQuickCopy" type="button">복제</button>
+          <button id="fpQuickDelete" type="button">삭제</button><button id="fpDeselect" type="button">선택 해제</button>
+          <small>장식 잡아 이동 · 모서리로 확대/축소 · 둥근 손잡이로 회전 · 두 손가락 조절</small>
          </div>
          <div class="fp-tools">
            <button data-fp-tool="select" class="isOn">👆 선택·이동</button><button data-fp-tool="draw">✏️ 펜 그리기</button><button data-fp-tool="erase">🧽 지우개</button>
@@ -546,12 +555,12 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
          <div class="fp-shapes"><button data-fp-shape="flower">🌸 꽃 도형</button><button data-fp-shape="ribbon">🎀 리본 도형</button><button data-fp-shape="gem">💎 보석 도형</button><button data-fp-shape="star">⭐ 별</button><button data-fp-shape="heart">💗 하트</button><button data-fp-shape="circle">● 원</button><button data-fp-shape="ellipse">⬭ 타원</button><button data-fp-shape="rect">▢ 네모</button></div>
         </details>
         <div id="fpEdit" class="fp-edit" hidden>
-          <h3>🎨 선택한 장식 바꾸기</h3><p id="fpSelected"></p>
+          <h3>🎨 도형 색 바꾸기</h3><p id="fpSelected"></p>
           <div class="fp-color-edit"><label>채우기 <input type="color" id="fpFill" value="#ed83ba"></label><label>외곽선 <input type="color" id="fpLine" value="#b46291"></label><label><input type="checkbox" id="fpOutline" checked> 외곽선 보기</label></div>
-          <label class="fp-angle">회전 <input id="fpAngle" type="range" min="-180" max="180" value="0"></label>
-          <div class="fp-tools"><button id="fpFlip">좌우 반전</button><button id="fpCopy">복제</button><button id="fpForward">맨앞</button><button id="fpBack">맨뒤</button><button id="fpDelete">지우기</button></div>
+          <div class="fp-legacy-edit-controls" hidden aria-hidden="true"><label class="fp-angle">회전 <input id="fpAngle" type="range" min="-180" max="180" value="0"></label>
+          <div class="fp-tools"><button id="fpFlip">좌우 반전</button><button id="fpCopy">복제</button><button id="fpForward">맨앞</button><button id="fpBack">맨뒤</button><button id="fpDelete">지우기</button></div></div>
         </div>
-        <details class="fp-layer-fold"><summary>🗂 그림 층 관리 · 숨기기 / 잠그기 / 지우기</summary><p class="hint">겹친 장식도 목록에서 선택할 수 있어요. 저장된 작품의 원화와 손그림은 따로 관리돼요.</p><div id="fpLayers" class="fp-layers"></div></details>
+        <details class="fp-layer-fold"><summary>🗂 그림 층 관리 · 숨기기 / 잠그기 / 지우기</summary><p class="hint">겹친 장식이나 공주 뒤의 날개도 여기서 선택할 수 있어요. 공주 앞/뒤, 숨기기, 잠그기를 변경할 수 있습니다.</p><div id="fpLayers" class="fp-layers"></div></details>
       </div>
     </div>
     <details class="fp-saved"><summary>💝 내가 꾸민 꽃빛공주 보관함 — 다시 열어 꾸미기</summary><div id="fpWorks" class="fp-works"></div></details>
@@ -1140,7 +1149,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.15 · 고품질 장식품 직접 조절</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.16 · 장식 조절 통합·공주 앞뒤 레이어</div>
 </div>
 <div id="toast"></div>
 
@@ -3247,7 +3256,7 @@ syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
 // C4.5.9: One source of truth for installed version; manifest supplied with each ZIP.
 // A GitHub Pages deployment must publish BOTH index.html and version.json in the same folder.
-const WEBTOON_APP_VERSION='4.5.15';
+const WEBTOON_APP_VERSION='4.5.16';
 let latestPublishedVersion=null;
 let initialVersionCheck=true;
 let versionCheckInFlight=false;
@@ -4056,7 +4065,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
-<script src="drawing-workshop.js?v=4515"></script>
-<script src="fixed-princess.js?v=4515"></script>
+<script src="drawing-workshop.js?v=4516"></script>
+<script src="fixed-princess.js?v=4516"></script>
 </body>
 </html>

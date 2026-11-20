@@ -104,9 +104,12 @@ function syncLooks(){
  const t=$('fpLookNow');if(t)t.textContent='머리 '+({rose:'원래 분홍',gold:'금빛',violet:'보랏빛'}[state.hair]||'원래 분홍')+' · 드레스 '+({pink:'분홍',blue:'하늘',mint:'민트'}[state.dress]||'분홍')+' · 신발 '+({classic:'기본',ribbon:'리본',sparkle:'반짝이'}[state.shoes]||'기본');
 }
 function paint(forExport=false){ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff9fc';ctx.fillRect(0,0,W,H);
- // Fixed original is always a locked, independent lowest layer.
+ // C4.5.16: '공주 뒤' is a real compositing layer, not just an item ordering change.
+ // Old saved items without placement remain in front (backward compatible).
+ function drawDecoration(it){if(it.type==='premium')drawPremium(it);else drawShape(it);}
+ for(const it of state.items){if(it.visible===false||it.type==='stroke'||it.placement!=='behind')continue;drawDecoration(it);}
  if(state.baseVisible&&image&&loaded){const use=princessImage();const capW=620,capH=790;const ratio=Math.min(capW/use.width,capH/use.height);const w=use.width*ratio,h=use.height*ratio;const px=(W-w)/2,py=(H-h)/2;ctx.drawImage(use,px,py,w,h);outfitDetails(ctx,px,py,w,h);}
- for(const it of state.items){if(it.visible===false||it.type==='stroke')continue;if(it.type==='premium')drawPremium(it);else drawShape(it);}
+ for(const it of state.items){if(it.visible===false||it.type==='stroke'||it.placement==='behind')continue;drawDecoration(it);}
  // Ink stays independent of the original and decorations: the eraser cannot erase the princess.
  inkCtx.clearRect(0,0,W,H);for(const it of state.items){if(it.visible!==false&&it.type==='stroke')drawStroke(it,inkCtx);}ctx.drawImage(inkCanvas,0,0);
  if(!forExport&&tool==='select'&&selected){
@@ -142,10 +145,21 @@ function strokeBounds(it){const x=it.points.map(p=>p[0]),y=it.points.map(p=>p[1]
 function render(){paint();renderLayers();syncSelected();syncLooks();}
 function renderLayers(){const node=$('fpLayers');node.replaceChildren();const base=document.createElement('div');base.className='fp-layer';base.innerHTML=`<strong>👑 꽃빛공주 원화</strong><span class="fp-sub">기본 잠금 · 한 가지 표정/자세</span>`;
  const bt=document.createElement('button');bt.textContent=state.baseVisible?'숨기기':'보기';bt.onclick=()=>{saveHistory();state.baseVisible=!state.baseVisible;render();};base.append(bt);node.append(base);
- for(const it of [...state.items].reverse()){const row=document.createElement('div');row.className='fp-layer'+(selected===it.id?' selected':'');let nm=document.createElement('strong');nm.textContent=(it.type==='stroke'?'✏️ ':'💎 ')+itemLabel(it);row.append(nm);
+ for(const it of [...state.items].reverse()){const row=document.createElement('div');row.className='fp-layer'+(selected===it.id?' selected':'');let nm=document.createElement('strong');nm.textContent=(it.type==='stroke'?'✏️ ':'💎 ')+itemLabel(it)+(it.type==='stroke'?'':(it.placement==='behind'?' · 공주 뒤':' · 공주 앞'));row.append(nm);
+ if(it.type!=='stroke'){
+  const where=document.createElement('button');where.className='fp-placement-layer';where.textContent=it.placement==='behind'?'공주 앞으로':'공주 뒤로';
+  where.onclick=()=>{saveHistory();it.placement=it.placement==='behind'?'front':'behind';render();};row.append(where);
+ }
  for(const [caption,fn] of [[it.visible===false?'보기':'숨기기',()=>{saveHistory();it.visible=it.visible===false?true:false;}],[it.locked?'풀기':'잠그기',()=>{saveHistory();it.locked=!it.locked;}],['지우기',()=>{if(!confirm('이 그림 층만 지울까요? 다른 그림은 그대로예요.'))return;saveHistory();state.items=state.items.filter(a=>a.id!==it.id);if(selected===it.id)selected=null;}]]){const btn=document.createElement('button');btn.textContent=caption;btn.onclick=()=>{fn();render();};row.append(btn);}nm.onclick=()=>{selected=it.id;setTool('select');render();};node.append(row);}
 }
-function syncSelected(){const it=state.items.find(i=>i.id===selected);$('fpSelected').textContent=it?'선택: '+itemLabel(it):'장식을 선택하거나 그림 층에서 골라 주세요';$('fpEdit').hidden=!it;const isPremium=it?.type==='premium';const colorRow=document.querySelector('#fpEdit .fp-color-edit');if(colorRow)colorRow.hidden=!!isPremium;$('fpFill').value=it?.fill||color;$('fpLine').value=it?.stroke||lineColor;$('fpOutline').checked=it?.outline!==false;$('fpAngle').value=it?.rotation||0;const tools=$('fpQuickEdit');if(tools)tools.hidden=!it||it.type==='stroke';}
+function syncSelected(){const it=state.items.find(i=>i.id===selected);$('fpSelected').textContent=it?'선택: '+itemLabel(it):'장식을 선택하거나 그림 층에서 골라 주세요';$('fpEdit').hidden=!it||it.type!=='shape';const isPremium=it?.type==='premium';const colorRow=document.querySelector('#fpEdit .fp-color-edit');if(colorRow)colorRow.hidden=!!isPremium;$('fpFill').value=it?.fill||color;$('fpLine').value=it?.stroke||lineColor;$('fpOutline').checked=it?.outline!==false;$('fpAngle').value=it?.rotation||0;const tools=$('fpQuickEdit');if(tools){tools.hidden=!it||it.type==='stroke';
+  if(it&&it.type!=='stroke'){
+   const label=$('fpQuickLabel');if(label)label.textContent='🎀 '+itemLabel(it);
+   const front=$('fpPlacementFront'),back=$('fpPlacementBack');
+   if(front){front.classList.toggle('isOn',it.placement!=='behind');front.setAttribute('aria-pressed',String(it.placement!=='behind'));}
+   if(back){back.classList.toggle('isOn',it.placement==='behind');back.setAttribute('aria-pressed',String(it.placement==='behind'));}
+  }
+ }}
 function addShape(shape){saveHistory();const names={star:'별',heart:'하트',flower:'꽃',ribbon:'리본',gem:'보석',circle:'원',ellipse:'타원',rect:'네모'};let it={id:ID(),type:'shape',shape,name:names[shape]||shape,x:W/2+((state.items.length%3)-1)*38,y:H*.54,w:shape==='ribbon'?130:100,h:shape==='ribbon'?85:100,fill:color,stroke:lineColor,outline,rotation:0,visible:true,locked:false};state.items.push(it);selected=it.id;setTool('select');notice('추가했어요. 그림을 끌어서 위치를 바꾸세요.');render();}
 // Match webtoon decoration: drag to move, corner to resize, round handle to rotate,
 // two fingers to resize / rotate / move together, with separate undo history.
@@ -224,6 +238,11 @@ $('fpShrink')?.addEventListener('click',()=>selectedSize(1/1.15));
 $('fpTurnLeft')?.addEventListener('click',()=>selectedRotate(-15));
 $('fpTurnRight')?.addEventListener('click',()=>selectedRotate(15));
 $('fpDeselect')?.addEventListener('click',()=>{selected=null;render();});
+$('fpPlacementFront')?.addEventListener('click',()=>selectedEdit(it=>{if(it.type!=='stroke')it.placement='front';}));
+$('fpPlacementBack')?.addEventListener('click',()=>selectedEdit(it=>{if(it.type!=='stroke')it.placement='behind';}));
+$('fpQuickFlip')?.addEventListener('click',()=>selectedEdit(it=>{if(it.type!=='stroke')it.flip=!it.flip;}));
+$('fpQuickCopy')?.addEventListener('click',()=>selectedEdit(it=>{const c=clone(it);c.id=ID();c.x=(c.x||W/2)+28;c.y=(c.y||H/2)+28;state.items.push(c);selected=c.id;}));
+$('fpQuickDelete')?.addEventListener('click',()=>{if(!selected||!confirm('선택한 장식만 지울까요?'))return;selectedEdit(it=>{state.items=state.items.filter(a=>a.id!==it.id);selected=null;});});
 function read(){return new Promise((resolve,reject)=>{try{const req=indexedDB.open(KEY,1);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains('works'))d.createObjectStore('works',{keyPath:'id'});};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error);}catch(e){reject(e)}});}
 function store(mode,obj){return new Promise((res,rej)=>{const tx=db.transaction('works',mode);const req=mode==='readonly'?tx.objectStore('works').getAll():obj===null?tx.objectStore('works').clear():tx.objectStore('works').put(obj);req.onsuccess=()=>res(req.result);req.onerror=()=>rej(req.error);});}
 async function refreshWorks(){const el=$('fpWorks');el.replaceChildren();try{const rows=(await store('readonly')).sort((a,b)=>(b.updated||0)-(a.updated||0));if(!rows.length){el.textContent='아직 저장한 공주가 없어요.';return;}for(const w of rows){const card=document.createElement('div');card.className='fp-work';const text=document.createElement('span');text.textContent='👑 '+w.name+' · '+new Date(w.updated).toLocaleDateString('ko-KR');card.append(text);const open=document.createElement('button');open.textContent='이어서 꾸미기';open.onclick=()=>{state=clone(w);selected=null;history=[];future=[];$('fpName').value=state.name;render();notice('저장한 공주를 다시 열었어요.');};card.append(open);const del=document.createElement('button');del.textContent='지우기';del.onclick=async()=>{if(!confirm('이 공주 작품을 보관함에서 지울까요?'))return;await new Promise((res,rej)=>{const t=db.transaction('works','readwrite');const req=t.objectStore('works').delete(w.id);req.onsuccess=res;req.onerror=rej});await refreshWorks();};card.append(del);el.append(card);}}catch(e){notice('보관함을 열지 못했어요: '+e.message);}}
