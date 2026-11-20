@@ -471,6 +471,22 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #fixedPrincessWorkshop .fp-quick-edit button{min-height:39px;padding:6px 10px;font-size:13px;background:white}
 #fixedPrincessWorkshop .fp-quick-edit small{width:100%;font-size:12px;color:#715b7c}
 </style>
+<style>
+/* C4.5.17: roomy shared creative workshop, premium thumbnail rail */
+#draw .draw-workshop{max-width:1400px;margin:auto}
+#draw .dw-premium-panel{background:#fff9ff;border:1px solid #e6c9ea;border-radius:13px;padding:8px 12px;margin:9px 0}
+#draw .dw-premium-panel summary{cursor:pointer;font-weight:800;font-size:16px}
+#draw .dw-premium-gallery{display:flex;gap:7px;overflow-x:auto;padding:8px 3px;scrollbar-width:thin;scroll-snap-type:x proximity}
+#draw .dw-premium-gallery button{flex:0 0 89px;min-height:102px;padding:6px 3px;border:1px solid #e1c9e8;border-radius:12px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-around;gap:2px;scroll-snap-align:start;font-size:12px;color:#51355c}
+#draw .dw-premium-gallery button img{width:65px;height:65px;object-fit:contain;pointer-events:none}
+#draw .dw-premium-gallery button:active{background:#f7e5fd;transform:scale(.97)}
+#draw .dw-layer-row{gap:5px}
+#draw .dw-layer-name{min-width:145px;flex:1;text-align:left}
+#draw .dw-canvas-wrap{max-width:min(96vw,920px);margin-inline:auto}
+#draw .dw-hero-preview{display:inline-flex;align-items:center;gap:4px;background:#fff;padding:2px 5px;border-radius:10px;min-width:84px}#draw .dw-hero-preview small{font-size:11px}
+#draw #dwCanvas{display:block;width:100%;height:auto;touch-action:none}
+@media(min-width:960px){#draw .dw-canvas-wrap{max-width:min(81vh,900px)}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -478,7 +494,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.16 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
+    <span class="pill">MASTER C4.5.17 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
   </header>
 
   <nav class="tabs">
@@ -490,8 +506,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.16)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.16 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.17)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.17 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -694,7 +710,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 
   <section id="draw" class="view">
     <div class="card draw-workshop">
-      <h2>🖍 내 그림 만들기</h2>
+      <h2>🖍 내 그림 만들기 — 모든 공주·동물친구와 함께</h2>
       <p class="sub">Apple Pencil이나 손가락으로 그림을 그리고, 색칠하고, 나만의 주인공을 만들어요. 원본 공주와 기존 웹툰은 변경하지 않아요.</p>
       <div class="draw-actions">
         <button type="button" id="dwBlank" class="secondary">＋ 빈 도화지</button>
@@ -705,10 +721,18 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
       </div>
       <div class="draw-actions dw-layer-tools">
         <label for="dwHeroSource" class="dw-label">👑 기존 주인공 추가</label><select id="dwHeroSource" aria-label="주인공 밑그림 고르기"><option value="">주인공 선택</option></select>
+        <label for="dwExpression" class="dw-label">😊 표정·자세</label><select id="dwExpression" aria-label="추가할 주인공의 표정"><option>기뻐요</option><option>놀랐어요</option><option>슬퍼요</option><option>화났어요</option><option>생각해요</option><option>신나요</option></select>
+        <span id="dwHeroPreviewBox" class="dw-hero-preview"><img id="dwHeroPreview" alt="선택한 주인공 미리보기" loading="lazy" style="width:54px;height:60px;object-fit:contain;vertical-align:middle"><small>선택 모습</small></span>
         <label for="dwHeroMode" class="dw-label">그림 방식</label><select id="dwHeroMode"><option value="pale">연한 원화</option><option value="outline">바깥 외곽선</option><option value="original">원래 모습</option></select>
-        <button id="dwAddHero" type="button" class="secondary">➕ 주인공 밑그림 넣기</button>
+        <button id="dwAddHero" type="button" class="secondary">➕ 주인공 추가하기</button>
         <label for="dwShape" class="dw-label">🔷 기본 도형</label><select id="dwShape"><option value="circle">원</option><option value="ellipse">타원</option><option value="rect">네모</option><option value="round">둥근 네모</option><option value="triangle">세모</option><option value="star">별</option><option value="heart">하트</option><option value="cloud">구름</option><option value="bubble">말풍선</option></select>
         <button id="dwAddShape" type="button" class="secondary">➕ 도형 넣기</button>
+      </div>
+      <details class="dw-premium-panel" open><summary>💎 웹툰 꾸미기의 고품질 장식품·소품 (눌러서 추가하기)</summary>
+        <p class="hint">고품질 그림을 고르고, 도화지에서 끌어 옮기세요. 크기·회전·반전·그림 층도 조절할 수 있어요.</p>
+        <div id="dwPremiumGallery" class="dw-premium-gallery" role="group" aria-label="고품질 장식품 선택"></div>
+      </details>
+      <div class="draw-actions dw-layer-tools">
       </div>
       <div class="dw-tools" role="group" aria-label="그림 도구">
         <button type="button" data-dw-tool="select" class="dw-tool">👆 선택·이동</button>
@@ -723,7 +747,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <b>✋ 선택한 그림 조절</b><button type="button" id="dwObjectSmaller">− 작게</button><button type="button" id="dwObjectBigger">＋ 크게</button>
         <button type="button" id="dwObjectWide">↔ 가로 늘이기</button><button type="button" id="dwObjectTall">↕ 세로 늘이기</button>
         <button type="button" id="dwObjectRotate">⟳ 돌리기</button><button type="button" id="dwObjectFlip">⇆ 뒤집기</button>
-        <button type="button" id="dwObjectFront">⬆ 앞으로</button><button type="button" id="dwObjectBack">⬇ 뒤로</button>
+        <button type="button" id="dwObjectUp">↑ 한 칸 앞으로</button><button type="button" id="dwObjectDown">↓ 한 칸 뒤로</button><button type="button" id="dwObjectFront">⬆ 맨앞</button><button type="button" id="dwObjectBack">⬇ 맨뒤</button>
         <button type="button" id="dwObjectClone">⧉ 복제</button><button type="button" id="dwObjectLock">🔒 잠그기</button>
         <button type="button" id="dwObjectDelete">🗑 선택 삭제</button>
         <label>진하기 <input id="dwObjectOpacity" type="range" min="10" max="100" value="100"></label>
@@ -741,7 +765,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         </div>
       </div>
       <details class="dw-layer-panel" open><summary>🗂 그림 층 관리 — 밑그림 숨기기·삭제·선택</summary>
-        <p class="hint">겹친 그림도 여기서 정확히 고를 수 있어요. 눈 모양은 숨기기, 자물쇠는 위치 고정입니다. 펜으로 그린 선은 지워지지 않아요.</p>
+        <p class="hint">겹친 그림도 여기서 정확히 고를 수 있어요. 숨기기·보기와 잠그기·풀기로 상태를 확인하세요. 펜으로 그린 선은 지워지지 않아요.</p>
         <div id="dwLayerList" class="dw-layer-list"></div>
       </details>
       <div class="dw-colors" id="dwColors" aria-label="색상 선택"></div>
@@ -4065,7 +4089,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
-<script src="drawing-workshop.js?v=4516"></script>
-<script src="fixed-princess.js?v=4516"></script>
+<script src="drawing-workshop.js?v=4517"></script>
+<script src="fixed-princess.js?v=4517"></script>
 </body>
 </html>

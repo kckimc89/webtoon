@@ -1,4 +1,4 @@
-/* C4.5.10 legible layer state controls. Reuses existing IndexedDB records without migration. */
+/* C4.5.17: multi-character, 6 expressions and shared premium props. IndexedDB v1 backward compatible. */
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id),W=640,H=640, canvas=$('dwCanvas');if(!canvas)return;
@@ -18,7 +18,7 @@ function setTool(t){tool=t;document.querySelectorAll('[data-dw-tool]').forEach(b
 document.querySelectorAll('[data-dw-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.dwTool));
 $('dwColor').oninput=e=>{color=e.target.value;syncColors()};$('dwSize').oninput=e=>{size=+e.target.value;$('dwSizeLabel').textContent=size};$('dwShowBackground').onchange=()=>render();
 function selected(){return elements.find(e=>e.id===selection)}
-function layerName(e){if(e.origin){const opt=[...$('dwHeroSource').options].find(o=>o.value===e.origin);return (opt?.textContent||'주인공')+' 밑그림'}if(e.kind==='shape'){const names={circle:'원',ellipse:'타원',rect:'네모',round:'둥근 네모',triangle:'세모',star:'별',heart:'하트',cloud:'구름',bubble:'말풍선'};return (names[e.shape]||'도형')+' 도형'}return e.template?'연습 밑그림':'가져온 그림'}
+function layerName(e){if(e.premiumKey)return '💎 '+e.premiumKey;if(e.origin){const opt=[...$('dwHeroSource').options].find(o=>o.value===e.origin);return (opt?.textContent||'주인공')+(e.expression?' · '+e.expression:'')}if(e.kind==='shape'){const names={circle:'원',ellipse:'타원',rect:'네모',round:'둥근 네모',triangle:'세모',star:'별',heart:'하트',cloud:'구름',bubble:'말풍선'};return (names[e.shape]||'도형')+' 도형'}return e.template?'연습 밑그림':'가져온 그림'}
 function layerList(){const target=$('dwLayerList');if(!target)return;target.replaceChildren();if(!elements.length){target.textContent='추가한 도형과 밑그림이 이곳에 표시됩니다.';return}for(const e of [...elements].reverse()){
  const line=document.createElement('div');line.className='dw-layer-row'+(e.id===selection?' selected':'');
  const name=document.createElement('button');name.type='button';name.className='dw-layer-name';name.textContent=layerName(e);name.title='이 그림 층을 선택';name.onclick=()=>{selection=e.id;setTool('select')};line.append(name);
@@ -26,6 +26,8 @@ function layerList(){const target=$('dwLayerList');if(!target)return;target.repl
  const hidden=e.visible===false,locked=!!e.locked;
  button(hidden?'보기':'숨기기',hidden?'현재 숨김 · 누르면 다시 보기':'현재 보임 · 누르면 숨기기',()=>{remember();e.visible=hidden;render()},hidden?'hidden':'visible');
  button(locked?'풀기':'잠그기',locked?'현재 잠김 · 누르면 잠금 풀기':'현재 편집 가능 · 누르면 잠그기',()=>{remember();e.locked=!locked;render()},locked?'locked':'unlocked');
+ button('↑','한 칸 앞으로',()=>{selection=e.id;moveOrder(i=>i+1)},'forward');
+ button('↓','한 칸 뒤로',()=>{selection=e.id;moveOrder(i=>i-1)},'backward');
  button('지우기','이 층만 지우기',()=>removeLayer(e.id),'delete');target.append(line)
  }}
 function removeLayer(id){const e=elements.find(q=>q.id===id);if(!e||!confirm('「'+layerName(e)+'」만 삭제할까요? 펜으로 그린 선과 다른 도형은 그대로 남아요.'))return;remember();elements=elements.filter(q=>q.id!==id);images.delete(id);if(selection===id)selection=null;render()}
@@ -84,15 +86,42 @@ const templates={
 function svgData(t){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(t)}
 function canvasData(c){return c.toDataURL('image/png')}
 function fileBase(src){return src.startsWith('data:')?src:src}
-function imageForHero(id){try{if(['rabbit','dog','cat','fairy'].includes(id))return friendImageSource(id,'기뻐요');const h=heroes.find(q=>q.id===id);if(h){return princessThumb(h)}}catch(_){}return null}
+const SIX_EXPRESSIONS=['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요'];
+const BOB_FILES={'기뻐요':'happy','놀랐어요':'surprised','슬퍼요':'sad','화났어요':'angry','생각해요':'thinking','신나요':'excited'};
+function imageForHero(id,expression){
+ try{
+  if(['rabbit','dog','cat','fairy'].includes(id))return friendImageSource(id,expression||'기뻐요');
+  if(id==='princess_bob_story'&&expression)return 'bob-'+BOB_FILES[expression]+'.png?v=4517';
+  if(expression && typeof dedicatedFullBodyExpressions!=='undefined' && dedicatedFullBodyExpressions[id]?.[expression])return dedicatedFullBodyExpressions[id][expression];
+  const h=heroes.find(q=>q.id===id);if(h)return princessThumb(h);
+ }catch(err){console.warn('주인공 원화 확인 실패',err)}return null
+}
+function premiumImage(key){try{return typeof premiumPropImages!=='undefined'?premiumPropImages[key]:null}catch(_){return null}}
 function listHeroes(){const drop=$('dwHeroSource');const kinds=[['princess_strawberry','🍓 딸기공주'],['princess_emerald','💚 에메랄드공주'],['princess_starlight','🌙 달빛요정'],['princess_pearl','🤍 진주공주'],['princess_bob_story','🌷 단발머리공주'],['princess_flower','🌺 꽃공주'],['princess_moon','🌙 달빛공주'],['princess_rainbow','🌈 무지개공주'],['princess_fairy','🧚 반짝이요정'],['princess_sea','🌊 바다공주'],['princess_snow','❄️ 눈꽃공주'],['dog','🐶 강아지 몽이'],['cat','🐱 고양이 루루'],['rabbit','🐰 토끼 보송이'],['fairy','🧚 요정']];kinds.forEach(([id,name])=>{const o=document.createElement('option');o.value=id;o.textContent=name;drop.append(o)})}
 listHeroes();
+function updateHeroPreview(){const id=$('dwHeroSource').value,src=id?imageForHero(id,$('dwExpression').value):null;const pic=$('dwHeroPreview');if(!pic)return;pic.src=src||'';pic.style.visibility=src?'visible':'hidden'}
+$('dwHeroSource').addEventListener('change',updateHeroPreview);
+$('dwExpression').addEventListener('change',updateHeroPreview);
+updateHeroPreview();
 async function contourImage(im){const a=document.createElement('canvas'),edge=document.createElement('canvas');a.width=edge.width=384;a.height=edge.height=384;const ac=a.getContext('2d',{willReadFrequently:true}),ec=edge.getContext('2d');ac.clearRect(0,0,384,384);const r=Math.min(344/im.width,344/im.height),w=im.width*r,h=im.height*r;ac.drawImage(im,(384-w)/2,(384-h)/2,w,h);const d=ac.getImageData(0,0,384,384).data,out=ec.createImageData(384,384),px=out.data;
  for(let y=1;y<383;y++)for(let x=1;x<383;x++){const i=(y*384+x)*4,aa=d[i+3];if(aa<90)continue;let boundary=false;for(const q of [-4,4,-1536,1536])if(d[i+q+3]<90){boundary=true;break}if(boundary){for(let yy=-2;yy<=2;yy++)for(let xx=-2;xx<=2;xx++){const j=((y+yy)*384+x+xx)*4;if(j>=0&&j<px.length){px[j]=70;px[j+1]=48;px[j+2]=86;px[j+3]=255}}}}
  ec.putImageData(out,0,0);return canvasData(edge)}
-async function refreshImages(){images.clear();await Promise.all(elements.filter(e=>e.kind==='image').map(async e=>{try{const src=e.origin?imageForHero(e.origin):e.src;if(!src)return;let im=await image(src);if(e.variant==='outline'&&e.origin){const cacheKey=e.origin+'-outline';if(!window.dwContourCache)window.dwContourCache=new Map();let cached=window.dwContourCache.get(cacheKey);if(!cached){cached=await contourImage(im);window.dwContourCache.set(cacheKey,cached)}im=await image(cached)}images.set(e.id,im)}catch(err){console.warn('그림 레이어 열기 실패',err)}}))}
-function addImageReady(src,opts){return image(src).then(async im=>{let actual=im,variant=opts.variant||'original';if(variant==='outline'){const data=await contourImage(im);actual=await image(data)}const ratio=Math.min(1,im.width/im.height),tall=Math.min(1,im.height/im.width);const e=addElement({kind:'image',src:opts.origin?null:src,origin:opts.origin||null,variant,opacity:opts.opacity??(variant==='pale'?.4:1),template:opts.template||null,w:opts.w||Math.round(330*ratio),h:opts.h||Math.round(330*tall)});images.set(e.id,actual);render();return e})}
-$('dwAddHero').onclick=async()=>{const id=$('dwHeroSource').value;if(!id){say('먼저 주인공을 골라 주세요.');return}const src=imageForHero(id);if(!src){say('이 주인공 그림은 아직 준비되지 않았어요.');return}try{await addImageReady(src,{origin:id,variant:$('dwHeroMode').value});say('주인공 밑그림을 도화지에 추가했어요.')}catch(e){say(e.message)}};
+async function refreshImages(){images.clear();await Promise.all(elements.filter(e=>e.kind==='image').map(async e=>{try{const src=e.premiumKey?premiumImage(e.premiumKey):(e.origin?imageForHero(e.origin,e.expression):e.src);if(!src)return;let im=await image(src);if(e.variant==='outline'&&e.origin){const cacheKey=e.origin+'-'+(e.expression||'legacy')+'-outline';if(!window.dwContourCache)window.dwContourCache=new Map();let cached=window.dwContourCache.get(cacheKey);if(!cached){cached=await contourImage(im);window.dwContourCache.set(cacheKey,cached)}im=await image(cached)}images.set(e.id,im)}catch(err){console.warn('그림 레이어 열기 실패',err)}}))}
+function addImageReady(src,opts){return image(src).then(async im=>{let actual=im,variant=opts.variant||'original';if(variant==='outline'){const data=await contourImage(im);actual=await image(data)}const ratio=Math.min(1,im.width/im.height),tall=Math.min(1,im.height/im.width);const stagger=elements.length;const e=addElement({kind:'image',src:(opts.origin||opts.premiumKey)?null:src,origin:opts.origin||null,expression:opts.expression||null,premiumKey:opts.premiumKey||null,variant,opacity:opts.opacity??(variant==='pale'?.4:1),template:opts.template||null,x:Math.min(520,240+(stagger%5)*55),y:Math.min(510,245+(stagger%4)*42),w:opts.w||Math.round(330*ratio),h:opts.h||Math.round(330*tall)});images.set(e.id,actual);render();return e})}
+$('dwAddHero').onclick=async()=>{const id=$('dwHeroSource').value;if(!id){say('먼저 주인공을 골라 주세요.');return}const emotion=$('dwExpression').value;const src=imageForHero(id,emotion);if(!src){say('이 주인공 그림은 아직 준비되지 않았어요.');return}try{await addImageReady(src,{origin:id,expression:emotion,variant:$('dwHeroMode').value});say('선택한 표정의 주인공을 도화지에 추가했어요.')}catch(e){say(e.message)}};
+// Keep the exact existing premium gallery artwork; store only prop keys, not embedded base64.
+function initPremiumGallery(){
+ const gallery=$('dwPremiumGallery');if(!gallery)return;
+ try{for(const [key,src] of Object.entries(premiumPropImages)){
+   if(!src)continue;const b=document.createElement('button');b.type='button';b.title=key;
+   const img=document.createElement('img');img.src=src;img.alt='';img.loading='lazy';
+   const caption=document.createElement('span');caption.textContent=key;b.append(img,caption);
+   b.onclick=async()=>{try{const n=elements.filter(e=>e.premiumKey).length;const el=await addImageReady(src,{premiumKey:key,variant:'original',w:160,h:160});
+      el.x=245+(n%5)*27;el.y=245+(n%4)*22;render();say('「'+key+'」 장식을 추가했어요. 끌어서 꾸며 보세요.')}
+      catch(err){say('장식품 추가 실패: '+err.message)}};gallery.append(b)
+ }}catch(err){gallery.textContent='고품질 장식품을 불러오지 못했어요.';console.warn(err)}
+}
+initPremiumGallery();
 $('dwAddShape').onclick=()=>addElement({kind:'shape',shape:$('dwShape').value,fill:color,stroke:'#765a91',w:210,h:180});
 $('dwTemplate').onchange=async evt=>{const id=evt.target.value;if(id==='blank')return;try{await addImageReady(svgData(templates[id]),{w:270,h:270,template:id});say('연습 밑그림을 추가했어요.')}catch(e){say(e.message)}evt.target.value='blank'};
 $('dwLoadImage').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(file.size>12*1024*1024){say('12MB 이하 그림을 골라 주세요.');return}try{const data=await new Promise((res,rej)=>{const reader=new FileReader();reader.onload=()=>res(reader.result);reader.onerror=()=>rej(Error('읽기 실패'));reader.readAsDataURL(file)});await addImageReady(data,{});say('기존 도화지는 그대로 두고 그림을 추가했어요.')}catch(err){say(err.message)}e.target.value=''};
@@ -110,8 +139,11 @@ $('dwSelectedHeroMode').onchange=async ev=>{const target=selected();if(!target||
 
 $('dwObjectDelete').onclick=()=>{if(selection)removeLayer(selection)};
 $('dwObjectClone').onclick=()=>{const e=selected();if(!e)return;const cloned=copy(e);delete cloned.id;const ne=addElement({...cloned,x:e.x+32,y:e.y+32});if(e.kind==='image')images.set(ne.id,images.get(e.id));render()};
-$('dwObjectFront').onclick=()=>{const i=elements.findIndex(e=>e.id===selection);if(i<0||i===elements.length-1)return;remember();elements.push(elements.splice(i,1)[0]);render()};
-$('dwObjectBack').onclick=()=>{const i=elements.findIndex(e=>e.id===selection);if(i<1)return;remember();elements.unshift(elements.splice(i,1)[0]);render()};
+function moveOrder(to){const i=elements.findIndex(e=>e.id===selection);if(i<0)return;const target=Math.max(0,Math.min(elements.length-1,to(i)));if(i===target)return;remember();elements.splice(target,0,elements.splice(i,1)[0]);render()}
+$('dwObjectFront').onclick=()=>moveOrder(()=>elements.length-1);
+$('dwObjectBack').onclick=()=>moveOrder(()=>0);
+$('dwObjectUp').onclick=()=>moveOrder(i=>i+1);
+$('dwObjectDown').onclick=()=>moveOrder(i=>i-1);
 function exported(){compose(sc,false);return canvasData(stage)}
 function blankCanvas(){const cv=document.createElement('canvas');cv.width=W;cv.height=H;return canvasData(cv)}
 $('dwExport').onclick=()=>{const a=document.createElement('a');a.href=exported();a.download=($('dwName').value.trim()||'내 그림').replace(/[\\/:*?"<>|]/g,'_')+'.png';document.body.append(a);a.click();a.remove();say('PNG 파일을 저장했어요.')};
