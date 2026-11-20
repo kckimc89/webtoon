@@ -388,6 +388,11 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .dw-layer-row .dw-layer-name{flex:1;text-align:left;font-size:13px;min-height:38px;background:none;color:#403249;border:none;padding:6px}
 .dw-layer-row .dw-layer-action{min-width:42px;min-height:38px;font-size:16px;padding:5px 7px}
 </style>
+<style>
+.fp-workshop{margin-bottom:18px}.fp-top,.fp-tools,.fp-shapes,.fp-color-edit{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}.fp-workshop button{min-height:43px;padding:9px 11px;border-radius:11px}.fp-workshop input[type="color"]{width:46px;height:40px;vertical-align:middle;border:0;background:transparent}.fp-workshop input[type="range"]{vertical-align:middle;max-width:150px}.fp-workshop input[type="text"],.fp-top input{max-width:240px}.fp-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(265px,360px);gap:18px;align-items:start}.fp-art{min-width:0}.fp-art canvas{display:block;width:100%;height:auto;max-height:690px;object-fit:contain;border:2px solid #e5cde7;border-radius:14px;background:#fff8fb;touch-action:none;user-select:none}.fp-side{min-width:0}.fp-side h3{margin:14px 0 6px}.fp-shapes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.fp-shapes button{min-width:0}.fp-tools .isOn{background:#8052bc!important;color:white!important;border-color:#8052bc!important}.fp-edit{padding:10px;border:1px solid #decce9;border-radius:12px;background:#faf5ff}.fp-color-edit label{display:flex;align-items:center;gap:4px}.fp-angle{display:block;margin:8px 0}.fp-layer{display:flex;flex-wrap:wrap;align-items:center;gap:5px;padding:8px 4px;border-bottom:1px solid #eee1f0}.fp-layer strong{flex:1 1 110px;font-size:13px;cursor:pointer}.fp-layer .fp-sub{font-size:11px;color:#715b7c}.fp-layer button{font-size:12px;min-height:35px;padding:6px 7px}.fp-layer.selected{background:#f0e5fa;border-radius:8px}.fp-layers{max-height:360px;overflow-y:auto}.fp-saved{margin-top:14px;border-top:1px solid #eee1f0;padding-top:12px}.fp-saved summary{font-weight:800;cursor:pointer}.fp-works{display:grid;gap:8px;padding:10px 0}.fp-work{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;border-radius:9px;background:#f8f1fa}.fp-work span{flex:1 1 160px}.fp-status{background:#f8f1fa;border-radius:9px;padding:9px;color:#6d447e;min-height:38px}.fp-workshop [hidden]{display:none!important}
+.fp-outfit{border:1px solid #e9cfe8;background:#fff8fd;padding:12px 15px;border-radius:14px;margin:12px 0 16px}.fp-outfit h3{margin:2px 0 7px}.fp-look-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;border-top:1px solid #eedfec;padding:9px 0}.fp-look-row>strong{min-width:69px}.fp-look-options{display:flex;flex:1;gap:8px;flex-wrap:wrap}.fp-look-options button{min-height:45px}.fp-look-options .isOn{background:#8052bc!important;color:white!important;border-color:#8052bc!important}.fp-look-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding-top:6px}.fp-look-footer span{font-size:13px;color:#6c5181}.fp-look-footer button{font-size:13px}
+@media(max-width:750px){.fp-layout{grid-template-columns:1fr}.fp-art canvas{max-height:600px}.fp-side{border-top:1px solid #e9d9ee;padding-top:12px}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -395,7 +400,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.9 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
+    <span class="pill">MASTER C4.5.12 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
   </header>
 
   <nav class="tabs">
@@ -407,8 +412,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.9)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.9 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.12)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.12 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -419,6 +424,54 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 
 
   <section id="studio" class="view active">
+  <div class="card fp-workshop" id="fixedPrincessWorkshop">
+    <h2>🌷 꽃빛공주 꾸미기 — 머리·드레스·신발 스타일</h2>
+    <p class="sub">꽃빛공주의 <b>한 가지 표정·자세</b>를 꾸며요. 원래 공주 그림은 잠겨 있고, 장식과 손그림만 따로 저장됩니다. 예전 공주 만들기는 아래에 그대로 남아 있어요.</p>
+    <div class="fp-top">
+      <label>공주 이름 <input id="fpName" maxlength="35" value="나의 꽃빛공주"></label>
+      <button type="button" id="fpNew">새로 꾸미기</button><button type="button" id="fpSave" class="primary">💾 보관함에 저장</button><button type="button" id="fpExport">🖼 PNG 저장</button>
+    </div>
+    <div class="fp-outfit" aria-label="머리 드레스 신발 선택">
+ <h3>👗 공주 머리·드레스·신발 바꾸기</h3>
+ <p class="hint">이 공주는 한 가지 표정·자세로 고정되어 있어요. 그림의 아름다움을 지키기 위해 기존 고화질 그림의 머리색과 드레스색을 바꾸고, 신발 장식을 선택하는 첫 버전입니다.</p>
+ <div class="fp-look-row"><strong>💇 머리</strong><div class="fp-look-options">
+  <button data-fp-look="hair" data-fp-value="rose">🌸 분홍 머리</button><button data-fp-look="hair" data-fp-value="gold">🌟 금빛 머리</button><button data-fp-look="hair" data-fp-value="violet">💜 보랏빛 머리</button>
+ </div></div>
+ <div class="fp-look-row"><strong>👗 드레스</strong><div class="fp-look-options">
+  <button data-fp-look="dress" data-fp-value="pink">🌷 분홍 드레스</button><button data-fp-look="dress" data-fp-value="blue">🩵 하늘 드레스</button><button data-fp-look="dress" data-fp-value="mint">🌿 민트 드레스</button>
+ </div></div>
+ <div class="fp-look-row"><strong>👠 신발</strong><div class="fp-look-options">
+  <button data-fp-look="shoes" data-fp-value="classic">기본 구두</button><button data-fp-look="shoes" data-fp-value="ribbon">🎀 리본 구두</button><button data-fp-look="shoes" data-fp-value="sparkle">✨ 반짝이 구두</button>
+ </div></div>
+ <div class="fp-look-footer"><span id="fpLookNow" aria-live="polite"></span><button type="button" id="fpResetLooks">↩ 머리·옷·신발 원래대로</button></div>
+ </div>
+ <div class="fp-layout">
+      <div class="fp-art">
+        <canvas id="fpCanvas" width="720" height="840" aria-label="꽃빛공주 꾸미기 도화지"></canvas>
+        <div class="fp-tools">
+          <button data-fp-tool="select" class="isOn">👆 선택·이동</button><button data-fp-tool="draw">✏️ 펜 그리기</button><button data-fp-tool="erase">🧽 지우개</button>
+          <button id="fpUndo">↩ 되돌리기</button><button id="fpRedo">↪ 다시하기</button>
+        </div>
+        <div class="fp-tools"><label>펜 색 <input type="color" id="fpColor" value="#ed83ba"></label><label>굵기 <input id="fpPenSize" type="range" min="2" max="35" value="7"> <span id="fpPenLabel">7px</span></label><button id="fpOriginal">공주 원화 보기/숨기기</button></div>
+        <p class="fp-status" id="fpStatus" role="status">꽃빛공주 그림을 준비하고 있어요.</p>
+      </div>
+      <div class="fp-side">
+        <h3>💎 장식 추가</h3>
+        <p class="hint">도형을 누른 뒤 그림에서 끌어 이동하고, 오른쪽 아래 손잡이로 크기를 바꿔요.</p>
+        <div class="fp-shapes"><button data-fp-shape="flower">🌸 꽃</button><button data-fp-shape="ribbon">🎀 리본</button><button data-fp-shape="gem">💎 보석</button><button data-fp-shape="star">⭐ 별</button><button data-fp-shape="heart">💗 하트</button><button data-fp-shape="circle">● 원</button><button data-fp-shape="ellipse">⬭ 타원</button><button data-fp-shape="rect">▢ 네모</button></div>
+        <div id="fpEdit" class="fp-edit" hidden>
+          <h3>🎨 선택한 장식 바꾸기</h3><p id="fpSelected"></p>
+          <div class="fp-color-edit"><label>채우기 <input type="color" id="fpFill" value="#ed83ba"></label><label>외곽선 <input type="color" id="fpLine" value="#b46291"></label><label><input type="checkbox" id="fpOutline" checked> 외곽선 보기</label></div>
+          <label class="fp-angle">회전 <input id="fpAngle" type="range" min="-180" max="180" value="0"></label>
+          <div class="fp-tools"><button id="fpFlip">좌우 반전</button><button id="fpCopy">복제</button><button id="fpForward">맨앞</button><button id="fpBack">맨뒤</button><button id="fpDelete">지우기</button></div>
+        </div>
+        <h3>🗂 그림 층 관리</h3><p class="hint">그림이 겹쳐도 목록에서 정확하게 선택해요. 원화만 숨기면 내가 그린 그림만 남아요.</p><div id="fpLayers" class="fp-layers"></div>
+      </div>
+    </div>
+    <details class="fp-saved" open><summary>💝 내가 꾸민 꽃빛공주 보관함 — 다시 열어 꾸미기</summary><div id="fpWorks" class="fp-works"></div></details>
+    <p class="hint">이번에는 고화질 원화의 머리·드레스 색상과 신발 장식을 선택할 수 있습니다. <b>머리 길이·드레스 실루엣 자체를 바꾸는 전용 부품은 아직 제작 중인 영역</b>이며, 기존 장식과 손그림도 계속 사용할 수 있습니다. 표정·자세 변환은 이후 단계에서 다룹니다. 기존 웹툰과 내 그림 보관함에는 영향을 주지 않습니다.</p>
+  </div>
+
     <div class="card">
       <h2>👑 나만의 공주 만들기</h2>
       <p class="sub">꽃빛공주의 머리·드레스 조립을 실험하는 공간입니다. 기존 완성형 웹툰 주인공과 저장 작품은 그대로 유지돼요.</p>
@@ -996,7 +1049,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.10 · 버전 일치·자동 업데이트 확인 개선</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.11 · 고정형 꽃빛공주 꾸미기 실험판</div>
 </div>
 <div id="toast"></div>
 
@@ -3913,5 +3966,6 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
 <script src="drawing-workshop.js?v=4510"></script>
+<script src="fixed-princess.js?v=4512"></script>
 </body>
 </html>
