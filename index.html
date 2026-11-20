@@ -374,6 +374,26 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .dw-layer-row .dw-layer-action.is-locked{background:#e7e5f7;border-color:#9f96d0;color:#514591}
 .dw-layer-row .dw-layer-action.is-delete{background:#fff8f8;border-color:#edcbd1;color:#963b55}
 @media(max-width:500px){.dw-layer-row{gap:4px;padding:4px}.dw-layer-row .dw-layer-action{min-width:48px;padding:6px 5px;font-size:12px}.dw-layer-row .dw-layer-name{font-size:12px;padding:3px}}
+
+/* C4.5.18: full-size drawing surface and single webtoon-like accessory control */
+#draw .dw-canvas-wrap{position:relative;max-width:min(98vw,1000px);overflow:visible;touch-action:none}
+#draw .dw-floating{position:absolute;left:50%;top:2%;transform:translateX(-50%);z-index:4;display:flex;justify-content:center;flex-wrap:wrap;gap:5px;align-items:center;max-width:96%;padding:7px;background:#fffefaee;border:2px solid #9c76c7;border-radius:12px;box-shadow:0 3px 14px #75538d30;line-height:1.4}
+#draw .dw-floating[hidden]{display:none}
+#draw .dw-floating strong{font-size:13px;white-space:nowrap;margin-right:3px}
+#draw .dw-floating button{padding:5px 7px;font-size:12px;min-height:34px;border:1px solid #d7c2eb;border-radius:8px;background:white}
+#draw .dw-floating button[data-dw-action="delete"]{background:#fff0ef;color:#ad4057}
+#draw .dw-shape-single-row{display:flex;flex-wrap:nowrap!important;align-items:center;gap:10px}
+#draw .dw-shape-single-row select{flex:1;min-width:90px;max-width:280px}
+#draw .dw-shape-single-row button{white-space:nowrap}
+#draw .dw-object-details{border:1px solid #ddd0ed;border-radius:12px;padding:6px;margin:6px 0}
+#draw .dw-object-details[hidden]{display:none}
+#draw .dw-object-details summary{cursor:pointer;font-weight:700}
+#draw .dw-object-controls{border:0;background:#faf7ff}
+#draw .dw-object-controls>button,#draw .dw-object-controls>label:not(.dw-specific-settings){display:none}
+#draw .dw-specific-settings{display:flex;flex-wrap:wrap;gap:8px}
+#draw .dw-specific-settings[hidden]{display:none}
+@media(min-width:960px){#draw .dw-canvas-wrap{max-width:min(88vh,1000px)}}
+
 </style>
 <style>
 .draw-workshop{max-width:1120px;margin:0 auto}.draw-actions,.dw-tools,.dw-options,.dw-savebar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:12px 0}.draw-workshop button,.dw-label{touch-action:manipulation}.dw-label{font-weight:700}.draw-workshop select,.draw-workshop input[type=text]{max-width:210px}.dw-tools .active{background:#8052bc;color:#fff;border-color:#8052bc}.dw-colors{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.dw-swatch{width:33px;height:33px!important;min-height:33px!important;border:2px solid #d4ccdc;border-radius:50%;padding:0!important}.dw-swatch.selected{outline:3px solid #8a5acb;outline-offset:2px}.dw-options label{display:flex;gap:7px;align-items:center}.dw-options input[type=range]{width:130px}.dw-canvas-wrap{max-width:660px;margin:12px auto;border:2px solid #c8afdd;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 3px 10px #76518d25;line-height:0;touch-action:none}.dw-canvas-wrap canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;touch-action:none;cursor:crosshair}.dw-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.dw-card{border:1px solid #e2d2eb;border-radius:12px;padding:8px;background:#fff}.dw-card img{width:100%;aspect-ratio:1;object-fit:contain;background:linear-gradient(45deg,#f6f3f9 25%,transparent 25%),linear-gradient(-45deg,#f6f3f9 25%,transparent 25%);background-size:22px 22px}.dw-card b{display:block;margin:7px 0;word-break:break-word}.dw-card .actions{display:flex;flex-wrap:wrap;gap:4px}.dw-card button{padding:7px 9px;font-size:12px}.dw-savebar input{min-width:135px}.dw-layer-tools{padding:10px;border:1px solid #e0cee9;border-radius:12px;background:#fdf8ff}.dw-layer-tools select{max-width:180px}.dw-object-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;background:#f5ebfc;border:2px solid #d3b5e7;border-radius:12px;padding:9px;margin:10px 0}.dw-object-controls[hidden]{display:none}.dw-object-controls button{padding:8px 10px;font-size:13px}.dw-object-controls label{display:flex;align-items:center;gap:5px;font-size:13px}.dw-object-controls input[type=range]{width:95px}.dw-hero-item{border:1px solid #e1d6e6;border-radius:12px;padding:5px;min-width:0}.dw-hero-item .choice{width:100%}.dw-remove-hero{width:100%;margin-top:5px;background:#fff5f5;color:#98424f;border:1px solid #e5bbc5}.dw-hero-item img{max-height:110px;object-fit:contain}@media(max-width:680px){.dw-tools button,.draw-actions button{padding:9px}.dw-savebar button{flex:1}.dw-canvas-wrap{margin:8px -5px}}
@@ -472,7 +492,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #fixedPrincessWorkshop .fp-quick-edit small{width:100%;font-size:12px;color:#715b7c}
 </style>
 <style>
-/* C4.5.17: roomy shared creative workshop, premium thumbnail rail */
+/* C4.5.18: roomy shared creative workshop, premium thumbnail rail */
 #draw .draw-workshop{max-width:1400px;margin:auto}
 #draw .dw-premium-panel{background:#fff9ff;border:1px solid #e6c9ea;border-radius:13px;padding:8px 12px;margin:9px 0}
 #draw .dw-premium-panel summary{cursor:pointer;font-weight:800;font-size:16px}
@@ -494,7 +514,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.17 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
+    <span class="pill">MASTER C4.5.18 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
   </header>
 
   <nav class="tabs">
@@ -506,8 +526,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.17)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.17 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.18)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.18 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -723,8 +743,10 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <label for="dwHeroSource" class="dw-label">👑 기존 주인공 추가</label><select id="dwHeroSource" aria-label="주인공 밑그림 고르기"><option value="">주인공 선택</option></select>
         <label for="dwExpression" class="dw-label">😊 표정·자세</label><select id="dwExpression" aria-label="추가할 주인공의 표정"><option>기뻐요</option><option>놀랐어요</option><option>슬퍼요</option><option>화났어요</option><option>생각해요</option><option>신나요</option></select>
         <span id="dwHeroPreviewBox" class="dw-hero-preview"><img id="dwHeroPreview" alt="선택한 주인공 미리보기" loading="lazy" style="width:54px;height:60px;object-fit:contain;vertical-align:middle"><small>선택 모습</small></span>
-        <label for="dwHeroMode" class="dw-label">그림 방식</label><select id="dwHeroMode"><option value="pale">연한 원화</option><option value="outline">바깥 외곽선</option><option value="original">원래 모습</option></select>
+        <label for="dwHeroMode" class="dw-label">그림 방식</label><select id="dwHeroMode"><option value="original" selected>원래 모습(선명한 그림)</option><option value="pale">연한 원화</option><option value="outline">바깥 외곽선</option></select>
         <button id="dwAddHero" type="button" class="secondary">➕ 주인공 추가하기</button>
+      </div>
+      <div class="draw-actions dw-layer-tools dw-shape-single-row" aria-label="도형 추가">
         <label for="dwShape" class="dw-label">🔷 기본 도형</label><select id="dwShape"><option value="circle">원</option><option value="ellipse">타원</option><option value="rect">네모</option><option value="round">둥근 네모</option><option value="triangle">세모</option><option value="star">별</option><option value="heart">하트</option><option value="cloud">구름</option><option value="bubble">말풍선</option></select>
         <button id="dwAddShape" type="button" class="secondary">➕ 도형 넣기</button>
       </div>
@@ -743,7 +765,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <button type="button" id="dwUndo" class="secondary">↶ 되돌리기</button>
         <button type="button" id="dwRedo" class="secondary">↷ 다시하기</button>
       </div>
-      <div id="dwObjectControls" class="dw-object-controls" hidden>
+      <details id="dwObjectDetails" class="dw-object-details" hidden><summary>🎨 선택한 도형 색·밑그림 모습 바꾸기</summary>
+      <div id="dwObjectControls" class="dw-object-controls">
         <b>✋ 선택한 그림 조절</b><button type="button" id="dwObjectSmaller">− 작게</button><button type="button" id="dwObjectBigger">＋ 크게</button>
         <button type="button" id="dwObjectWide">↔ 가로 늘이기</button><button type="button" id="dwObjectTall">↕ 세로 늘이기</button>
         <button type="button" id="dwObjectRotate">⟳ 돌리기</button><button type="button" id="dwObjectFlip">⇆ 뒤집기</button>
@@ -764,14 +787,24 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <small>따라 그린 선·밑그림 위치·크기는 그대로 유지됩니다.</small>
         </div>
       </div>
-      <details class="dw-layer-panel" open><summary>🗂 그림 층 관리 — 밑그림 숨기기·삭제·선택</summary>
+      </details>
+      <details class="dw-layer-panel"><summary>🗂 그림 층 관리 — 밑그림 숨기기·삭제·선택</summary>
         <p class="hint">겹친 그림도 여기서 정확히 고를 수 있어요. 숨기기·보기와 잠그기·풀기로 상태를 확인하세요. 펜으로 그린 선은 지워지지 않아요.</p>
         <div id="dwLayerList" class="dw-layer-list"></div>
       </details>
       <div class="dw-colors" id="dwColors" aria-label="색상 선택"></div>
       <div class="dw-options"><label>다른 색 <input type="color" id="dwColor" value="#d76eab" aria-label="색 선택"></label><label>굵기 <input type="range" id="dwSize" min="2" max="55" value="11"><output id="dwSizeLabel">11</output></label><label><input id="dwShowBackground" type="checkbox" checked> 흰 도화지 보기</label></div>
       <div class="dw-canvas-wrap" id="dwCanvasWrap">
-        <canvas id="dwCanvas" width="640" height="640" aria-label="Apple Pencil 그림판. 손가락으로도 그릴 수 있습니다."></canvas>
+        <canvas id="dwCanvas" width="1280" height="1280" aria-label="Apple Pencil 그림판. 손가락으로도 그릴 수 있습니다."></canvas>
+        <div id="dwFloating" class="dw-floating" hidden>
+          <strong id="dwFloatingName">선택한 그림</strong>
+          <button type="button" data-dw-action="back">공주 뒤/맨뒤</button>
+          <button type="button" data-dw-action="front">앞으로/맨앞</button>
+          <button type="button" data-dw-action="flip">⇆ 반전</button>
+          <button type="button" data-dw-action="clone">복제</button>
+          <button type="button" data-dw-action="delete">지우기</button>
+          <button type="button" data-dw-action="deselect">선택 해제</button>
+        </div>
       </div>
       <p class="hint">✏️ 그리기 모드에서는 펜으로 그리고, 👆 선택·이동에서는 밑그림·도형을 잡아 옮겨요. 선택한 그림은 손잡이 또는 버튼으로 바꿀 수 있어요. 주인공 원화는 훼손되지 않습니다.</p>
       <div class="dw-savebar">
@@ -4089,7 +4122,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
-<script src="drawing-workshop.js?v=4517"></script>
-<script src="fixed-princess.js?v=4517"></script>
+<script src="drawing-workshop.js?v=4518"></script>
+<script src="fixed-princess.js?v=4518"></script>
 </body>
 </html>
