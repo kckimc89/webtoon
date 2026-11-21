@@ -1,4 +1,4 @@
-/* C4.5.24 | Fast Pencil overlay, less redrawing, full original image priority. */
+/* C4.5.25-28.2 | Pencil input recovery + two-pass guarded smart fill. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -20,6 +20,7 @@ function scheduleInk(){if(tool==='eraser'&&!inkFrame)inkFrame=requestAnimationFr
 function stopInk(){if(inkFrame){cancelAnimationFrame(inkFrame);inkFrame=0}inkCacheReady=false;clearLive()}
 let els=[],sel=null,cache=new Map(),tool='pen',ink='#d76eab',thick=11,drag=null,active=null,last=null,currentId=null,history=[],redo=[];
 const touchPoints=new Map();let gesture=null;
+let activePointerType=null,lastPencilAt=0,lastPointerActivity=0;
 const emotions=['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요'];
 const names={'princess_strawberry':'🍓 딸기공주','princess_emerald':'💚 에메랄드공주','princess_starlight':'🌙 달빛요정','princess_pearl':'🤍 진주공주','princess_bob_story':'🌷 단발머리공주','princess_flower':'🌺 꽃공주','princess_moon':'🌙 달빛공주','princess_rainbow':'🌈 무지개공주','princess_fairy':'🧚 반짝이요정','princess_sea':'🌊 바다공주','princess_snow':'❄️ 눈꽃공주','dog':'🐶 몽이','cat':'🐱 루루','rabbit':'🐰 보송이','fairy':'🧚 요정'};
 const shapeNames={circle:'원',ellipse:'타원',rect:'네모',round:'둥근네모',triangle:'세모',star:'별',heart:'하트',cloud:'구름',bubble:'말풍선'};
@@ -79,14 +80,109 @@ function pen(a,b){
   if(a.x===b.x&&a.y===b.y){ctx.beginPath();ctx.arc(a.x,a.y,width/2,0,Math.PI*2);ctx.fill()}ctx.restore();
  }
 }
-function flood(p){compose(S,false);const data=S.getImageData(0,0,W,H).data;let px=Math.floor(p.x),py=Math.floor(p.y);if(px<0||px>=W||py<0||py>=H)return;const pos=py*W+px,idx=pos*4,target=[...data.slice(idx,idx+4)],rgb=[1,3,5].map(j=>parseInt(ink.slice(j,j+2),16));const result=U.getImageData(0,0,W,H),out=result.data,queue=new Int32Array(W*H),visited=new Uint8Array(W*H);let head=0,tail=1;queue[0]=pos;visited[pos]=1;
- while(head<tail){const k=queue[head++],i=k*4;if(Math.abs(data[i]-target[0])+Math.abs(data[i+1]-target[1])+Math.abs(data[i+2]-target[2])>40||Math.abs(data[i+3]-target[3])>90)continue;out[i]=rgb[0];out[i+1]=rgb[1];out[i+2]=rgb[2];out[i+3]=255;const x=k%W,y=(k/W)|0;for(const n of [x>0?k-1:-1,x<W-1?k+1:-1,y>0?k-W:-1,y<H-1?k+W:-1])if(n>=0&&!visited[n]){visited[n]=1;queue[tail++]=n}}U.putImageData(result,0,0)}
+// Smart fill: bridge small breaks in hand-drawn contours before filling.
+// All work runs only on the user's bucket tap, never during Pencil movement.
+function closeBarrier(mask,r){
+ const n=W*H,tmp=new Uint8Array(n),wide=new Uint8Array(n),tmp2=new Uint8Array(n),closed=new Uint8Array(n);
+ // Separable dilation followed by erosion: gently closes gaps no wider than 2r.
+ for(let y=0;y<H;y++){const row=y*W;for(let x=0;x<W;x++){
+  let v=0;for(let j=Math.max(0,x-r);j<=Math.min(W-1,x+r);j++){if(mask[row+j]){v=1;break}}tmp[row+x]=v;
+ }}
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+  let v=0;for(let j=Math.max(0,y-r);j<=Math.min(H-1,y+r);j++){if(tmp[j*W+x]){v=1;break}}wide[y*W+x]=v;
+ }
+ for(let y=0;y<H;y++){const row=y*W;for(let x=0;x<W;x++){
+  let v=1;for(let j=Math.max(0,x-r);j<=Math.min(W-1,x+r);j++){if(!wide[row+j]){v=0;break}}tmp2[row+x]=v;
+ }}
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+  let v=1;for(let j=Math.max(0,y-r);j<=Math.min(H-1,y+r);j++){if(!tmp2[j*W+x]){v=0;break}}closed[y*W+x]=v;
+ }
+ return closed;
+}
+function flood(p){
+ compose(S,false);
+ const pixels=S.getImageData(0,0,W,H).data;
+ const px=Math.floor(p.x),py=Math.floor(p.y);
+ if(px<0||px>=W||py<0||py>=H)return;
+ const pos=py*W+px,si=pos*4;
+ const seed=[pixels[si],pixels[si+1],pixels[si+2],pixels[si+3]];
+ const rgb=[1,3,5].map(j=>parseInt(ink.slice(j,j+2),16));
+ const smart=$('dwSmartFill')?.checked!==false;
+ if(!smart){
+  // Original exact fill is available for large open areas and backgrounds.
+  const result=U.getImageData(0,0,W,H),out=result.data;
+  const q=new Int32Array(W*H),seen=new Uint8Array(W*H);let head=0,tail=1;q[0]=pos;seen[pos]=1;
+  while(head<tail){const k=q[head++],i=k*4;
+   if(Math.abs(pixels[i]-seed[0])+Math.abs(pixels[i+1]-seed[1])+Math.abs(pixels[i+2]-seed[2])>40||Math.abs(pixels[i+3]-seed[3])>90)continue;
+   out[i]=rgb[0];out[i+1]=rgb[1];out[i+2]=rgb[2];out[i+3]=255;
+   const x=k%W,y=(k/W)|0;
+   if(x>0&&!seen[k-1]){seen[k-1]=1;q[tail++]=k-1}
+   if(x<W-1&&!seen[k+1]){seen[k+1]=1;q[tail++]=k+1}
+   if(y>0&&!seen[k-W]){seen[k-W]=1;q[tail++]=k-W}
+   if(y<H-1&&!seen[k+W]){seen[k+W]=1;q[tail++]=k+W}
+  }
+  U.putImageData(result,0,0);return;
+ }
+ // Each pixel with a noticeably different colour is a possible boundary;
+ // preserve the artist's own outlines and decorations rather than painting over them.
+ const n=W*H,barrier=new Uint8Array(n);
+ for(let k=0,i=0;k<n;k++,i+=4){
+  const diff=Math.abs(pixels[i]-seed[0])+Math.abs(pixels[i+1]-seed[1])+Math.abs(pixels[i+2]-seed[2]);
+  const light=(pixels[i]*3+pixels[i+1]*6+pixels[i+2])/10;
+  barrier[k]=(pixels[i+3]>80&&(diff>105||light<120&&light<(seed[0]*3+seed[1]*6+seed[2])/10-28))?1:0;
+ }
+ // Work conservatively: try an 8px gap first, then at most ~16px.
+ // Never write into the canvas if the candidate touches an edge or is too large.
+ function enclosedRegion(wall){
+  if(wall[pos])return null;
+  const q=new Int32Array(n),seen=new Uint8Array(n);
+  let head=0,tail=1,edge=false,minX=W,maxX=0,minY=H,maxY=0;
+  q[0]=pos;seen[pos]=1;
+  const limit=Math.floor(n*.42);
+  while(head<tail){
+   const k=q[head++],x=k%W,y=(k/W)|0;
+   if(x===0||x===W-1||y===0||y===H-1){edge=true;break}
+   minX=Math.min(minX,x);maxX=Math.max(maxX,x);
+   minY=Math.min(minY,y);maxY=Math.max(maxY,y);
+   if(tail>limit)return null;
+   if(x>0&&!seen[k-1]&&!wall[k-1]){seen[k-1]=1;q[tail++]=k-1}
+   if(x<W-1&&!seen[k+1]&&!wall[k+1]){seen[k+1]=1;q[tail++]=k+1}
+   if(y>0&&!seen[k-W]&&!wall[k-W]){seen[k-W]=1;q[tail++]=k-W}
+   if(y<H-1&&!seen[k+W]&&!wall[k+W]){seen[k+W]=1;q[tail++]=k+W}
+  }
+  if(edge||head<12)return null;
+  // A narrow open line can make an implausibly huge paint region.
+  if((maxX-minX+1)*(maxY-minY+1)>n*.62)return null;
+  return {q,count:head};
+ }
+ let region=null;
+ for(const radius of [4,8]){
+  region=enclosedRegion(closeBarrier(barrier,radius));
+  if(region)break;
+ }
+ if(!region){msg('아직 색칠 범위를 확실히 찾지 못했어요. 빈틈을 조금 이어 그리거나 더 안쪽을 눌러 주세요.');return}
+ const result=U.getImageData(0,0,W,H),out=result.data;
+ let changed=0;
+ for(let j=0;j<region.count;j++){
+  const k=region.q[j],i=k*4;
+  // Do not recolor the child's existing lines or small decorations.
+  if(barrier[k])continue;
+  out[i]=rgb[0];out[i+1]=rgb[1];out[i+2]=rgb[2];out[i+3]=255;changed++;
+ }
+ if(changed)U.putImageData(result,0,0);
+}
+
 function resetPointerState(){
  if(objectFrame){cancelAnimationFrame(objectFrame);objectFrame=0}
  if(active!==null){try{if(C.hasPointerCapture(active))C.releasePointerCapture(active)}catch(_){}}
- stopInk();active=null;last=null;drag=null;gesture=null;touchPoints.clear();
+ stopInk();active=null;activePointerType=null;last=null;drag=null;gesture=null;touchPoints.clear();
 }
 function down(ev){
+ // Never allow a palm to replace an active Pencil stroke. Delay touch drawing
+ // briefly after Pencil activity to avoid a stray finger mark when lifting it.
+ if(tool!=='select'&&ev.pointerType==='touch'&&
+    (activePointerType==='pen'||Date.now()-lastPencilAt<650))return;
+ if(ev.pointerType==='pen')lastPencilAt=Date.now();
  // Palm rejection: a finger must never cancel or claim an active Pencil stroke.
  if(active!==null&&ev.pointerType==='touch'&&tool!=='select')return;
  if(active!==null){
@@ -103,12 +199,14 @@ function down(ev){
      gesture={id:e.id,baseDistance:Math.max(1,Math.hypot(first.x-p.x,first.y-p.y)),baseAngle:Math.atan2(p.y-first.y,p.x-first.x),center,ox:e.x,oy:e.y,ow:e.w,oh:e.h,rotation:e.rotation||0};drag=null;
    }return;
  }
- ev.preventDefault();const p=pt(ev);active=ev.pointerId;last=p;touchPoints.set(ev.pointerId,p);try{C.setPointerCapture(active)}catch(_){}
+ ev.preventDefault();const p=pt(ev);active=ev.pointerId;activePointerType=ev.pointerType;lastPointerActivity=Date.now();last=p;touchPoints.set(ev.pointerId,p);try{C.setPointerCapture(active)}catch(_){}
  if(tool==='select'){
   let e=selected();let action=e&&!e.locked?hitHandle(e,p):null;if(!action){e=pick(p);action=e?'move':null}sel=e?.id||null;drag=null;if(e&&!e.locked){remember();const a=localPt(e,p);drag={action,p,ox:e.x,oy:e.y,ow:e.w,oh:e.h,angle:e.rotation||0,startAngle:Math.atan2(p.y-e.y,p.x-e.x),dist:Math.hypot(a.x,a.y)}}
  }else{remember();if(tool==='bucket'){flood(p);active=null;render()}else{if(tool==='eraser')prepareInk();clearLive();pen(p,p);if(tool==='eraser')drawInkFrame()}}if(tool==='select')render()}
 let objectFrame=0;function scheduleObjectRender(){if(!objectFrame)objectFrame=requestAnimationFrame(()=>{objectFrame=0;render()})}
-function move(ev){if(ev.pointerId!==active&&!touchPoints.has(ev.pointerId))return;ev.preventDefault();const p=pt(ev);
+function move(ev){if(ev.pointerId!==active&&!touchPoints.has(ev.pointerId))return;
+ if(ev.pointerId===active){lastPointerActivity=Date.now();if(activePointerType==='pen')lastPencilAt=Date.now()}
+ ev.preventDefault();const p=pt(ev);
  if(touchPoints.has(ev.pointerId))touchPoints.set(ev.pointerId,p);
  if(gesture&&touchPoints.size>=2){const [a,b]=[...touchPoints.values()];const e=selected();if(e&&e.id===gesture.id){
    const distance=Math.hypot(a.x-b.x,a.y-b.y),ratio=Math.max(.15,Math.min(6,distance/gesture.baseDistance));
@@ -131,11 +229,19 @@ function end(ev){
  // A stray finger/palm pointer must not stop the active Pencil ink cache.
  if(ev.pointerId!==active){if(gesture&&touchPoints.size<2){gesture=null;drag=null}return}
  if(objectFrame){cancelAnimationFrame(objectFrame);objectFrame=0}
- stopInk();gesture=null;touchPoints.clear();active=null;drag=null;last=null;
+ stopInk();gesture=null;touchPoints.clear();active=null;activePointerType=null;drag=null;last=null;
  render();
 }
 C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);
 C.addEventListener('pointerup',end);C.addEventListener('pointercancel',end);
+// An iPad Safari pointerup may arrive outside the canvas after losing capture.
+window.addEventListener('pointerup',ev=>{if(ev.pointerId===active)end(ev)},true);
+window.addEventListener('pointercancel',ev=>{if(ev.pointerId===active)end(ev)},true);
+// A stale active pointer must not block subsequent Pencil strokes indefinitely.
+// The watchdog only releases the input state; it never removes painted strokes.
+setInterval(()=>{if(active!==null&&tool!=='select'&&Date.now()-lastPointerActivity>3500){
+ resetPointerState();render();
+}},950);
 C.addEventListener('lostpointercapture',ev=>{
  if(ev.pointerId!==active)return;
  // Called by Safari if touch capture is lost without a matching pointerup.

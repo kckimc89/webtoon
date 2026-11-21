@@ -833,7 +833,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <button type="button" id="dwRedo" class="secondary">↷ 다시하기</button>
       </div>
       <div class="dw-colors" id="dwColors" aria-label="색상 선택"></div>
-      <div class="dw-options"><label>다른 색 <input type="color" id="dwColor" value="#d76eab" aria-label="색 선택"></label><label>굵기 <input type="range" id="dwSize" min="2" max="55" value="11"><output id="dwSizeLabel">11</output></label><label><input id="dwShowBackground" type="checkbox" checked> 흰 도화지 보기</label></div>
+      <div class="dw-options"><label>다른 색 <input type="color" id="dwColor" value="#d76eab" aria-label="색 선택"></label><label>굵기 <input type="range" id="dwSize" min="2" max="55" value="11"><output id="dwSizeLabel">11</output></label><label><input id="dwSmartFill" type="checkbox" checked> 빈틈 메워 색칠</label><label><input id="dwShowBackground" type="checkbox" checked> 흰 도화지 보기</label></div>
       <details id="dwObjectDetails" class="dw-object-details" hidden><summary>🎨 선택한 도형 색·밑그림 모습 바꾸기</summary>
       <div id="dwObjectControls" class="dw-object-controls">
         <b>✋ 선택한 그림 조절</b><button type="button" id="dwObjectSmaller">− 작게</button><button type="button" id="dwObjectBigger">＋ 크게</button>
@@ -4199,7 +4199,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
-<script src="drawing-workshop.js?v=4524"></script>
+<script src="drawing-workshop.js?v=4525282"></script>
 <script src="fixed-princess.js?v=4522"></script>
 </body>
 </html>
