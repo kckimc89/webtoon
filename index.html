@@ -544,6 +544,36 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #draw #dwFloating button{font-size:12px;min-height:34px}
 @media(max-width:600px){#draw #dwFloating{max-width:98%;padding:6px 4px;gap:4px}#draw .dw-floating-specific{gap:5px}#draw .dw-floating-specific label{font-size:11px}}
 </style>
+<style>
+/* C4.5.21 — selection actions stay in view while scrolling on iPad.
+   The actions live outside the canvas, so they never cover resize handles. */
+#draw #dwFloating.dw-floating:not([hidden]){
+ position:-webkit-sticky!important;
+ position:sticky!important;
+ top:8px!important;
+ left:auto!important;
+ transform:none!important;
+ z-index:80!important;
+ display:flex!important;
+ flex-wrap:wrap!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ width:100%!important;
+ max-width:100%!important;
+ padding:6px 8px!important;
+ margin:6px 0!important;
+ border:2px solid #9265bd!important;
+ background:#fffdfd!important;
+ box-shadow:0 3px 15px rgba(67,32,105,.18)!important;
+ border-radius:12px!important;
+}
+#draw #dwFloating.dw-floating[hidden]{display:none!important}
+#draw #dwFloating.dw-floating strong{color:#59368f;font-size:13px!important;flex:0 0 auto}
+#draw #dwFloating.dw-floating button{font-size:12px!important;padding:5px 8px!important;min-height:34px!important}
+#draw #dwFloating.dw-floating .dw-floating-specific{flex:0 1 auto;max-width:100%}
+#draw #dwFloating.dw-floating .dw-floating-specific[hidden]{display:none!important}
+@media(max-width:600px){#draw #dwFloating.dw-floating{top:4px!important;gap:4px!important}#draw #dwFloating.dw-floating button{font-size:11px!important;padding:4px 6px!important}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -4169,7 +4199,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
-<script src="drawing-workshop.js?v=4520"></script>
-<script src="fixed-princess.js?v=4520"></script>
+<script src="drawing-workshop.js?v=4521"></script>
+<script src="fixed-princess.js?v=4521"></script>
 </body>
 </html>
