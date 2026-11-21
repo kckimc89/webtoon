@@ -375,7 +375,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 .dw-layer-row .dw-layer-action.is-delete{background:#fff8f8;border-color:#edcbd1;color:#963b55}
 @media(max-width:500px){.dw-layer-row{gap:4px;padding:4px}.dw-layer-row .dw-layer-action{min-width:48px;padding:6px 5px;font-size:12px}.dw-layer-row .dw-layer-name{font-size:12px;padding:3px}}
 
-/* C4.5.18: full-size drawing surface and single webtoon-like accessory control */
+/* C4.5.19: full-size drawing surface and single webtoon-like accessory control */
 #draw .dw-canvas-wrap{position:relative;max-width:min(98vw,1000px);overflow:visible;touch-action:none}
 #draw .dw-floating{position:absolute;left:50%;top:2%;transform:translateX(-50%);z-index:4;display:flex;justify-content:center;flex-wrap:wrap;gap:5px;align-items:center;max-width:96%;padding:7px;background:#fffefaee;border:2px solid #9c76c7;border-radius:12px;box-shadow:0 3px 14px #75538d30;line-height:1.4}
 #draw .dw-floating[hidden]{display:none}
@@ -492,7 +492,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #fixedPrincessWorkshop .fp-quick-edit small{width:100%;font-size:12px;color:#715b7c}
 </style>
 <style>
-/* C4.5.18: roomy shared creative workshop, premium thumbnail rail */
+/* C4.5.19: roomy shared creative workshop, premium thumbnail rail */
 #draw .draw-workshop{max-width:1400px;margin:auto}
 #draw .dw-premium-panel{background:#fff9ff;border:1px solid #e6c9ea;border-radius:13px;padding:8px 12px;margin:9px 0}
 #draw .dw-premium-panel summary{cursor:pointer;font-weight:800;font-size:16px}
@@ -506,6 +506,19 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #draw .dw-hero-preview{display:inline-flex;align-items:center;gap:4px;background:#fff;padding:2px 5px;border-radius:10px;min-width:84px}#draw .dw-hero-preview small{font-size:11px}
 #draw #dwCanvas{display:block;width:100%;height:auto;touch-action:none}
 @media(min-width:960px){#draw .dw-canvas-wrap{max-width:min(81vh,900px)}}
+
+/* C4.5.19: immediate context editing; no duplicated lower controls */
+#draw #dwObjectDetails{display:none!important}
+#draw #dwFloating{width:max-content;min-width:230px;max-width:min(96%,610px);gap:6px;padding:8px 9px;box-sizing:border-box}
+#draw .dw-floating-specific{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;width:100%;padding:3px 2px 7px;border-bottom:1px solid #e8dced}
+#draw .dw-floating-specific[hidden]{display:none!important}
+#draw .dw-floating-specific label{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;white-space:nowrap;color:#4c3861}
+#draw .dw-floating-specific input[type=color]{width:34px;height:30px;border:1px solid #cdb8e4;padding:1px;border-radius:7px;background:white;cursor:pointer}
+#draw .dw-floating-specific input[type=checkbox]{width:17px;height:17px;accent-color:#7048ac}
+#draw .dw-floating-specific select{min-width:123px;min-height:34px;font-size:13px;border:1px solid #cdb8e4;border-radius:8px;background:#fff}
+#draw #dwFloating strong{width:100%;text-align:center}
+#draw #dwFloating button{font-size:12px;min-height:34px}
+@media(max-width:600px){#draw #dwFloating{max-width:98%;padding:6px 4px;gap:4px}#draw .dw-floating-specific{gap:5px}#draw .dw-floating-specific label{font-size:11px}}
 </style>
 </head>
 <body>
@@ -514,7 +527,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.18 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
+    <span class="pill">MASTER C4.5.19 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
   </header>
 
   <nav class="tabs">
@@ -526,8 +539,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.18)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.18 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.19)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.19 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -798,6 +811,15 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <canvas id="dwCanvas" width="1280" height="1280" aria-label="Apple Pencil 그림판. 손가락으로도 그릴 수 있습니다."></canvas>
         <div id="dwFloating" class="dw-floating" hidden>
           <strong id="dwFloatingName">선택한 그림</strong>
+          <div id="dwFloatingShape" class="dw-floating-specific" hidden aria-label="선택한 도형 색 바꾸기">
+            <label class="dw-inline-color">채우기 색 <input type="color" id="dwFloatFill" value="#d76eab" aria-label="선택한 도형 채우기 색"></label>
+            <label class="dw-inline-check"><input type="checkbox" id="dwFloatNoFill"> 채우기 없음</label>
+            <label class="dw-inline-color">외곽선 색 <input type="color" id="dwFloatStroke" value="#765a91" aria-label="선택한 도형 외곽선 색"></label>
+            <label class="dw-inline-check"><input type="checkbox" id="dwFloatNoStroke"> 외곽선 없음</label>
+          </div>
+          <div id="dwFloatingHero" class="dw-floating-specific" hidden aria-label="선택한 주인공 밑그림 모습">
+            <label>밑그림 모습 <select id="dwFloatHeroMode" aria-label="주인공 그림 모습 바꾸기"><option value="original">원래 모습</option><option value="pale">연한 원화</option><option value="outline">바깥 외곽선</option></select></label>
+          </div>
           <button type="button" data-dw-action="back">공주 뒤/맨뒤</button>
           <button type="button" data-dw-action="front">앞으로/맨앞</button>
           <button type="button" data-dw-action="flip">⇆ 반전</button>
@@ -4122,7 +4144,7 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
 // After the first screen is ready, verify the published version without blocking editing.
 setTimeout(()=>checkWebtoonVersion(true,true),700);
 </script>
-<script src="drawing-workshop.js?v=4518"></script>
-<script src="fixed-princess.js?v=4518"></script>
+<script src="drawing-workshop.js?v=4519"></script>
+<script src="fixed-princess.js?v=4519"></script>
 </body>
 </html>

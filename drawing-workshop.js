@@ -1,4 +1,4 @@
-/* C4.5.18 | Drawing workshop: crisp art, unified handles, original painting storage compatibility. */
+/* C4.5.19 | Drawing workshop: crisp art, unified handles, original painting storage compatibility. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -30,7 +30,16 @@ function showFloating(e){const f=$('dwFloating');if(!f)return;f.hidden=!(e&&tool
 function render(){compose(X,$('dwShowBackground').checked);const e=selected();if(e&&tool==='select'){
  X.save();X.translate(e.x,e.y);X.rotate(e.rotation||0);X.strokeStyle='#7047ad';X.lineWidth=2;X.setLineDash([7,5]);X.strokeRect(-e.w/2-4,-e.h/2-4,e.w+8,e.h+8);X.setLineDash([]);
  const dots=[[-e.w/2,-e.h/2],[e.w/2,-e.h/2],[-e.w/2,e.h/2],[e.w/2,e.h/2]];dots.forEach(([x,y])=>{X.fillStyle='white';X.strokeStyle='#8052bb';X.lineWidth=3;X.beginPath();X.arc(x,y,9,0,2*Math.PI);X.fill();X.stroke()});X.beginPath();X.moveTo(0,-e.h/2);X.lineTo(0,-e.h/2-35);X.stroke();X.beginPath();X.arc(0,-e.h/2-35,11,0,2*Math.PI);X.fillStyle='#f7eafb';X.fill();X.stroke();X.restore();}
- showFloating(e);const detail=$('dwObjectDetails');detail.hidden=!(e&&tool==='select'&&(e.kind==='shape'||e.origin));$('dwObjectControls').hidden=detail.hidden;if(e){$('dwShapeStyling').hidden=e.kind!=='shape';$('dwHeroStyling').hidden=!e.origin;if(e.kind==='shape'){$('dwObjectColor').value=e.fill||'#d76eab';$('dwObjectStroke').value=e.stroke||'#765a91';$('dwNoFill').checked=e.fill===null;$('dwNoStroke').checked=e.stroke===null}if(e.origin)$('dwSelectedHeroMode').value=e.variant||'original'}listLayers()}
+ showFloating(e);const detail=$('dwObjectDetails');detail.hidden=!(e&&tool==='select'&&(e.kind==='shape'||e.origin));$('dwObjectControls').hidden=detail.hidden;if(e){$('dwShapeStyling').hidden=e.kind!=='shape';$('dwHeroStyling').hidden=!e.origin;if(e.kind==='shape'){$('dwObjectColor').value=e.fill||'#d76eab';$('dwObjectStroke').value=e.stroke||'#765a91';$('dwNoFill').checked=e.fill===null;$('dwNoStroke').checked=e.stroke===null}if(e.origin)$('dwSelectedHeroMode').value=e.variant||'original'}
+ // Keep the one-tap floating controls synchronized with the actual selected layer.
+ const floatingActive=!!(e&&tool==='select');
+ const floatShape=$('dwFloatingShape'),floatHero=$('dwFloatingHero');
+ if(floatShape){floatShape.hidden=!(floatingActive&&e.kind==='shape');if(!floatShape.hidden){
+   $('dwFloatFill').value=e.fill||'#d76eab';$('dwFloatNoFill').checked=e.fill===null;
+   $('dwFloatStroke').value=e.stroke||'#765a91';$('dwFloatNoStroke').checked=e.stroke===null;
+ }}
+ if(floatHero){floatHero.hidden=!(floatingActive&&e.origin);if(!floatHero.hidden)$('dwFloatHeroMode').value=e.variant||'original'}
+ listLayers()}
 function snap(){return {a:under.toDataURL(),b:paint.toDataURL(),els:clone(els),sel}}
 function remember(){history.push(snap());if(history.length>12)history.shift();redo.length=0}
 async function refreshImages(){cache.clear();await Promise.all(els.filter(e=>e.kind==='image').map(async e=>{let src=e.premiumKey?propSrc(e.premiumKey):e.origin?heroSrc(e.origin,e.expression||'기뻐요'):e.src;if(!src)return;try{let im=await imload(src);if(e.variant==='outline'&&e.origin){im=await imload(await outline(im))}cache.set(e.id,im)}catch(err){console.warn('그림 불러오기 실패',err)}}))}
@@ -96,6 +105,17 @@ $('dwObjectFront').onclick=()=>order('front');$('dwObjectBack').onclick=()=>orde
 $('dwObjectOpacity').onchange=ev=>modify(e=>e.opacity=Number(ev.target.value)/100);
 $('dwObjectColor').onchange=ev=>modify(e=>e.fill=ev.target.value);$('dwObjectStroke').onchange=ev=>modify(e=>e.stroke=ev.target.value);$('dwNoFill').onchange=ev=>modify(e=>e.fill=ev.target.checked?null:$('dwObjectColor').value);$('dwNoStroke').onchange=ev=>modify(e=>e.stroke=ev.target.checked?null:$('dwObjectStroke').value);
 $('dwSelectedHeroMode').onchange=async ev=>{const e=selected();if(!e?.origin)return;remember();e.variant=ev.target.value;e.opacity=e.variant==='pale'?.4:1;await refreshImages();render()};
+// Context-panel editors modify the underlying same shape/hero element, not a duplicate overlay.
+$('dwFloatFill').onchange=ev=>modify(e=>{if(e.kind!=='shape')return;e.fill=ev.target.value});
+$('dwFloatNoFill').onchange=ev=>modify(e=>{if(e.kind!=='shape')return;e.fill=ev.target.checked?null:$('dwFloatFill').value});
+$('dwFloatStroke').onchange=ev=>modify(e=>{if(e.kind!=='shape')return;e.stroke=ev.target.value});
+$('dwFloatNoStroke').onchange=ev=>modify(e=>{if(e.kind!=='shape')return;e.stroke=ev.target.checked?null:$('dwFloatStroke').value});
+$('dwFloatHeroMode').onchange=async ev=>{
+ const e=selected();if(!e?.origin)return;remember();e.variant=ev.target.value;
+ e.opacity=e.variant==='pale'?.4:1;
+ try{await refreshImages();render()}catch(err){msg('그림 모습 변경 실패: '+(err.message||err))}
+};
+
 const swatches=['#303038','#ffffff','#e7659e','#ed9a58','#f2c455','#78ba8c','#65bdda','#678eda','#9a7bc7','#b16f58'];swatches.forEach(hex=>{const b=document.createElement('button');b.type='button';b.className='dw-swatch';b.style.background=hex;b.title=hex;b.onclick=()=>{ink=hex;$('dwColor').value=hex;sync()};$('dwColors').append(b)});
 function sync(){[...$('dwColors').children].forEach((b,i)=>b.classList.toggle('selected',swatches[i]===ink))}sync();$('dwColor').oninput=e=>{ink=e.target.value;sync()};$('dwSize').oninput=e=>{$('dwSizeLabel').textContent=thick=Number(e.target.value)};$('dwShowBackground').onchange=render;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.onclick=()=>setMode(b.dataset.dwTool));
 $('dwBlank').onclick=()=>{if(!confirm('새 도화지를 열까요? 저장하지 않은 그림은 사라집니다.'))return;els=[];sel=null;cache.clear();U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);history=[];redo=[];currentId=null;$('dwName').value='새 그림';setMode('pen')};
