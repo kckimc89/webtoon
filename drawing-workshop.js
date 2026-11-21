@@ -1,8 +1,14 @@
-/* C4.5.23 | Pencil recovery: lost capture, interrupted strokes, secondary pointer safety. */
+/* C4.5.24 | Fast Pencil overlay, less redrawing, full original image priority. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
 const cv=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return c},paint=cv(),under=cv(),stage=cv();
+// Lightweight live-ink surface. Pencil strokes are drawn at once, independently of
+// the 1280px scene (which is repainted only when the stroke finishes).
+const live=cv();live.id='dwLiveInk';live.setAttribute('aria-hidden','true');
+Object.assign(live.style,{position:'absolute',left:'0',top:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:'1'});
+C.parentElement.appendChild(live);const L=live.getContext('2d');
+function clearLive(){L.clearRect(0,0,W,H)}
 const P=paint.getContext('2d',{willReadFrequently:true}),U=under.getContext('2d',{willReadFrequently:true}),S=stage.getContext('2d',{willReadFrequently:true});
 // Cache the 2x-resolution scenery once per stroke; do not redraw every princess on every Pencil point.
 const inkBackdrop=document.createElement('canvas');inkBackdrop.width=1280;inkBackdrop.height=1280;
@@ -10,8 +16,8 @@ const B=inkBackdrop.getContext('2d');B.setTransform(2,0,0,2,0,0);
 let inkFrame=0,inkCacheReady=false;
 function prepareInk(){B.clearRect(0,0,W,H);if($('dwShowBackground').checked){B.fillStyle='#fff';B.fillRect(0,0,W,H)}B.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false)drawEl(B,e)});inkCacheReady=true}
 function drawInkFrame(){inkFrame=0;if(!inkCacheReady)return;X.save();X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,C.width,C.height);X.drawImage(inkBackdrop,0,0);X.drawImage(paint,0,0,C.width,C.height);X.restore()}
-function scheduleInk(){if(!inkFrame)inkFrame=requestAnimationFrame(drawInkFrame)}
-function stopInk(){if(inkFrame){cancelAnimationFrame(inkFrame);inkFrame=0}inkCacheReady=false}
+function scheduleInk(){if(tool==='eraser'&&!inkFrame)inkFrame=requestAnimationFrame(drawInkFrame)}
+function stopInk(){if(inkFrame){cancelAnimationFrame(inkFrame);inkFrame=0}inkCacheReady=false;clearLive()}
 let els=[],sel=null,cache=new Map(),tool='pen',ink='#d76eab',thick=11,drag=null,active=null,last=null,currentId=null,history=[],redo=[];
 const touchPoints=new Map();let gesture=null;
 const emotions=['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요'];
@@ -21,7 +27,11 @@ const HQ={'princess_fairy|신나요':'hq-princess-fairy-excited.png','princess_s
 const eId=()=>`layer-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,clone=o=>JSON.parse(JSON.stringify(o));
 function msg(t){if(typeof toast==='function')toast(t);else alert(t)}
 function imload(src){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error('그림 파일을 열 수 없어요'));i.src=src})}
-function heroSrc(id,emotion){if(HQ[id+'|'+emotion])return HQ[id+'|'+emotion];try{if(['dog','cat','rabbit','fairy'].includes(id))return friendImageSource(id,emotion);if(id==='princess_bob_story')return 'bob-'+({기뻐요:'happy',놀랐어요:'surprised',슬퍼요:'sad',화났어요:'angry',생각해요:'thinking',신나요:'excited'}[emotion]||'happy')+'.png';if(typeof dedicatedFullBodyExpressions!=='undefined'&&dedicatedFullBodyExpressions[id]?.[emotion])return dedicatedFullBodyExpressions[id][emotion];const hero=heroes.find(q=>q.id===id);return hero?princessThumb(hero):null}catch(e){console.warn(e);return null}}
+function heroSrc(id,emotion){if(HQ[id+'|'+emotion])return HQ[id+'|'+emotion];try{if(['dog','cat','rabbit','fairy'].includes(id))return friendImageSource(id,emotion);if(id==='princess_bob_story')return 'bob-'+({기뻐요:'happy',놀랐어요:'surprised',슬퍼요:'sad',화났어요:'angry',생각해요:'thinking',신나요:'excited'}[emotion]||'happy')+'.png';if(typeof dedicatedFullBodyExpressions!=='undefined'&&dedicatedFullBodyExpressions[id]?.[emotion])return dedicatedFullBodyExpressions[id][emotion];
+// For costume princesses, original base artwork is high resolution; never use its thumbnail.
+// If there is no separate expression, use the existing full original (do not fabricate one).
+if(typeof premiumPrincessImages!=='undefined'&&premiumPrincessImages[id]?.base)return premiumPrincessImages[id].base;
+const hero=heroes.find(q=>q.id===id);return hero?princessThumb(hero):null}catch(e){console.warn(e);return null}}
 function propSrc(key){try{return typeof premiumPropImages!=='undefined'?premiumPropImages[key]:null}catch(e){return null}}
 function layerName(e){if(e.premiumKey)return '💎 '+e.premiumKey;if(e.origin)return (names[e.origin]||'주인공')+' · '+(e.expression||'기뻐요');if(e.kind==='shape')return (shapeNames[e.shape]||'도형')+' 도형';return e.template?'연습 밑그림':'가져온 그림'}
 function shapePath(c,e){c.beginPath();const w=e.w,h=e.h,t=e.shape;if(t==='circle'||t==='ellipse'){c.ellipse(0,0,w/2,h/2,0,0,Math.PI*2);return}if(t==='rect'){c.rect(-w/2,-h/2,w,h);return}if(t==='round'){c.roundRect(-w/2,-h/2,w,h,Math.min(24,w/5,h/5));return}let pts=[];if(t==='triangle')pts=[[0,-.55],[.55,.5],[-.55,.5]];else if(t==='star'){for(let i=0;i<10;i++){let a=i*Math.PI/5-Math.PI/2,r=i%2?.23:.52;pts.push([r*Math.cos(a),r*Math.sin(a)])}}else if(t==='heart'){for(let i=0;i<=90;i++){let a=i*Math.PI*2/90;pts.push([16*Math.sin(a)**3/38,-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))/38])}}else if(t==='cloud')pts=[[-.47,.3],[-.53,.06],[-.37,-.13],[-.18,-.13],[-.12,-.38],[.14,-.42],[.35,-.2],[.48,-.16],[.59,.08],[.47,.3]];else if(t==='bubble')pts=[[-.52,-.38],[.51,-.38],[.51,.25],[.05,.25],[-.2,.52],[-.18,.25],[-.52,.25]];if(pts.length){c.moveTo(pts[0][0]*w,pts[0][1]*h);pts.slice(1).forEach(p=>c.lineTo(p[0]*w,p[1]*h));c.closePath()}}
@@ -50,7 +60,7 @@ function render(){stopInk();compose(X,$('dwShowBackground').checked);const e=sel
  listLayers()}
 // Raw pixels avoid blocking iPad Safari to PNG-encode the whole drawing at every new stroke.
 function snap(){return {a:U.getImageData(0,0,W,H),b:P.getImageData(0,0,W,H),els:clone(els),sel}}
-function remember(){history.push(snap());if(history.length>12)history.shift();redo.length=0}
+function remember(){history.push(snap());if(history.length>8)history.shift();redo.length=0}
 async function refreshImages(){cache.clear();await Promise.all(els.filter(e=>e.kind==='image').map(async e=>{let src=e.premiumKey?propSrc(e.premiumKey):e.origin?heroSrc(e.origin,e.expression||'기뻐요'):e.src;if(!src)return;try{let im=await imload(src);if(e.variant==='outline'&&e.origin){im=await imload(await outline(im))}cache.set(e.id,im)}catch(err){console.warn('그림 불러오기 실패',err)}}))}
 async function restore(s){els=clone(s.els||[]);sel=s.sel||null;U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);if(s.a instanceof ImageData&&s.b instanceof ImageData){U.putImageData(s.a,0,0);P.putImageData(s.b,0,0)}else{const [a,b]=await Promise.all([imload(s.a),imload(s.b)]);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H)}await refreshImages();render()}
 async function undo(a,b){if(!a.length)return;b.push(snap());await restore(a.pop())}
@@ -60,7 +70,15 @@ function localPt(e,p){const dx=p.x-e.x,dy=p.y-e.y,a=-(e.rotation||0);return {x:d
 function hit(e,p){const a=localPt(e,p);return Math.abs(a.x)<e.w/2+9&&Math.abs(a.y)<e.h/2+9}
 function hitHandle(e,p){const a=localPt(e,p);if(Math.abs(a.x)<18&&Math.abs(a.y+e.h/2+35)<18)return'rotate';if(Math.abs(Math.abs(a.x)-e.w/2)<20&&Math.abs(Math.abs(a.y)-e.h/2)<20)return'resize';return null}
 function pick(p){for(let i=els.length-1;i>=0;i--)if(els[i].visible!==false&&!els[i].locked&&hit(els[i],p))return els[i];return null}
-function pen(a,b){P.save();P.globalCompositeOperation=tool==='eraser'?'destination-out':'source-over';P.lineWidth=tool==='brush'?thick*1.8:thick;P.strokeStyle=ink;P.fillStyle=ink;P.lineCap='round';P.lineJoin='round';P.beginPath();P.moveTo(a.x,a.y);P.lineTo(b.x,b.y);P.stroke();if(a.x===b.x&&a.y===b.y){P.beginPath();P.arc(a.x,a.y,P.lineWidth/2,0,Math.PI*2);P.fill()}P.restore()}
+function pen(a,b){
+ const width=tool==='brush'?thick*1.8:thick,eraser=tool==='eraser';
+ for(const ctx of (eraser?[P]:[P,L])){
+  ctx.save();ctx.globalCompositeOperation=eraser?'destination-out':'source-over';
+  ctx.lineWidth=width;ctx.strokeStyle=ink;ctx.fillStyle=ink;
+  ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  if(a.x===b.x&&a.y===b.y){ctx.beginPath();ctx.arc(a.x,a.y,width/2,0,Math.PI*2);ctx.fill()}ctx.restore();
+ }
+}
 function flood(p){compose(S,false);const data=S.getImageData(0,0,W,H).data;let px=Math.floor(p.x),py=Math.floor(p.y);if(px<0||px>=W||py<0||py>=H)return;const pos=py*W+px,idx=pos*4,target=[...data.slice(idx,idx+4)],rgb=[1,3,5].map(j=>parseInt(ink.slice(j,j+2),16));const result=U.getImageData(0,0,W,H),out=result.data,queue=new Int32Array(W*H),visited=new Uint8Array(W*H);let head=0,tail=1;queue[0]=pos;visited[pos]=1;
  while(head<tail){const k=queue[head++],i=k*4;if(Math.abs(data[i]-target[0])+Math.abs(data[i+1]-target[1])+Math.abs(data[i+2]-target[2])>40||Math.abs(data[i+3]-target[3])>90)continue;out[i]=rgb[0];out[i+1]=rgb[1];out[i+2]=rgb[2];out[i+3]=255;const x=k%W,y=(k/W)|0;for(const n of [x>0?k-1:-1,x<W-1?k+1:-1,y>0?k-W:-1,y<H-1?k+W:-1])if(n>=0&&!visited[n]){visited[n]=1;queue[tail++]=n}}U.putImageData(result,0,0)}
 function resetPointerState(){
@@ -69,6 +87,8 @@ function resetPointerState(){
  stopInk();active=null;last=null;drag=null;gesture=null;touchPoints.clear();
 }
 function down(ev){
+ // Palm rejection: a finger must never cancel or claim an active Pencil stroke.
+ if(active!==null&&ev.pointerType==='touch'&&tool!=='select')return;
  if(active!==null){
    // iPadOS sometimes drops pointerup/capture while switching to palm rejection.
    // A new Pencil stroke must never be blocked by an orphaned pointer ID.
@@ -86,7 +106,7 @@ function down(ev){
  ev.preventDefault();const p=pt(ev);active=ev.pointerId;last=p;touchPoints.set(ev.pointerId,p);try{C.setPointerCapture(active)}catch(_){}
  if(tool==='select'){
   let e=selected();let action=e&&!e.locked?hitHandle(e,p):null;if(!action){e=pick(p);action=e?'move':null}sel=e?.id||null;drag=null;if(e&&!e.locked){remember();const a=localPt(e,p);drag={action,p,ox:e.x,oy:e.y,ow:e.w,oh:e.h,angle:e.rotation||0,startAngle:Math.atan2(p.y-e.y,p.x-e.x),dist:Math.hypot(a.x,a.y)}}
- }else{remember();if(tool==='bucket'){flood(p);active=null;render()}else{prepareInk();pen(p,p);drawInkFrame()}}if(tool==='select')render()}
+ }else{remember();if(tool==='bucket'){flood(p);active=null;render()}else{if(tool==='eraser')prepareInk();clearLive();pen(p,p);if(tool==='eraser')drawInkFrame()}}if(tool==='select')render()}
 let objectFrame=0;function scheduleObjectRender(){if(!objectFrame)objectFrame=requestAnimationFrame(()=>{objectFrame=0;render()})}
 function move(ev){if(ev.pointerId!==active&&!touchPoints.has(ev.pointerId))return;ev.preventDefault();const p=pt(ev);
  if(touchPoints.has(ev.pointerId))touchPoints.set(ev.pointerId,p);
