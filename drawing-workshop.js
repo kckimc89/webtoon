@@ -1,9 +1,17 @@
-/* C4.5.20 | Drawing workshop: crisp art, unified handles, original painting storage compatibility. */
+/* C4.5.23 | Pencil recovery: lost capture, interrupted strokes, secondary pointer safety. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
 const cv=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return c},paint=cv(),under=cv(),stage=cv();
 const P=paint.getContext('2d',{willReadFrequently:true}),U=under.getContext('2d',{willReadFrequently:true}),S=stage.getContext('2d',{willReadFrequently:true});
+// Cache the 2x-resolution scenery once per stroke; do not redraw every princess on every Pencil point.
+const inkBackdrop=document.createElement('canvas');inkBackdrop.width=1280;inkBackdrop.height=1280;
+const B=inkBackdrop.getContext('2d');B.setTransform(2,0,0,2,0,0);
+let inkFrame=0,inkCacheReady=false;
+function prepareInk(){B.clearRect(0,0,W,H);if($('dwShowBackground').checked){B.fillStyle='#fff';B.fillRect(0,0,W,H)}B.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false)drawEl(B,e)});inkCacheReady=true}
+function drawInkFrame(){inkFrame=0;if(!inkCacheReady)return;X.save();X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,C.width,C.height);X.drawImage(inkBackdrop,0,0);X.drawImage(paint,0,0,C.width,C.height);X.restore()}
+function scheduleInk(){if(!inkFrame)inkFrame=requestAnimationFrame(drawInkFrame)}
+function stopInk(){if(inkFrame){cancelAnimationFrame(inkFrame);inkFrame=0}inkCacheReady=false}
 let els=[],sel=null,cache=new Map(),tool='pen',ink='#d76eab',thick=11,drag=null,active=null,last=null,currentId=null,history=[],redo=[];
 const touchPoints=new Map();let gesture=null;
 const emotions=['기뻐요','놀랐어요','슬퍼요','화났어요','생각해요','신나요'];
@@ -20,14 +28,14 @@ function shapePath(c,e){c.beginPath();const w=e.w,h=e.h,t=e.shape;if(t==='circle
 function drawEl(c,e){c.save();c.globalAlpha=e.opacity??1;c.translate(e.x,e.y);c.rotate(e.rotation||0);c.scale(e.flip?-1:1,1);if(e.kind==='shape'){shapePath(c,e);if(e.fill!==null){c.fillStyle=e.fill||'#e6a5d5';c.fill()}if(e.stroke!==null){c.strokeStyle=e.stroke||'#805b96';c.lineWidth=5;c.stroke()}}else{const im=cache.get(e.id);if(im){c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(im,-e.w/2,-e.h/2,e.w,e.h)}}c.restore()}
 function compose(c,white=false){c.clearRect(0,0,W,H);if(white){c.fillStyle='white';c.fillRect(0,0,W,H)}c.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false)drawEl(c,e)});c.drawImage(paint,0,0)}
 function selected(){return els.find(e=>e.id===sel)}
-function setMode(mode){tool=mode;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.classList.toggle('active',b.dataset.dwTool===mode));render()}
+function setMode(mode){resetPointerState();tool=mode;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.classList.toggle('active',b.dataset.dwTool===mode));render()}
 function listLayers(){const root=$('dwLayerList');root.replaceChildren();if(!els.length){root.textContent='그림을 추가하면 이곳에서 각각 선택할 수 있어요.';return}for(const e of [...els].reverse()){
  const row=document.createElement('div');row.className='dw-layer-row'+(sel===e.id?' selected':'');const nm=document.createElement('button');nm.type='button';nm.className='dw-layer-name';nm.textContent=layerName(e);nm.onclick=()=>{sel=e.id;setMode('select')};row.append(nm);
  const add=(label,act)=>{const b=document.createElement('button');b.type='button';b.className='dw-layer-action';b.textContent=label;b.onclick=act;row.append(b)};
  add(e.visible===false?'보기':'숨기기',()=>{remember();e.visible=e.visible===false;render()});add(e.locked?'풀기':'잠그기',()=>{remember();e.locked=!e.locked;render()});add('앞으로',()=>{sel=e.id;order(1)});add('뒤로',()=>{sel=e.id;order(-1)});add('지우기',()=>remove(e.id));root.append(row)
  }}
 function showFloating(e){const f=$('dwFloating');if(!f)return;f.hidden=!(e&&tool==='select');if(!e||tool!=='select')return;$('dwFloatingName').textContent=layerName(e)}
-function render(){compose(X,$('dwShowBackground').checked);const e=selected();if(e&&tool==='select'){
+function render(){stopInk();compose(X,$('dwShowBackground').checked);const e=selected();if(e&&tool==='select'){
  X.save();X.translate(e.x,e.y);X.rotate(e.rotation||0);X.strokeStyle='#7047ad';X.lineWidth=2;X.setLineDash([7,5]);X.strokeRect(-e.w/2-4,-e.h/2-4,e.w+8,e.h+8);X.setLineDash([]);
  const dots=[[-e.w/2,-e.h/2],[e.w/2,-e.h/2],[-e.w/2,e.h/2],[e.w/2,e.h/2]];dots.forEach(([x,y])=>{X.fillStyle='white';X.strokeStyle='#8052bb';X.lineWidth=3;X.beginPath();X.arc(x,y,9,0,2*Math.PI);X.fill();X.stroke()});X.beginPath();X.moveTo(0,-e.h/2);X.lineTo(0,-e.h/2-35);X.stroke();X.beginPath();X.arc(0,-e.h/2-35,11,0,2*Math.PI);X.fillStyle='#f7eafb';X.fill();X.stroke();X.restore();}
  showFloating(e);const detail=$('dwObjectDetails');detail.hidden=!(e&&tool==='select'&&(e.kind==='shape'||e.origin));$('dwObjectControls').hidden=detail.hidden;if(e){$('dwShapeStyling').hidden=e.kind!=='shape';$('dwHeroStyling').hidden=!e.origin;if(e.kind==='shape'){$('dwObjectColor').value=e.fill||'#d76eab';$('dwObjectStroke').value=e.stroke||'#765a91';$('dwNoFill').checked=e.fill===null;$('dwNoStroke').checked=e.stroke===null}if(e.origin)$('dwSelectedHeroMode').value=e.variant||'original'}
@@ -40,10 +48,11 @@ function render(){compose(X,$('dwShowBackground').checked);const e=selected();if
  }}
  if(floatHero){floatHero.hidden=!(floatingActive&&e.origin);if(!floatHero.hidden)$('dwFloatHeroMode').value=e.variant||'original'}
  listLayers()}
-function snap(){return {a:under.toDataURL(),b:paint.toDataURL(),els:clone(els),sel}}
+// Raw pixels avoid blocking iPad Safari to PNG-encode the whole drawing at every new stroke.
+function snap(){return {a:U.getImageData(0,0,W,H),b:P.getImageData(0,0,W,H),els:clone(els),sel}}
 function remember(){history.push(snap());if(history.length>12)history.shift();redo.length=0}
 async function refreshImages(){cache.clear();await Promise.all(els.filter(e=>e.kind==='image').map(async e=>{let src=e.premiumKey?propSrc(e.premiumKey):e.origin?heroSrc(e.origin,e.expression||'기뻐요'):e.src;if(!src)return;try{let im=await imload(src);if(e.variant==='outline'&&e.origin){im=await imload(await outline(im))}cache.set(e.id,im)}catch(err){console.warn('그림 불러오기 실패',err)}}))}
-async function restore(s){els=clone(s.els||[]);sel=s.sel||null;U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);const [a,b]=await Promise.all([imload(s.a),imload(s.b)]);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H);await refreshImages();render()}
+async function restore(s){els=clone(s.els||[]);sel=s.sel||null;U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);if(s.a instanceof ImageData&&s.b instanceof ImageData){U.putImageData(s.a,0,0);P.putImageData(s.b,0,0)}else{const [a,b]=await Promise.all([imload(s.a),imload(s.b)]);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H)}await refreshImages();render()}
 async function undo(a,b){if(!a.length)return;b.push(snap());await restore(a.pop())}
 $('dwUndo').onclick=()=>undo(history,redo).catch(err=>msg(err.message));$('dwRedo').onclick=()=>undo(redo,history).catch(err=>msg(err.message));
 function pt(ev){const r=C.getBoundingClientRect();return {x:(ev.clientX-r.left)*W/r.width,y:(ev.clientY-r.top)*H/r.height}}
@@ -54,9 +63,19 @@ function pick(p){for(let i=els.length-1;i>=0;i--)if(els[i].visible!==false&&!els
 function pen(a,b){P.save();P.globalCompositeOperation=tool==='eraser'?'destination-out':'source-over';P.lineWidth=tool==='brush'?thick*1.8:thick;P.strokeStyle=ink;P.fillStyle=ink;P.lineCap='round';P.lineJoin='round';P.beginPath();P.moveTo(a.x,a.y);P.lineTo(b.x,b.y);P.stroke();if(a.x===b.x&&a.y===b.y){P.beginPath();P.arc(a.x,a.y,P.lineWidth/2,0,Math.PI*2);P.fill()}P.restore()}
 function flood(p){compose(S,false);const data=S.getImageData(0,0,W,H).data;let px=Math.floor(p.x),py=Math.floor(p.y);if(px<0||px>=W||py<0||py>=H)return;const pos=py*W+px,idx=pos*4,target=[...data.slice(idx,idx+4)],rgb=[1,3,5].map(j=>parseInt(ink.slice(j,j+2),16));const result=U.getImageData(0,0,W,H),out=result.data,queue=new Int32Array(W*H),visited=new Uint8Array(W*H);let head=0,tail=1;queue[0]=pos;visited[pos]=1;
  while(head<tail){const k=queue[head++],i=k*4;if(Math.abs(data[i]-target[0])+Math.abs(data[i+1]-target[1])+Math.abs(data[i+2]-target[2])>40||Math.abs(data[i+3]-target[3])>90)continue;out[i]=rgb[0];out[i+1]=rgb[1];out[i+2]=rgb[2];out[i+3]=255;const x=k%W,y=(k/W)|0;for(const n of [x>0?k-1:-1,x<W-1?k+1:-1,y>0?k-W:-1,y<H-1?k+W:-1])if(n>=0&&!visited[n]){visited[n]=1;queue[tail++]=n}}U.putImageData(result,0,0)}
+function resetPointerState(){
+ if(objectFrame){cancelAnimationFrame(objectFrame);objectFrame=0}
+ if(active!==null){try{if(C.hasPointerCapture(active))C.releasePointerCapture(active)}catch(_){}}
+ stopInk();active=null;last=null;drag=null;gesture=null;touchPoints.clear();
+}
 function down(ev){
  if(active!==null){
-   if(tool!=='select'||ev.pointerId===active)return;
+   // iPadOS sometimes drops pointerup/capture while switching to palm rejection.
+   // A new Pencil stroke must never be blocked by an orphaned pointer ID.
+   if(tool!=='select' && ev.pointerId!==active && touchPoints.size<=1){resetPointerState()}
+   else if(tool!=='select'||ev.pointerId===active)return;
+ }
+ if(active!==null){
    ev.preventDefault();const p=pt(ev);touchPoints.set(ev.pointerId,p);
    try{C.setPointerCapture(ev.pointerId)}catch(_){}
    const e=selected(),first=touchPoints.get(active);
@@ -67,7 +86,8 @@ function down(ev){
  ev.preventDefault();const p=pt(ev);active=ev.pointerId;last=p;touchPoints.set(ev.pointerId,p);try{C.setPointerCapture(active)}catch(_){}
  if(tool==='select'){
   let e=selected();let action=e&&!e.locked?hitHandle(e,p):null;if(!action){e=pick(p);action=e?'move':null}sel=e?.id||null;drag=null;if(e&&!e.locked){remember();const a=localPt(e,p);drag={action,p,ox:e.x,oy:e.y,ow:e.w,oh:e.h,angle:e.rotation||0,startAngle:Math.atan2(p.y-e.y,p.x-e.x),dist:Math.hypot(a.x,a.y)}}
- }else{remember();if(tool==='bucket'){flood(p);active=null}else pen(p,p)}render()}
+ }else{remember();if(tool==='bucket'){flood(p);active=null;render()}else{prepareInk();pen(p,p);drawInkFrame()}}if(tool==='select')render()}
+let objectFrame=0;function scheduleObjectRender(){if(!objectFrame)objectFrame=requestAnimationFrame(()=>{objectFrame=0;render()})}
 function move(ev){if(ev.pointerId!==active&&!touchPoints.has(ev.pointerId))return;ev.preventDefault();const p=pt(ev);
  if(touchPoints.has(ev.pointerId))touchPoints.set(ev.pointerId,p);
  if(gesture&&touchPoints.size>=2){const [a,b]=[...touchPoints.values()];const e=selected();if(e&&e.id===gesture.id){
@@ -76,10 +96,33 @@ function move(ev){if(ev.pointerId!==active&&!touchPoints.has(ev.pointerId))retur
    e.w=Math.max(18,Math.min(1200,gesture.ow*ratio));e.h=Math.max(18,Math.min(1200,gesture.oh*ratio));
    e.rotation=gesture.rotation+angle-gesture.baseAngle;
    e.x=gesture.ox+(a.x+b.x)/2-gesture.center.x;e.y=gesture.oy+(a.y+b.y)/2-gesture.center.y;
- }render();return}
- if(ev.pointerId!==active)return;if(tool==='select'){const e=selected();if(e&&!e.locked&&drag){const dx=p.x-drag.p.x,dy=p.y-drag.p.y;if(drag.action==='move'){e.x=drag.ox+dx;e.y=drag.oy+dy}else if(drag.action==='resize'){let rad=Math.hypot(p.x-e.x,p.y-e.y);let ratio=Math.max(.12,Math.min(8,rad/Math.max(1,drag.dist)));e.w=Math.max(18,Math.min(1200,drag.ow*ratio));e.h=Math.max(18,Math.min(1200,drag.oh*ratio))}else if(drag.action==='rotate'){e.rotation=drag.angle+Math.atan2(p.y-e.y,p.x-e.x)-drag.startAngle}}}else if(tool!=='bucket'){pen(last,p);last=p}render()}
-function end(ev){touchPoints.delete(ev.pointerId);if(gesture){gesture=null;touchPoints.clear();active=null;drag=null;last=null;render();return}if(ev.pointerId!==active)return;active=null;drag=null;last=null;render()}
-C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);C.addEventListener('pointerup',end);C.addEventListener('pointercancel',end);
+ }scheduleObjectRender();return}
+ if(ev.pointerId!==active)return;if(tool==='select'){const e=selected();if(e&&!e.locked&&drag){const dx=p.x-drag.p.x,dy=p.y-drag.p.y;if(drag.action==='move'){e.x=drag.ox+dx;e.y=drag.oy+dy}else if(drag.action==='resize'){let rad=Math.hypot(p.x-e.x,p.y-e.y);let ratio=Math.max(.12,Math.min(8,rad/Math.max(1,drag.dist)));e.w=Math.max(18,Math.min(1200,drag.ow*ratio));e.h=Math.max(18,Math.min(1200,drag.oh*ratio))}else if(drag.action==='rotate'){e.rotation=drag.angle+Math.atan2(p.y-e.y,p.x-e.x)-drag.startAngle}}}else if(tool!=='bucket'){
+  // Use predicted-independent coalesced Pencil samples to preserve fast, continuous strokes.
+  const samples=typeof ev.getCoalescedEvents==='function'?ev.getCoalescedEvents():null;
+  if(samples&&samples.length){const stride=Math.max(1,Math.ceil(samples.length/32));for(let i=0;i<samples.length;i+=stride){const q=pt(samples[i]);pen(last,q);last=q}}
+  if(!last||last.x!==p.x||last.y!==p.y){pen(last||p,p);last=p}
+  scheduleInk();return
+ }
+ // Object gestures need only paint once per animation frame, not rebuild all layer buttons on every move.
+ scheduleObjectRender()}
+function end(ev){
+ touchPoints.delete(ev.pointerId);
+ // A stray finger/palm pointer must not stop the active Pencil ink cache.
+ if(ev.pointerId!==active){if(gesture&&touchPoints.size<2){gesture=null;drag=null}return}
+ if(objectFrame){cancelAnimationFrame(objectFrame);objectFrame=0}
+ stopInk();gesture=null;touchPoints.clear();active=null;drag=null;last=null;
+ render();
+}
+C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);
+C.addEventListener('pointerup',end);C.addEventListener('pointercancel',end);
+C.addEventListener('lostpointercapture',ev=>{
+ if(ev.pointerId!==active)return;
+ // Called by Safari if touch capture is lost without a matching pointerup.
+ resetPointerState();render();
+});
+window.addEventListener('blur',()=>{if(active!==null){resetPointerState();render()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&active!==null){resetPointerState();render()}});
 function add(o){remember();const e={id:eId(),kind:'image',x:320,y:320,w:220,h:220,visible:true,locked:false,rotation:0,opacity:1,flip:false,...o};els.push(e);sel=e.id;setMode('select');return e}
 async function addIm(src,opts={}){const im=await imload(src);const max=opts.max||380,ratio=Math.min(max/im.width,max/im.height),w=Math.round(im.width*ratio),h=Math.round(im.height*ratio);const e=add({kind:'image',w,h,x:320+((els.length-1)%4)*30,y:310+((els.length-1)%3)*24,variant:opts.variant||'original',opacity:opts.variant==='pale'?.4:1,...opts,src:(opts.origin||opts.premiumKey)?null:src});cache.set(e.id,e.variant==='outline'&&e.origin?await imload(await outline(im)):im);render();return e}
 async function outline(im){const c=cv(),g=c.getContext('2d',{willReadFrequently:true});let scale=Math.min(570/im.width,570/im.height);g.drawImage(im,(W-im.width*scale)/2,(H-im.height*scale)/2,im.width*scale,im.height*scale);const d=g.getImageData(0,0,W,H),a=d.data,out=g.createImageData(W,H),p=out.data;for(let y=2;y<H-2;y++)for(let x=2;x<W-2;x++){const i=(y*W+x)*4;if(a[i+3]<96)continue;let edge=false;for(const off of [-4,4,-W*4,W*4])if(a[i+off+3]<96)edge=true;if(edge)for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){const j=((y+oy)*W+x+ox)*4;p[j]=75;p[j+1]=52;p[j+2]=89;p[j+3]=255}}g.clearRect(0,0,W,H);g.putImageData(out,0,0);return c.toDataURL()}
