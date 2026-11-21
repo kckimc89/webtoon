@@ -130,6 +130,11 @@ function listLayers(){const root=$('dwLayerList');root.replaceChildren();if(!els
  add(e.visible===false?'보기':'숨기기',()=>{remember();e.visible=e.visible===false;render()});add(e.locked?'풀기':'잠그기',()=>{remember();e.locked=!e.locked;render()});add('앞으로',()=>{sel=e.id;order(1)});add('뒤로',()=>{sel=e.id;order(-1)});add('지우기',()=>remove(e.id));root.append(row)
  }}
 function showFloating(e){const f=$('dwFloating');if(!f)return;f.hidden=!(e&&tool==='select');if(!e||tool!=='select')return;$('dwFloatingName').textContent=layerName(e)}
+function paintFinishedStroke(){
+ // A Pencil lift must not synchronously rebuild the layer list / every editor control.
+ // Use one 1280px composition for the artwork; only selection edits need full UI.
+ if(!document.hidden)compose(X,$('dwShowBackground').checked);
+}
 function render(){stopInk();compose(X,$('dwShowBackground').checked);const e=selected();if(e&&tool==='select'){
  X.save();X.translate(e.x,e.y);X.rotate(e.rotation||0);X.strokeStyle='#7047ad';X.lineWidth=2;X.setLineDash([7,5]);X.strokeRect(-e.w/2-4,-e.h/2-4,e.w+8,e.h+8);X.setLineDash([]);
  const dots=[[-e.w/2,-e.h/2],[e.w/2,-e.h/2],[-e.w/2,e.h/2],[e.w/2,e.h/2]];dots.forEach(([x,y])=>{X.fillStyle='white';X.strokeStyle='#8052bb';X.lineWidth=3;X.beginPath();X.arc(x,y,9,0,2*Math.PI);X.fill();X.stroke()});X.beginPath();X.moveTo(0,-e.h/2);X.lineTo(0,-e.h/2-35);X.stroke();X.beginPath();X.arc(0,-e.h/2-35,11,0,2*Math.PI);X.fillStyle='#f7eafb';X.fill();X.stroke();X.restore();}
@@ -343,8 +348,11 @@ function end(ev){
  // A stray finger/palm pointer must not stop the active Pencil ink cache.
  if(ev.pointerId!==active){if(gesture&&touchPoints.size<2){gesture=null;drag=null}return}
  if(objectFrame){cancelAnimationFrame(objectFrame);objectFrame=0}
+ const wasDrawing=tool==='pen'||tool==='brush'||tool==='eraser';
+ // Capture the final tip coordinate on Apple Pencil lift (Safari may skip last move).
+ if(wasDrawing&&ev.type==='pointerup'&&last){const finish=pt(ev);if(Math.hypot(finish.x-last.x,finish.y-last.y)<90)pen(last,finish)}
  stopInk();gesture=null;touchPoints.clear();active=null;activePointerType=null;drag=null;last=null;
- render();
+ if(wasDrawing)paintFinishedStroke();else render();
 }
 C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);
 C.addEventListener('pointerup',end);C.addEventListener('pointercancel',end);
@@ -353,9 +361,9 @@ window.addEventListener('pointerup',ev=>{if(ev.pointerId===active)end(ev)},true)
 window.addEventListener('pointercancel',ev=>{if(ev.pointerId===active)end(ev)},true);
 // A stale active pointer must not block subsequent Pencil strokes indefinitely.
 // The watchdog only releases the input state; it never removes painted strokes.
-setInterval(()=>{if(active!==null&&tool!=='select'&&Date.now()-lastPointerActivity>3500){
- resetPointerState();render();
-}},950);
+setInterval(()=>{if(active!==null&&tool!=='select'&&Date.now()-lastPointerActivity>8500){
+ resetPointerState();if(document.getElementById('draw')?.classList.contains('active'))paintFinishedStroke();
+}},1500);
 C.addEventListener('lostpointercapture',ev=>{
  if(comicSelectBox&&comicSelectBox.id===ev.pointerId){comicSelectBox=null;clearComicGuide();return}
  if(ev.pointerId!==active)return;
@@ -363,7 +371,27 @@ C.addEventListener('lostpointercapture',ev=>{
  resetPointerState();render();
 });
 window.addEventListener('blur',()=>{if(active!==null){resetPointerState();render()}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&active!==null){resetPointerState();render()}});
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden){if(active!==null)resetPointerState();return;}
+ if(document.getElementById('draw')?.classList.contains('active')){
+  resetPointerState();requestAnimationFrame(()=>paintFinishedStroke());
+ }
+});
+// Tabs change while Safari still thinks Pencil is down: clear input capture only.
+document.addEventListener('webtoon:beforeviewchange',()=>{
+ if(active!==null||comicSelectBox)resetPointerState();
+});
+document.addEventListener('webtoon:viewchange',ev=>{
+ if(ev.detail?.id!=='draw')return;
+ resetPointerState();
+ requestAnimationFrame(()=>paintFinishedStroke());
+ ensureGalleryLoaded();
+});
+window.addEventListener('pageshow',()=>{
+ if(document.getElementById('draw')?.classList.contains('active')){
+  resetPointerState();requestAnimationFrame(()=>paintFinishedStroke());
+ }
+});
 function add(o){remember();const e={id:eId(),kind:'image',x:320,y:320,w:220,h:220,visible:true,locked:false,rotation:0,opacity:1,flip:false,...o};els.push(e);sel=e.id;setMode('select');return e}
 async function addIm(src,opts={}){const im=await imload(src);const max=opts.max||380,ratio=Math.min(max/im.width,max/im.height),w=Math.round(im.width*ratio),h=Math.round(im.height*ratio);const e=add({kind:'image',w,h,x:320+((els.length-1)%4)*30,y:310+((els.length-1)%3)*24,variant:opts.variant||'original',opacity:opts.variant==='pale'?.4:1,...opts,src:(opts.origin||opts.premiumKey)?null:src});cache.set(e.id,e.variant==='outline'&&e.origin?await imload(await outline(im)):im);render();return e}
 async function outline(im){const c=cv(),g=c.getContext('2d',{willReadFrequently:true});let scale=Math.min(570/im.width,570/im.height);g.drawImage(im,(W-im.width*scale)/2,(H-im.height*scale)/2,im.width*scale,im.height*scale);const d=g.getImageData(0,0,W,H),a=d.data,out=g.createImageData(W,H),p=out.data;for(let y=2;y<H-2;y++)for(let x=2;x<W-2;x++){const i=(y*W+x)*4;if(a[i+3]<96)continue;let edge=false;for(const off of [-4,4,-W*4,W*4])if(a[i+off+3]<96)edge=true;if(edge)for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){const j=((y+oy)*W+x+ox)*4;p[j]=75;p[j+1]=52;p[j+2]=89;p[j+3]=255}}g.clearRect(0,0,W,H);g.putImageData(out,0,0);return c.toDataURL()}
@@ -496,7 +524,21 @@ $('dwComicFinish').onclick=()=>comicGuard(async()=>{await comicSavePanel();await
 $('dwComicViewClose').onclick=()=>{$('dwComicViewer').hidden=true;viewComic=null};
 $('dwComicDownload').onclick=()=>comicGuard(async()=>{if(!viewComic)return;let start=0;if(viewComic.panels.length>12){const choice=prompt(`전체 ${viewComic.panels.length}컷입니다. PNG로 저장할 시작 컷 번호를 적어 주세요. (최대 12컷씩 저장)`, '1');if(choice===null)return;start=Number(choice)-1;if(!Number.isInteger(start)||start<0||start>=viewComic.panels.length){msg('올바른 컷 번호를 입력해 주세요.');return}}const count=Math.min(12,viewComic.panels.length-start);const sheet=document.createElement('canvas');sheet.width=1280;sheet.height=1280*count;const ctx=sheet.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,sheet.width,sheet.height);for(let i=0;i<count;i++){const pic=await imload(viewComic.panels[start+i].preview);ctx.drawImage(pic,0,i*1280,1280,1280)}const a=document.createElement('a');a.href=sheet.toDataURL('image/png');a.download=(viewComic.title||'내 그림 웹툰').replace(/[\/:*?"<>|]/g,'_')+(viewComic.panels.length>12?`_${start+1}-${start+count}컷`:'')+'.png';a.click()});
 async function comicGallery(){const root=$('dwComicGallery');root.replaceChildren();let items=await comicAll();items.sort((a,b)=>b.updated-a.updated);if(!items.length){root.textContent='아직 저장한 웹툰이 없어요.';return}for(const item of items){const card=document.createElement('article'),img=new Image(),title=document.createElement('strong');img.src=item.panels[0]?.preview||'';img.alt=item.title;title.textContent=`${item.title} · ${item.panels.length}컷`;card.append(img,title);function button(label,fn){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=()=>comicGuard(fn);card.append(b)}button('✏️ 이어 그리기',async()=>{if(comic&&!confirm('현재 웹툰을 저장하고 다른 작품을 열까요?'))return;if(comic)await comicSavePanel();comic=comicCopy(item);comicIndex=0;await comicLoadPanel(comic.panels[0]);comicUi();msg('1컷을 불러왔어요. 다른 컷도 아래 그림 목록에서 고를 수 있어요.')});button('📖 감상',()=>comicView(item));button('🗑 삭제',async()=>{if(!confirm(`「${item.title}」 웹툰 ${item.panels.length}컷을 삭제할까요? 이 작업은 되돌릴 수 없어요.`))return;await comicTx('readwrite',s=>s.delete(item.id));if(comic?.id===item.id){comic=null;comicUi()}if(viewComic?.id===item.id){$('dwComicViewer').hidden=true;viewComic=null}await comicGallery()});root.append(card)}}
-comicGallery().catch(err=>console.warn('그림 웹툰 보관함',err));
-// Make the workshop ready even when old saved art was created with earlier versions.
-render();galleryRefresh().catch(e=>console.warn('보관함',e));registry();
+let galleryLoaded=false,galleryLoading=false;
+function ensureGalleryLoaded(){
+ if(galleryLoaded||galleryLoading)return;
+ galleryLoading=true;
+ // Avoid building many image thumbnails inside a Pencil input event.
+ setTimeout(async()=>{
+  try{
+   await Promise.all([galleryRefresh(),registry(),comicGallery()]);
+   galleryLoaded=true;
+  }catch(err){console.warn('그림 보관함 읽기',err)}
+  finally{galleryLoading=false}
+ },550);
+}
+// Small drawing canvas is ready immediately; saved thumbnail libraries stay idle
+// until the child actually opens this tab.
+render();
+if(document.getElementById('draw')?.classList.contains('active'))ensureGalleryLoaded();
 })();

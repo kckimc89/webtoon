@@ -579,6 +579,11 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 /* C4.5.29: separately saved hand-drawn comics; existing artwork store untouched. */
 #draw .dw-comic{background:#fff8fd;border:2px solid #e6cce9;border-radius:17px;padding:14px;margin:20px 0 14px}
 #draw .dw-comic h3{margin:3px 0 8px;font-size:20px}
+#draw .dw-comic:not([open]){padding:8px 14px;margin:14px 0}
+#draw .dw-comic-toggle{font-size:19px;font-weight:850;cursor:pointer;padding:8px 5px;list-style-position:inside;touch-action:manipulation}
+#draw .dw-comic-toggle-hint{font-size:13px;font-weight:500;color:#775d89;margin-left:8px}
+#draw .dw-comic[open]>.dw-comic-toggle{margin-bottom:12px}
+
 #draw .dw-comic-actions{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0;align-items:center}
 #draw .dw-comic-actions button{min-height:43px;white-space:normal}
 #draw .dw-comic-header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:10px 0}
@@ -605,7 +610,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.20 · 웹툰형/꾸미기형 통합 정리 · 단발 6표정</span>
+    <span class="pill">MASTER C4.5.32.2 · 내 그림 웹툰 · 주인공 부분 수정</span>
   </header>
 
   <nav class="tabs">
@@ -617,13 +622,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   </nav>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.20)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.20 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.32.2)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.32.2 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
     </div>
-    <p class="hint" style="margin-top:7px">새 버전을 GitHub에 게시할 때 ZIP 안의 <b>index.html, rose-style-assets.js, version.json, rose-bob-palace.webp bob-*.png 그림 6개 및 friend-*.png 동물 그림 18개</b>를 모두 같은 위치에 올려 주세요. ZIP 안의 모든 파일을 같은 폴더에 업로드하세요. 앱을 새로 열면 업데이트를 확인합니다. 사용 중에 새 버전이 발견되면 버튼을 눌러 이동할 수 있어요. 작품 저장공간은 초기화하지 않습니다.</p>
+    <p class="hint" style="margin-top:7px">새 버전을 GitHub에 게시할 때 기존 GitHub 저장소의 그림·스크립트 파일을 절대로 삭제하지 마세요. 새 버전의 <b>index.html, drawing-workshop.js, version.json</b>은 기존 파일이 있는 같은 폴더에 덮어씌우고, 기존 <b>rose-style-assets.js, fixed-princess.js, 그림 파일들</b>은 그대로 남겨 두어야 합니다. 앱을 새로 열면 업데이트를 확인합니다. 사용 중에 새 버전이 발견되면 버튼을 눌러 이동할 수 있어요. 작품 저장공간은 초기화하지 않습니다.</p>
   </details>
 
 
@@ -916,8 +921,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <button id="dwExport" type="button" class="secondary">📥 PNG 저장</button>
         <button id="dwWebtoon" type="button" class="primary">🎬 웹툰 주인공으로</button>
       </div>
-      <section class="dw-comic" aria-label="내 그림 웹툰 만들기">
-        <h3>📖 내 그림으로 웹툰 만들기</h3>
+      <details class="dw-comic" id="dwComicFold" aria-label="내 그림 웹툰 만들기">
+        <summary class="dw-comic-toggle">📖 내 그림으로 웹툰 만들기 <span class="dw-comic-toggle-hint">(눌러서 열기·닫기)</span></summary>
         <p class="hint">첫 컷을 저장한 다음 앞 그림을 복사해 다음 컷을 만들어요. 말풍선을 선택하면 대사도 쓸 수 있어요. 이전 컷은 그대로 남습니다.</p>
         <div class="dw-comic-actions">
           <button id="dwComicNew" type="button" class="primary">🌷 지금 그림으로 웹툰 시작</button>
@@ -953,7 +958,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <div class="dw-comic-actions"><strong id="dwComicViewTitle"></strong><button id="dwComicViewClose" type="button">닫기 ✕</button><button id="dwComicDownload" type="button" class="primary">📥 웹툰 PNG 저장</button></div>
           <div id="dwComicPages" class="dw-comic-pages"></div>
         </div>
-      </section>
+      </details>
       <!-- Legacy import controls retained for existing webtoon editor initialization; the new drawing studio uses its own import. -->
       <div hidden aria-hidden="true"><input id="customUpload" type="file" accept="image/*"><div id="myDrawingPreview"></div><button id="useMyDrawing" type="button">기존 가져오기</button></div>
       <h3>🖼 내 그림 보관함</h3>
@@ -1455,7 +1460,15 @@ const storyTemplates={
 };
 
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),2400)}
-function switchView(id){$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));if(id==='library')renderLibrary()}
+function switchView(id){
+ // The drawing workshop releases stale iPad Pencil capture on view changes,
+ // while preserving all actual pixels and unfinished comic contents.
+ document.dispatchEvent(new CustomEvent('webtoon:beforeviewchange',{detail:{id}}));
+ $$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===id));
+ $$('.view').forEach(v=>v.classList.toggle('active',v.id===id));
+ if(id==='library')renderLibrary();
+ document.dispatchEvent(new CustomEvent('webtoon:viewchange',{detail:{id}}));
+}
 $$('.tab').forEach(btn=>btn.onclick=()=>switchView(btn.dataset.view));
 function safe(s=''){return String(s).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 
@@ -3454,20 +3467,20 @@ syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
 // C4.5.9: One source of truth for installed version; manifest supplied with each ZIP.
 // A GitHub Pages deployment must publish BOTH index.html and version.json in the same folder.
-const WEBTOON_APP_VERSION='4.5.16';
+const WEBTOON_APP_VERSION='4.5.32.2';
 let latestPublishedVersion=null;
 let initialVersionCheck=true;
 let versionCheckInFlight=false;
 let versionLastChecked=0;
 const VERSION_RELOAD_KEY='webtoon-version-reload-attempt-v1';
 function versionNumbers(v){
- const match=String(v||'').trim().match(/^C?(\d+)\.(\d+)\.(\d+)$/i);
- return match?match.slice(1).map(Number):null;
+ const match=String(v||'').trim().match(/^C?(\d+)\.(\d+)\.(\d+)(?:\.(\d+))?$/i);
+ return match?match.slice(1).map(x=>Number(x||0)):null;
 }
 function compareVersions(a,b){
  const x=versionNumbers(a),y=versionNumbers(b);
  if(!x||!y)return null;
- for(let k=0;k<3;k++)if(x[k]!==y[k])return x[k]>y[k]?1:-1;
+ for(let k=0;k<4;k++)if(x[k]!==y[k])return x[k]>y[k]?1:-1;
  return 0;
 }
 function freshAppUrl(version){
@@ -4248,8 +4261,21 @@ function studioInit(){
  document.getElementById('studioToComic').onclick=studioToComic;
  studioPopulateControls();studioSavedView();
 }
+// Complete visible studio controls first, but wait for first paint before
+// loading the high-resolution saved-art gallery from IndexedDB.
 studioInit();
-roseArtworkInit();
+let roseArtInitStarted=false,roseArtInitTimer=null;
+function scheduleRoseArtInit(){
+ if(roseArtInitStarted||roseArtInitTimer!==null)return;
+ roseArtInitTimer=setTimeout(()=>{
+  roseArtInitTimer=null;
+  if(!document.getElementById('studio')?.classList.contains('active')||document.hidden)return;
+  roseArtInitStarted=true;
+  roseArtworkInit().catch(e=>console.warn('원화 로딩',e));
+ },1000);
+}
+document.addEventListener('webtoon:viewchange',ev=>{if(ev.detail?.id==='studio')scheduleRoseArtInit()});
+scheduleRoseArtInit();
 
 // Show real preview thumbnails in the child-friendly premium prop gallery.
 for(const b of document.querySelectorAll('[data-premium-prop]')){
@@ -4261,9 +4287,9 @@ for(const b of document.querySelectorAll('[data-premium-prop]')){
  b.prepend(thumbnail);
 }
 // After the first screen is ready, verify the published version without blocking editing.
-setTimeout(()=>checkWebtoonVersion(true,true),700);
+setTimeout(()=>checkWebtoonVersion(true,false),1800);
 </script>
-<script src="drawing-workshop.js?v=4525310"></script>
+<script src="drawing-workshop.js?v=45322"></script>
 <script src="fixed-princess.js?v=4522"></script>
 </body>
 </html>
