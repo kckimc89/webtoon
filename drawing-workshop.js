@@ -1,4 +1,4 @@
-/* C4.5.19 | Drawing workshop: crisp art, unified handles, original painting storage compatibility. */
+/* C4.5.20 | Drawing workshop: crisp art, unified handles, original painting storage compatibility. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -24,9 +24,9 @@ function setMode(mode){tool=mode;document.querySelectorAll('[data-dw-tool]').for
 function listLayers(){const root=$('dwLayerList');root.replaceChildren();if(!els.length){root.textContent='그림을 추가하면 이곳에서 각각 선택할 수 있어요.';return}for(const e of [...els].reverse()){
  const row=document.createElement('div');row.className='dw-layer-row'+(sel===e.id?' selected':'');const nm=document.createElement('button');nm.type='button';nm.className='dw-layer-name';nm.textContent=layerName(e);nm.onclick=()=>{sel=e.id;setMode('select')};row.append(nm);
  const add=(label,act)=>{const b=document.createElement('button');b.type='button';b.className='dw-layer-action';b.textContent=label;b.onclick=act;row.append(b)};
- add(e.visible===false?'보기':'숨기기',()=>{remember();e.visible=e.visible===false;render()});add(e.locked?'풀기':'잠그기',()=>{remember();e.locked=!e.locked;render()});add('↑',()=>{sel=e.id;order(1)});add('↓',()=>{sel=e.id;order(-1)});add('지우기',()=>remove(e.id));root.append(row)
+ add(e.visible===false?'보기':'숨기기',()=>{remember();e.visible=e.visible===false;render()});add(e.locked?'풀기':'잠그기',()=>{remember();e.locked=!e.locked;render()});add('앞으로',()=>{sel=e.id;order(1)});add('뒤로',()=>{sel=e.id;order(-1)});add('지우기',()=>remove(e.id));root.append(row)
  }}
-function showFloating(e){const f=$('dwFloating');if(!f)return;f.hidden=!(e&&tool==='select');if(!e||tool!=='select')return;$('dwFloatingName').textContent=layerName(e);const wrap=$('dwCanvasWrap').getBoundingClientRect();const scale=wrap.width/W;const wantTop=(e.y-e.h/2)*scale-54;f.style.top=Math.max(5,Math.min(wrap.height-53,wantTop))+'px'}
+function showFloating(e){const f=$('dwFloating');if(!f)return;f.hidden=!(e&&tool==='select');if(!e||tool!=='select')return;$('dwFloatingName').textContent=layerName(e)}
 function render(){compose(X,$('dwShowBackground').checked);const e=selected();if(e&&tool==='select'){
  X.save();X.translate(e.x,e.y);X.rotate(e.rotation||0);X.strokeStyle='#7047ad';X.lineWidth=2;X.setLineDash([7,5]);X.strokeRect(-e.w/2-4,-e.h/2-4,e.w+8,e.h+8);X.setLineDash([]);
  const dots=[[-e.w/2,-e.h/2],[e.w/2,-e.h/2],[-e.w/2,e.h/2],[e.w/2,e.h/2]];dots.forEach(([x,y])=>{X.fillStyle='white';X.strokeStyle='#8052bb';X.lineWidth=3;X.beginPath();X.arc(x,y,9,0,2*Math.PI);X.fill();X.stroke()});X.beginPath();X.moveTo(0,-e.h/2);X.lineTo(0,-e.h/2-35);X.stroke();X.beginPath();X.arc(0,-e.h/2-35,11,0,2*Math.PI);X.fillStyle='#f7eafb';X.fill();X.stroke();X.restore();}
