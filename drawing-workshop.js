@@ -355,6 +355,25 @@ function end(ev){
  stopInk();gesture=null;touchPoints.clear();active=null;activePointerType=null;drag=null;last=null;
  if(wasDrawing)paintFinishedStroke();else render();
 }
+// Prevent iPad Safari from selecting/highlighting the whole drawing surface
+// during Pencil rests, long presses, double taps, or accidental drag gestures.
+// Only the canvas and its noninteractive overlay are guarded. Inputs, menus,
+// text fields, and the intentional comic lasso / object selection stay usable.
+const drawingSurface=$('dwCanvasWrap');
+if(drawingSurface){
+ const isDrawingSurface=node=>node===C||node===live||node===comicGuide||node===drawingSurface;
+ for(const name of ['selectstart','dragstart','contextmenu']){
+  drawingSurface.addEventListener(name,ev=>{if(isDrawingSurface(ev.target))ev.preventDefault()},{capture:true});
+ }
+ // iOS long-touch can trigger native image/canvas callouts even when the
+ // PointerEvent stream is active. Disable native gesture defaults locally.
+ for(const name of ['gesturestart','gesturechange']){
+  drawingSurface.addEventListener(name,ev=>ev.preventDefault(),{passive:false});
+ }
+ C.setAttribute('draggable','false');
+ live.setAttribute('draggable','false');
+ comicGuide.setAttribute('draggable','false');
+}
 C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);
 C.addEventListener('pointerup',end);C.addEventListener('pointercancel',end);
 // An iPad Safari pointerup may arrive outside the canvas after losing capture.
