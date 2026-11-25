@@ -1,4 +1,4 @@
-/* C4.5.35.4 · high-quality modular princess prototype.
+/* C4.5.35.5 · high-quality modular princess prototype.
  * Independent of app-core.js, drawing-workshop.js, and existing storage.
  * Layered sprite parts: hairstyle and dress rendered separately, without repainting other features.
  */
@@ -13,7 +13,7 @@
  let state={...defaults},recordId=null,ready=false,asset=null,sharedFace=null,loading=false;
  const canvas=document.createElement('canvas');canvas.width=W*2;canvas.height=H*2;
  canvas.setAttribute('role','img');canvas.setAttribute('aria-label','현재 조립된 꽃빛공주');
- canvas.style.cssText='display:block;width:100%;height:auto;max-height:640px;object-fit:contain;';
+ canvas.style.cssText='display:block;width:100%;height:auto;max-height:790px;object-fit:contain;';
  const context=canvas.getContext('2d',{alpha:true});
  const safeName=s=>String(s||'나의 꽃빛공주').replace(/[\\/:*?"<>|]/g,'_').slice(0,50);
  function normalize(value){
@@ -36,8 +36,21 @@
    drawPart(context,'hair',state.hair);
    // Canonical face and neck are one shared immutable part for every hair selection.
    // Its position, rotation, size and facial features never change with hairstyles.
-   if(sharedFace)context.drawImage(sharedFace,200,HEAD_Y+100,190,232);
+   if(sharedFace)context.drawImage(sharedFace,200,HEAD_Y+105,190,180);
    context.setTransform(1,0,0,1,0,0);
+ }
+ function thumbnailFor(value){
+   if(!ready)return '';
+   // Never modify the active canvas: older saved princesses are rendered offscreen.
+   const sc=document.createElement('canvas');sc.width=150;sc.height=263;
+   const g=sc.getContext('2d',{alpha:true});
+   const st=normalize(value);
+   g.setTransform(.25,0,0,.25,0,-OFFSET*.25);
+   const dress=source[st.dress],hair=source[st.hair];
+   g.drawImage(asset,dress.sx,dress.sy,dress.sw,dress.sh,0,st.dress==='lavender'?470:530,dress.sw,dress.sh);
+   g.drawImage(asset,hair.sx,hair.sy,hair.sw,hair.sh,0,HEAD_Y,hair.sw,hair.sh);
+   if(sharedFace)g.drawImage(sharedFace,200,HEAD_Y+105,190,180);
+   return sc.toDataURL('image/png');
  }
  function refresh(){
    by('pmName').value=state.name;
@@ -51,21 +64,41 @@
    }
    paint();
  }
- function showRecords(){const holder=by('pmSaved');holder.replaceChildren();const rows=getRecords();if(!rows.length){holder.textContent='아직 저장한 공주가 없어요.';return}
+ function showRecords(){
+   const holder=by('pmSaved');holder.replaceChildren();const rows=getRecords();
+   if(!rows.length){holder.textContent='아직 저장한 공주가 없어요.';return}
+   const grid=document.createElement('div');grid.className='pm-gallery';
    rows.slice().reverse().forEach(row=>{
-     const wrap=document.createElement('div');wrap.className='pm-saved-item';
-     const text=document.createElement('strong');text.textContent=row.name||'꽃빛공주';
+     const wrap=document.createElement('article');wrap.className='pm-saved-item';
+     const photo=document.createElement('button');photo.type='button';photo.className='pm-thumb-button';
+     photo.setAttribute('aria-label',(row.name||'꽃빛공주')+' 다시 꾸미기');
+     const img=document.createElement('img');img.alt=(row.name||'꽃빛공주')+' 미리보기';
+     img.loading='lazy';img.decoding='async';
+     if(ready){try{img.src=thumbnailFor(row.state)}catch(err){console.warn('공주 미리보기',err)}}
+     photo.append(img);
+     const text=document.createElement('strong');text.className='pm-saved-name';text.textContent=row.name||'꽃빛공주';
+     const actions=document.createElement('div');actions.className='pm-saved-actions';
      const open=document.createElement('button');open.type='button';open.textContent='다시 꾸미기';
-     open.addEventListener('click',()=>{state=normalize(row.state);recordId=row.id;refresh();root.scrollIntoView({behavior:'smooth',block:'start'});message('저장한 공주를 불러왔어요. 머리와 드레스를 다시 바꿀 수 있어요.')});
+     const openRow=()=>{state=normalize(row.state);recordId=row.id;refresh();root.scrollIntoView({behavior:'smooth',block:'start'});message('저장한 공주를 불러왔어요. 머리와 드레스를 다시 바꿀 수 있어요.')};
+     photo.addEventListener('click',openRow);open.addEventListener('click',openRow);
+     const rename=document.createElement('button');rename.type='button';rename.textContent='이름 변경';
+     rename.addEventListener('click',()=>{
+       const next=prompt('공주의 새 이름을 적어 주세요.',row.name||'꽃빛공주');if(next===null)return;
+       const name=next.trim().slice(0,35);if(!name){message('공주 이름을 입력해 주세요.');return}
+       const saved=getRecords(),found=saved.find(x=>x.id===row.id);if(!found)return;
+       found.name=name;found.state={...found.state,name};found.updated=Date.now();
+       try{writeRecords(saved);if(recordId===row.id){state.name=name;by('pmName').value=name}showRecords()}catch(e){message('이름을 바꾸지 못했어요.')}
+     });
      const del=document.createElement('button');del.type='button';del.textContent='삭제';
      del.addEventListener('click',()=>{if(!confirm('이 조립식 공주 저장본만 삭제할까요? 기존 웹툰 작품은 그대로예요.'))return;try{writeRecords(getRecords().filter(x=>x.id!==row.id));if(recordId===row.id)recordId=null;showRecords()}catch(e){message('삭제 작업에 실패했어요.')}});
-     wrap.append(text,open,del);holder.append(wrap)
+     actions.append(open,rename,del);wrap.append(photo,text,actions);grid.append(wrap);
    });
+   holder.append(grid);
  }
  function loadArt(){if(loading||ready)return;loading=true;message('공주 원화를 불러오는 중이에요…');
    const load=(src)=>new Promise((ok,fail)=>{const im=new Image();im.decoding='async';im.onload=()=>ok(im);im.onerror=()=>fail(new Error(src));im.src=src});
-   Promise.all([load('princess-hq-sheet.png?v=45354'),load('princess-shared-face.png?v=45354')])
-     .then(([sheet,face])=>{asset=sheet;sharedFace=face;ready=true;loading=false;refresh();message('머리 모양을 바꿔도 얼굴과 고개 위치는 그대로 유지돼요.')})
+   Promise.all([load('princess-hq-sheet.png?v=45355'),load('princess-shared-face.png?v=45355')])
+     .then(([sheet,face])=>{asset=sheet;sharedFace=face;ready=true;loading=false;refresh();showRecords();message('머리 모양을 바꿔도 얼굴과 고개 위치는 그대로 유지돼요.')})
      .catch(e=>{loading=false;message('공주 원화를 불러올 수 없어요. 공주 그림 파일 2개가 함께 업로드되었는지 확인해 주세요.')});
  }
  by('pmPreview').replaceChildren(canvas);

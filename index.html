@@ -419,7 +419,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #draw #dwFloating.dw-floating button{min-height:32px}
 @media(max-width:750px){#draw .dw-options{gap:6px}#draw .dw-layer-panel{padding:6px}}
 
-/* C4.5.35.4 — drawing surface must never become a browser selection. */
+/* C4.5.35.5 — drawing surface must never become a browser selection. */
 #draw #dwCanvasWrap,
 #draw #dwCanvasWrap canvas,
 #draw #dwCanvasWrap #dwLiveInk,
@@ -436,9 +436,9 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 /* Isolated modular princess V1: only inside the existing princess-maker view. */
 #studio #fixedPrincessWorkshop,#studio #legacyPrincessPanel{display:none!important}
 #assemblyMaker{background:linear-gradient(150deg,#fff9fd,#f6f0ff);border:2px solid #efcce8;border-radius:18px}
-#assemblyMaker .pm-layout{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(280px,1.1fr);gap:17px;margin:14px 0}
+#assemblyMaker .pm-layout{display:grid;grid-template-columns:minmax(310px,1.3fr) minmax(245px,.7fr);gap:17px;margin:14px 0}
 #assemblyMaker .pm-preview-panel{min-width:0;text-align:center}
-#assemblyMaker .pm-preview{width:100%;max-width:400px;margin:auto;background:#fff;border-radius:17px;overflow:hidden;border:1px solid #e9d6ea}
+#assemblyMaker .pm-preview{width:100%;max-width:550px;margin:auto;background:#fff;border-radius:17px;overflow:hidden;border:1px solid #e9d6ea}
 #assemblyMaker .pm-preview svg,#assemblyMaker .pm-preview canvas{display:block;width:100%;height:auto}
 #assemblyMaker .pm-name{display:grid;text-align:left;gap:5px;font-weight:700;margin:9px 0}
 #assemblyMaker .pm-name input{min-height:44px;border-radius:10px;padding:8px;border:1px solid #d5b9dd;font:inherit}
@@ -455,7 +455,18 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #assemblyMaker .pm-saved-item{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #e6d5e5;padding:9px 0}
 #assemblyMaker .pm-saved-item strong{flex:1;min-width:100px}
 #assemblyMaker .pm-saved-item button{min-height:39px}
-@media(max-width:700px){#assemblyMaker .pm-layout{grid-template-columns:1fr}#assemblyMaker .pm-preview{max-width:340px}}
+@media(max-width:700px){#assemblyMaker .pm-layout{grid-template-columns:1fr}#assemblyMaker .pm-preview{max-width:500px}}
+
+#assemblyMaker .pm-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-top:12px}
+#assemblyMaker .pm-gallery .pm-saved-item{border:1px solid #e8d6ed;border-radius:14px;padding:9px;background:#fff;display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0}
+#assemblyMaker .pm-thumb-button{border:0;border-radius:10px;background:#f9f4fa;padding:0;overflow:hidden;width:100%;cursor:pointer;display:flex;justify-content:center;align-items:center;min-height:165px}
+#assemblyMaker .pm-thumb-button img{display:block;width:100%;height:180px;object-fit:contain}
+#assemblyMaker .pm-saved-name{text-align:center;overflow-wrap:anywhere;min-height:24px}
+#assemblyMaker .pm-saved-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:5px}
+#assemblyMaker .pm-saved-actions button{min-height:36px;font-size:12px;padding:6px 8px}
+#assemblyMaker .pm-controls .pm-group{padding:10px}
+#assemblyMaker .pm-controls .pm-group .hint{font-size:13px;line-height:1.4}
+@media(min-width:900px){#assemblyMaker .pm-preview canvas{max-height:790px}}
 </style>
 <style>
 .draw-workshop{max-width:1120px;margin:0 auto}.draw-actions,.dw-tools,.dw-options,.dw-savebar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:12px 0}.draw-workshop button,.dw-label{touch-action:manipulation}.dw-label{font-weight:700}.draw-workshop select,.draw-workshop input[type=text]{max-width:210px}.dw-tools .active{background:#8052bc;color:#fff;border-color:#8052bc}.dw-colors{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.dw-swatch{width:33px;height:33px!important;min-height:33px!important;border:2px solid #d4ccdc;border-radius:50%;padding:0!important}.dw-swatch.selected{outline:3px solid #8a5acb;outline-offset:2px}.dw-options label{display:flex;gap:7px;align-items:center}.dw-options input[type=range]{width:130px}.dw-canvas-wrap{max-width:660px;margin:12px auto;border:2px solid #c8afdd;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 3px 10px #76518d25;line-height:0;touch-action:none}.dw-canvas-wrap canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;touch-action:none;cursor:crosshair}.dw-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.dw-card{border:1px solid #e2d2eb;border-radius:12px;padding:8px;background:#fff}.dw-card img{width:100%;aspect-ratio:1;object-fit:contain;background:linear-gradient(45deg,#f6f3f9 25%,transparent 25%),linear-gradient(-45deg,#f6f3f9 25%,transparent 25%);background-size:22px 22px}.dw-card b{display:block;margin:7px 0;word-break:break-word}.dw-card .actions{display:flex;flex-wrap:wrap;gap:4px}.dw-card button{padding:7px 9px;font-size:12px}.dw-savebar input{min-width:135px}.dw-layer-tools{padding:10px;border:1px solid #e0cee9;border-radius:12px;background:#fdf8ff}.dw-layer-tools select{max-width:180px}.dw-object-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;background:#f5ebfc;border:2px solid #d3b5e7;border-radius:12px;padding:9px;margin:10px 0}.dw-object-controls[hidden]{display:none}.dw-object-controls button{padding:8px 10px;font-size:13px}.dw-object-controls label{display:flex;align-items:center;gap:5px;font-size:13px}.dw-object-controls input[type=range]{width:95px}.dw-hero-item{border:1px solid #e1d6e6;border-radius:12px;padding:5px;min-width:0}.dw-hero-item .choice{width:100%}.dw-remove-hero{width:100%;margin-top:5px;background:#fff5f5;color:#98424f;border:1px solid #e5bbc5}.dw-hero-item img{max-height:110px;object-fit:contain}@media(max-width:680px){.dw-tools button,.draw-actions button{padding:9px}.dw-savebar button{flex:1}.dw-canvas-wrap{margin:8px -5px}}
@@ -648,7 +659,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.35.4 · 내 그림 웹툰 · 주인공 부분 수정</span>
+    <span class="pill">MASTER C4.5.35.5 · 내 그림 웹툰 · 주인공 부분 수정</span>
   </header>
 
   <nav class="tabs">
@@ -661,8 +672,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <p id="webtoonLoadingNotice" role="status" aria-live="polite" hidden style="margin:10px 0;padding:10px 14px;background:#fff2d9;border-radius:12px;color:#60472b;font-weight:700"></p>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.35.4)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.35.4 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.35.5)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.35.5 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -686,8 +697,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
       <div class="pm-controls">
         <div class="pm-group"><strong>💇 머리 모양 · 고품질 원화 2종</strong><div class="pm-choices" id="pm_hair"></div></div>
         <div class="pm-group"><strong>👗 드레스 · 고품질 원화 2종</strong><div class="pm-choices" id="pm_dress"></div></div>
-        <div class="pm-group"><strong>😊 표정 · 기본 미소</strong><p class="hint">얼굴이 달라지지 않도록 이번에는 고품질 기본 미소만 사용합니다. 놀람·생각하는 표정은 같은 얼굴로 보이는 별도 원화를 준비한 뒤 추가합니다.</p></div>
-        <div class="pm-group"><strong>🎨 색상과 자세</strong><p class="hint">드레스 색상은 분홍/연보라 원화 선택에 포함됩니다. 머리색과 다른 자세는 새 그림 원화가 준비되면 추가합니다.</p></div>
+        <details class="pm-group"><summary><strong style="display:inline">😊 표정 · 기본 미소</strong></summary><p class="hint">얼굴이 달라지지 않도록 이번에는 고품질 기본 미소만 사용합니다. 놀람·생각하는 표정은 같은 얼굴로 보이는 별도 원화를 준비한 뒤 추가합니다.</p></details>
+        <details class="pm-group"><summary><strong style="display:inline">🎨 색상과 자세</strong></summary><p class="hint">드레스 색상은 분홍/연보라 원화 선택에 포함됩니다. 머리색과 다른 자세는 새 그림 원화가 준비되면 추가합니다.</p></details>
       </div>
     </div>
     <details class="pm-saved" open><summary>💝 새 조립식 공주 보관함</summary><div id="pmSaved"></div></details>
@@ -1411,7 +1422,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.35.4 · 그림 자료 분리 · 폴더 없이 업데이트</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.35.5 · 그림 자료 분리 · 폴더 없이 업데이트</div>
 </div>
 <div id="toast"></div>
 
@@ -1421,6 +1432,6 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <script defer src="app-core.js?v=45331"></script>
 <script defer src="drawing-workshop.js?v=45331"></script>
 <script defer src="fixed-princess.js?v=4522"></script>
-<script defer src="princess-assembly.js?v=45354"></script>
+<script defer src="princess-assembly.js?v=45355"></script>
 </body>
 </html>
