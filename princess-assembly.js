@@ -1,4 +1,4 @@
-/* C4.5.35.1 · high-quality modular princess prototype.
+/* C4.5.35.2 · high-quality modular princess prototype.
  * Independent of app-core.js, drawing-workshop.js, and existing storage.
  * Layered sprite parts: hairstyle and dress rendered separately, without repainting other features.
  */
@@ -63,7 +63,7 @@
    const image=new Image();image.decoding='async';
    image.onload=()=>{asset=image;ready=true;loading=false;refresh();message('머리와 드레스를 선택해 보세요. 고품질 원화 부품이 조립됩니다.')};
    image.onerror=()=>{loading=false;message('공주 원화를 불러올 수 없어요. princess-hq-sheet.png가 GitHub에 함께 올라갔는지 확인해 주세요.')};
-   image.src='princess-hq-sheet.png?v=45351';
+   image.src='princess-hq-sheet.png?v=45352';
  }
  by('pmPreview').replaceChildren(canvas);
  by('pmName').addEventListener('input',e=>state.name=e.target.value.slice(0,35));
