@@ -1,44 +1,87 @@
-/* Princess Assembly V1.0: isolated editor. No shared state with the existing app. */
+/* C4.5.35.0 · high-quality modular princess prototype.
+ * Independent of app-core.js, drawing-workshop.js, and existing storage.
+ * Layered sprite parts: hairstyle and dress rendered separately, without repainting other features.
+ */
 (()=>{'use strict';
  const root=document.getElementById('assemblyMaker');if(!root)return;
  const by=id=>root.querySelector('#'+id);
- const STORE='webtoon.princessAssembly.v1';
- const defaults={name:'나의 꽃빛공주',hair:'long',hairColor:'rose',dress:'ball',dressColor:'pink',shoes:'pink',expression:'happy',pose:'standing'};
- const defs={hair:[['long','긴 머리'],['bob','단발머리'],['twin','양갈래'],['up','올림머리']],hairColor:[['rose','분홍'],['brown','갈색'],['gold','금빛'],['violet','보라']],dress:[['ball','풍성한 드레스'],['a-line','A라인 드레스'],['layered','겹치마 드레스']],dressColor:[['pink','분홍'],['blue','하늘'],['mint','민트'],['lavender','연보라']],shoes:[['pink','분홍 구두'],['gold','금빛 구두'],['blue','하늘 구두']],expression:[['happy','웃어요'],['surprised','놀랐어요'],['thinking','생각해요'],['sad','슬퍼요']]};
- const colors={rose:['#ec83b5','#ac4d7c','#faaccb'],brown:['#906047','#563529','#b8896e'],gold:['#e7bf62','#aa7628','#ffe19b'],violet:['#b398d5','#71519d','#dbc6f1'],pink:['#f6aecf','#d56c9f','#ffe0ea'],blue:['#9bd7f1','#5c9fc3','#d4f1ff'],mint:['#92ddc5','#4da993','#d3f9ed'],lavender:['#c7b0eb','#9772bf','#eee1fc']};
- let state={...defaults},recordId=null;
- const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const gradient=(id,stops)=>`<linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${stops[2]}"/><stop offset=".55" stop-color="${stops[0]}"/><stop offset="1" stop-color="${stops[1]}"/></linearGradient>`;
- function svgMarkup(s){
-  const hc=colors[s.hairColor],dc=colors[s.dressColor],shoe=colors[s.shoes];
-  const backHair={long:`<path d="M166 245 Q120 290 139 465 Q150 487 188 478 Q184 433 197 395 L278 392 Q293 478 328 476 Q361 444 334 283 Q329 219 310 184Z" fill="url(#hair)" stroke="${hc[1]}" stroke-width="5"/>`,bob:`<path d="M163 212 Q122 257 143 338 Q158 359 194 349 L286 343 Q331 347 338 316 Q352 256 314 204Z" fill="url(#hair)" stroke="${hc[1]}" stroke-width="5"/>`,twin:`<path d="M170 226 Q101 220 113 347 Q114 394 136 421 Q170 409 169 366 L191 258Z M302 217 Q363 216 371 347 Q373 391 354 421 Q314 408 319 357 L290 249Z" fill="url(#hair)" stroke="${hc[1]}" stroke-width="5"/>`,up:`<ellipse cx="241" cy="151" rx="77" ry="77" fill="url(#hair)" stroke="${hc[1]}" stroke-width="5"/>`}[s.hair];
-  const skirt={ball:`<path d="M183 406 Q120 461 80 611 Q238 685 401 611 Q355 461 292 406 Z" fill="url(#dress)" stroke="${dc[1]}" stroke-width="5"/>`, 'a-line':`<path d="M186 406 Q161 482 119 626 Q240 677 360 626 Q321 479 293 406Z" fill="url(#dress)" stroke="${dc[1]}" stroke-width="5"/>`,layered:`<path d="M183 406 Q114 470 97 606 Q235 680 385 606 Q366 473 294 406Z" fill="url(#dress)" stroke="${dc[1]}" stroke-width="5"/><path d="M132 509 Q239 563 345 508 L369 602 Q239 645 114 601Z" fill="${dc[2]}" opacity=".72" stroke="${dc[1]}" stroke-width="3"/>`}[s.dress];
-  const fringe={long:`<path d="M158 226 Q155 163 209 159 Q251 144 296 171 Q324 192 317 244 Q300 211 286 204 Q248 236 186 207 Q177 228 158 243Z" fill="url(#hair)" stroke="${hc[1]}" stroke-width="4"/>`,bob:`<path d="M151 237 Q148 172 203 162 Q265 136 307 180 Q337 216 316 264 Q297 219 281 205 Q215 226 168 212Z" fill="url(#hair)" stroke="${hc[1]}" stroke-width="4"/>`,twin:`<path d="M158 231 Q150 157 213 156 Q281 151 314 205 Q317 222 312 238 Q279 210 268 198 Q209 224 172 213Z" fill="url(#hair)" stroke="${hc[1]}" stroke-width="4"/><path d="M145 225 l-19 -16 2 32Z M332 219 l20 -17 -3 34Z" fill="${hc[2]}"/>`,up:`<path d="M161 235 Q145 155 219 155 Q284 142 317 205 L312 235 Q286 194 264 198 Q197 229 162 216Z" fill="url(#hair)" stroke="${hc[1]}" stroke-width="4"/>`}[s.hair];
-  const eyes=s.expression==='happy'?`<path d="M192 280 Q211 262 226 282 M259 282 Q275 264 290 283" fill="none" stroke="#704451" stroke-width="5" stroke-linecap="round"/>`:s.expression==='surprised'?`<ellipse cx="211" cy="280" rx="8" ry="13" fill="#694151"/><ellipse cx="275" cy="280" rx="8" ry="13" fill="#694151"/>`:s.expression==='sad'?`<path d="M194 281 Q209 267 224 281 M257 281 Q273 267 288 281" fill="none" stroke="#704451" stroke-width="5"/><path d="M209 293 l-5 14" stroke="#8ad2ed" stroke-width="4"/>`:`<path d="M193 280 Q209 273 225 280 M260 276 Q275 269 287 276" fill="none" stroke="#704451" stroke-width="5"/>`;
-  const mouth=s.expression==='happy'?`<path d="M222 317 Q240 337 261 316" fill="none" stroke="#a84f69" stroke-width="5" stroke-linecap="round"/>`:s.expression==='surprised'?`<ellipse cx="242" cy="322" rx="10" ry="14" fill="#a84f69"/>`:s.expression==='sad'?`<path d="M227 328 Q241 311 254 328" fill="none" stroke="#a84f69" stroke-width="4"/>`:`<path d="M229 319 Q244 322 256 317" fill="none" stroke="#a84f69" stroke-width="4"/>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 730" role="img" aria-label="${esc(s.name)} 조립식 공주"><defs>${gradient('hair',hc)}${gradient('dress',dc)}${gradient('shoe',shoe)}<linearGradient id="skin" x2="1" y2="1"><stop stop-color="#ffe7d3"/><stop offset="1" stop-color="#efbba8"/></linearGradient><radialGradient id="bg"><stop stop-color="#fffdfd"/><stop offset="1" stop-color="#f8e5fa"/></radialGradient></defs>
-  <rect x="0" y="0" width="480" height="730" rx="22" fill="url(#bg)"/><ellipse cx="240" cy="685" rx="155" ry="20" fill="#b19cc9" opacity=".18"/>
-  <g data-part="hair-back">${backHair}</g>
-  <g data-part="legs"><path d="M207 584 L207 666 Q218 682 229 669 L234 576Z M249 580 L249 665 Q260 681 272 664 L277 578Z" fill="url(#skin)" stroke="#d9a99b" stroke-width="3"/></g>
-  <g data-part="shoes"><path d="M206 650 Q211 642 230 652 L238 682 Q226 697 192 680 L198 657Z M253 652 Q269 640 280 656 L290 679 Q261 695 243 681Z" fill="url(#shoe)" stroke="${shoe[1]}" stroke-width="4"/><path d="M211 658 l11 9 M256 662 l14 7" stroke="${shoe[2]}" stroke-width="5"/></g>
-  <g data-part="dress-bottom">${skirt}<path d="M163 498 Q185 551 170 614 M311 497 Q293 556 317 613" stroke="${dc[2]}" stroke-width="7" fill="none" opacity=".85"/><path d="M141 626 Q242 658 345 625" fill="none" stroke="${dc[2]}" stroke-width="8" opacity=".85"/></g>
-  <g data-part="arms"><path d="M187 380 Q149 394 137 473 Q133 491 149 500 Q163 500 166 482 L202 404 M280 395 Q323 405 335 478 Q337 497 325 504 Q311 505 304 481 L278 413" fill="url(#skin)" stroke="#d8aaa0" stroke-width="4"/></g>
-  <g data-part="neck"><rect x="219" y="344" width="45" height="64" rx="18" fill="url(#skin)"/></g>
-  <g data-part="dress-top"><path d="M204 380 Q219 402 240 415 Q258 404 279 380 L303 408 Q290 434 294 471 L188 471 Q194 433 179 409Z" fill="url(#dress)" stroke="${dc[1]}" stroke-width="5"/><path d="M188 395 Q169 397 167 421 Q186 447 206 422 M288 391 Q311 395 316 421 Q297 445 278 419" fill="${dc[2]}" stroke="${dc[1]}" stroke-width="4"/><path d="M209 399 Q239 436 274 398" fill="none" stroke="#fff2f9" stroke-width="7"/><ellipse cx="240" cy="452" rx="13" ry="10" fill="#fff5cc" stroke="${dc[1]}" stroke-width="3"/></g>
-  <g data-part="face"><path d="M158 240 Q153 185 218 173 Q279 164 317 213 Q331 274 303 330 Q268 370 242 370 Q199 364 174 327 Q151 291 158 240Z" fill="url(#skin)" stroke="#d4a298" stroke-width="4"/><ellipse cx="181" cy="309" rx="16" ry="8" fill="#ec93a0" opacity=".28"/><ellipse cx="299" cy="309" rx="16" ry="8" fill="#ec93a0" opacity=".28"/>${eyes}${mouth}</g>
-  <g data-part="hair-front">${fringe}<path d="M158 240 Q146 297 167 330 M315 239 Q328 295 309 330" fill="none" stroke="${hc[1]}" stroke-width="13" opacity=".8" stroke-linecap="round"/></g>
-  <g data-part="detail"><path d="M237 130 l8 13 15 2 -12 10 3 14 -14 -7 -14 7 4 -14 -12 -10 15 -2Z" fill="#fff0a9" opacity=".95"/></g>
-  </svg>`;
+ const STORE='webtoon.princessAssembly.v1'; // compatible with C4.5.34.0 saved assembly records
+ const defaults={name:'나의 꽃빛공주',hair:'long',dress:'pink',pose:'standing',expression:'happy'};
+ const choices={hair:[['long','🌸 긴 웨이브 머리'],['bob','🌷 단발머리']],dress:[['pink','💗 꽃빛 드레스'],['lavender','💜 라벤더 드레스']]};
+ const source={long:{sx:0,sy:0,sw:590,sh:540},bob:{sx:600,sy:0,sw:599,sh:450},pink:{sx:0,sy:530,sw:590,sh:782},lavender:{sx:600,sy:470,sw:599,sh:842}};
+ const W=600,H=1052,OFFSET=260,HEAD_Y=315;
+ let state={...defaults},recordId=null,ready=false,asset=null,loading=false;
+ const canvas=document.createElement('canvas');canvas.width=W*2;canvas.height=H*2;
+ canvas.setAttribute('role','img');canvas.setAttribute('aria-label','현재 조립된 꽃빛공주');
+ canvas.style.cssText='display:block;width:100%;height:auto;max-height:640px;object-fit:contain;';
+ const context=canvas.getContext('2d',{alpha:true});
+ const safeName=s=>String(s||'나의 꽃빛공주').replace(/[\\/:*?"<>|]/g,'_').slice(0,50);
+ function normalize(value){
+   const s={...defaults,...(value||{})};
+   s.hair=s.hair==='bob'?'bob':'long';
+   s.dress=s.dress==='lavender'||s.dressColor==='lavender'||s.dress==='a-line'?'lavender':'pink';
+   s.expression='happy';s.pose='standing';
+   return s;
  }
- const configs=()=>{try{const v=JSON.parse(localStorage.getItem(STORE)||'[]');return Array.isArray(v)?v:[]}catch{return []}};
- function saveConfigs(items){localStorage.setItem(STORE,JSON.stringify(items));}
- function render(){by('pmPreview').innerHTML=svgMarkup(state);by('pmName').value=state.name;for(const k of Object.keys(defs)){
-   const panel=by('pm_'+k);panel.replaceChildren();defs[k].forEach(([val,label])=>{const b=document.createElement('button');b.type='button';b.className='pm-choice'+(state[k]===val?' on':'');b.setAttribute('aria-pressed',state[k]===val?'true':'false');b.textContent=label;b.onclick=()=>{state[k]=val;render();};panel.appendChild(b)});
-  }by('pmMessage').textContent='서 있는 꽃빛공주 · '+defs.hair.find(x=>x[0]===state.hair)[1]+' · '+defs.dress.find(x=>x[0]===state.dress)[1];}
- function storeRender(){const list=by('pmSaved');list.replaceChildren();const items=configs();if(!items.length){list.textContent='아직 저장한 공주가 없어요.';return}items.slice().reverse().forEach(item=>{const wrap=document.createElement('div');wrap.className='pm-saved-item';const name=document.createElement('strong');name.textContent=item.name||'꽃빛공주';const open=document.createElement('button');open.type='button';open.textContent='불러오기';open.onclick=()=>{state={...defaults,...item.state};recordId=item.id;render();root.scrollIntoView({behavior:'smooth',block:'start'})};const del=document.createElement('button');del.type='button';del.textContent='삭제';del.onclick=()=>{if(!confirm('이 공주 저장본만 삭제할까요?'))return;saveConfigs(configs().filter(e=>e.id!==item.id));if(recordId===item.id)recordId=null;storeRender()};wrap.append(name,open,del);list.append(wrap)})}
- by('pmName').addEventListener('input',e=>{state.name=e.target.value.slice(0,35)});
- by('pmSave').onclick=()=>{state.name=by('pmName').value.trim()||'나의 꽃빛공주';const items=configs();if(!recordId)recordId='assembly-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);const obj={id:recordId,name:state.name,state:{...state},updated:Date.now(),schemaVersion:1};const idx=items.findIndex(x=>x.id===recordId);if(idx>=0)items[idx]=obj;else items.push(obj);try{saveConfigs(items);by('pmMessage').textContent='공주를 저장했어요. 아래 보관함에서 다시 열어 고칠 수 있어요.';storeRender()}catch(e){by('pmMessage').textContent='저장 공간이 부족해 저장하지 못했어요. 기기의 저장 공간을 확인해 주세요.'}};
- by('pmNew').onclick=()=>{state={...defaults};recordId=null;render()};
- by('pmExport').onclick=async()=>{try{const raw=svgMarkup(state);const blob=new Blob([raw],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob);const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=960;c.height=1460;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download=(state.name||'꽃빛공주').replace(/[\\/:*?"<>|]/g,'_')+'.png';a.click()};img.onerror=()=>{URL.revokeObjectURL(url);by('pmMessage').textContent='PNG 저장을 완료하지 못했어요.'};img.src=url}catch(e){by('pmMessage').textContent='이미지 저장 오류가 발생했어요.'}};
- render();storeRender();
+ function getRecords(){try{const a=JSON.parse(localStorage.getItem(STORE)||'[]');return Array.isArray(a)?a:[]}catch{return []}}
+ function writeRecords(a){localStorage.setItem(STORE,JSON.stringify(a))}
+ function message(s){const el=by('pmMessage');if(el)el.textContent=s}
+ function drawPart(c,kind,key){const a=source[key];if(!a)return;let y=kind==='hair'?HEAD_Y:(key==='lavender'?470:530);c.drawImage(asset,a.sx,a.sy,a.sw,a.sh,0,y,a.sw,a.sh)}
+ function paint(){
+   if(!ready)return;
+   context.setTransform(2,0,0,2,0,-OFFSET*2);
+   context.clearRect(0,OFFSET,W,H);
+   // Dress is drawn first; hair naturally overlaps the shoulders and neckline.
+   drawPart(context,'dress',state.dress);
+   drawPart(context,'hair',state.hair);
+   context.setTransform(1,0,0,1,0,0);
+ }
+ function refresh(){
+   by('pmName').value=state.name;
+   for(const kind of Object.keys(choices)){
+     const area=by('pm_'+kind);if(!area)continue;area.replaceChildren();
+     for(const [key,label] of choices[kind]){
+       const button=document.createElement('button');button.type='button';button.className='pm-choice'+(state[kind]===key?' on':'');
+       button.setAttribute('aria-pressed',state[kind]===key?'true':'false');button.textContent=label;
+       button.addEventListener('click',()=>{state[kind]=key;refresh();});area.appendChild(button);
+     }
+   }
+   paint();
+ }
+ function showRecords(){const holder=by('pmSaved');holder.replaceChildren();const rows=getRecords();if(!rows.length){holder.textContent='아직 저장한 공주가 없어요.';return}
+   rows.slice().reverse().forEach(row=>{
+     const wrap=document.createElement('div');wrap.className='pm-saved-item';
+     const text=document.createElement('strong');text.textContent=row.name||'꽃빛공주';
+     const open=document.createElement('button');open.type='button';open.textContent='다시 꾸미기';
+     open.addEventListener('click',()=>{state=normalize(row.state);recordId=row.id;refresh();root.scrollIntoView({behavior:'smooth',block:'start'});message('저장한 공주를 불러왔어요. 머리와 드레스를 다시 바꿀 수 있어요.')});
+     const del=document.createElement('button');del.type='button';del.textContent='삭제';
+     del.addEventListener('click',()=>{if(!confirm('이 조립식 공주 저장본만 삭제할까요? 기존 웹툰 작품은 그대로예요.'))return;try{writeRecords(getRecords().filter(x=>x.id!==row.id));if(recordId===row.id)recordId=null;showRecords()}catch(e){message('삭제 작업에 실패했어요.')}});
+     wrap.append(text,open,del);holder.append(wrap)
+   });
+ }
+ function loadArt(){if(loading||ready)return;loading=true;message('공주 원화를 불러오는 중이에요…');
+   const image=new Image();image.decoding='async';
+   image.onload=()=>{asset=image;ready=true;loading=false;refresh();message('머리와 드레스를 선택해 보세요. 고품질 원화 부품이 조립됩니다.')};
+   image.onerror=()=>{loading=false;message('공주 원화를 불러올 수 없어요. princess-hq-sheet.png가 GitHub에 함께 올라갔는지 확인해 주세요.')};
+   image.src='princess-hq-sheet.png?v=45350';
+ }
+ by('pmPreview').replaceChildren(canvas);
+ by('pmName').addEventListener('input',e=>state.name=e.target.value.slice(0,35));
+ by('pmSave').onclick=()=>{
+   state.name=by('pmName').value.trim()||'나의 꽃빛공주';
+   const rows=getRecords();if(!recordId)recordId='assembly-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
+   const data={id:recordId,name:state.name,state:{...state},updated:Date.now(),schemaVersion:2,artPack:'flower-hq-1'};
+   const i=rows.findIndex(r=>r.id===recordId);if(i>=0)rows[i]=data;else rows.push(data);
+   try{writeRecords(rows);showRecords();message('공주를 저장했어요. 이전 웹툰 작품은 변경되지 않았어요.')}catch(e){message('기기 저장 공간이 부족해 저장하지 못했어요.')}
+ };
+ by('pmNew').onclick=()=>{state={...defaults};recordId=null;refresh();message('새 꽃빛공주를 꾸며 보세요.')};
+ by('pmExport').onclick=()=>{if(!ready){message('공주 그림을 불러온 다음 PNG로 저장해 주세요.');return}try{
+     // Transparent background; artwork can be used as a separate element in a comic.
+     canvas.toBlob(blob=>{if(!blob){message('PNG 파일을 만들 수 없어요.');return}
+       const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=safeName(state.name)+'.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+       message('공주 그림을 PNG로 저장했어요. 배경은 투명하게 유지돼요.');
+     },'image/png');
+   }catch(e){message('PNG 저장에 실패했어요.')}
+ };
+ refresh();showRecords();loadArt();
 })();
