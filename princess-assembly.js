@@ -1,11 +1,11 @@
-/* C4.5.36.3 · integrated modular princess maker.
+/* C4.5.36.4 · integrated modular princess maker.
  * Uses independent PNG parts based on the approved flower-princess artwork.
  * Other drawing/webtoon features remain unchanged.
  */
 (()=>{'use strict';
  const root=document.getElementById('assemblyMaker'); if(!root) return;
  const by=id=>root.querySelector('#'+id);
- const W=480,H=840,VERSION='45363';
+ const W=480,H=840,VERSION='45364';
  const STORE='webtoon.princessAssembly.v2.records';
  const defaults={name:'나의 꽃빛공주',hair:'long',dress:'pink'};
  const files={face:'face-common.png',longBack:'hair-long-back.png',longFront:'hair-long-front.png',bobBack:'hair-bob-back.png',bobFront:'hair-bob-front.png',pink:'dress-pink.png',lavender:'dress-lavender.png'};
