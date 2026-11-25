@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#fbf3fa"><title>꽃빛공주 조립 검증 C4.5.36.2</title>
+<style>
+:root{font-family:system-ui,-apple-system,'Apple SD Gothic Neo',sans-serif;color:#493248;background:#fff8fd}*{box-sizing:border-box}body{margin:0;background:linear-gradient(#fff8fd,#f6edfa);min-height:100vh}main{max-width:1120px;margin:0 auto;padding:clamp(12px,3vw,28px)}.badge{color:#71377d;background:#f2def5;border-radius:16px;padding:6px 12px;font-weight:800;display:inline-block}h1{font-size:clamp(23px,4vw,34px);line-height:1.22;margin:15px 0 8px}.sub{line-height:1.6;color:#695b6a;margin:8px 0 17px}.frame{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.75fr);gap:14px}.card{background:rgba(255,255,255,.97);border:1.5px solid #efcee9;border-radius:20px;padding:14px}.stage{display:grid;place-items:center;background:#fff;border-radius:14px;min-height:320px;overflow:hidden}.stage canvas{width:100%;max-width:490px;max-height:73vh;height:auto;object-fit:contain}.panel h2{font-size:18px;margin:5px 0 9px}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 20px}.options button{width:100%;min-height:60px}.button,button{border:2px solid #e8cee6;border-radius:12px;padding:10px 12px;font:inherit;font-weight:750;background:#fff;color:#52355b;cursor:pointer}button[aria-pressed=true]{border-color:#a450bd;background:#f1d9f6}button:disabled{opacity:.5}.primary{background:#7946bb;color:#fff;border-color:#7946bb}#saveArt{width:100%;margin-top:8px;min-height:50px}.status{font-size:14px;color:#735573;min-height:25px;margin-top:8px;line-height:1.55}.explainer{padding:12px 14px;border-radius:14px;background:#fdf4e7;color:#6b5039;margin-top:16px;line-height:1.55;font-size:14px}.four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.four figure{margin:0;background:white;border:1px solid #edd1e8;border-radius:13px;padding:5px;text-align:center}.four canvas{width:100%;height:auto}.four figcaption{font-size:13px;font-weight:750;margin:4px 0 6px}.saved{display:grid;grid-template-columns:repeat(auto-fill,minmax(142px,1fr));gap:10px}.saved article{border:1px solid #e9d2e6;background:white;border-radius:14px;padding:8px;text-align:center}.saved canvas{height:140px;width:auto;max-width:100%}.saved strong{display:block;font-size:13px;overflow-wrap:anywhere}.saved button{margin:5px 2px 1px;font-size:12px;min-height:32px;padding:6px 8px}.formline{display:flex;gap:8px;flex-wrap:wrap}.formline input{flex:1;min-width:120px;border:1.5px solid #dfbee0;border-radius:12px;padding:10px;font:inherit}.explanation{font-size:14px;color:#705c76;margin:8px 0 16px}details{margin:12px 0;font-size:14px}summary{cursor:pointer;font-weight:700}.parts{display:flex;gap:5px;flex-wrap:wrap}.parts img{height:90px;width:auto;border:1px solid #e9dbe9;background:#fff}.warn{border:1px solid #f3d6a9;background:#fff8ec;border-radius:14px;padding:12px;font-size:14px;margin:15px 0}.block-heading{margin:25px 0 12px;font-size:20px}@media(max-width:680px){.frame{grid-template-columns:1fr}.stage canvas{max-height:65vh}.four{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding-top:14px}}
+</style></head>
+<body><main>
+<span class="badge">C4.5.36.2 · 독립 검증본</span><h1>🌷 꽃빛공주 — 조립 원화 다시 만들기</h1>
+<p class="sub">새로 선정한 그림을 기준으로 <b>같은 얼굴 한 장</b>과 <b>앞·뒷머리, 의상 색상</b>을 서로 독립된 PNG로 분리해 시험합니다.</p>
+<div class="frame"><section class="card"><div class="stage"><canvas id="preview" width="960" height="1680" aria-label="선택한 부품으로 조립한 꽃빛공주"></canvas></div><p class="status" role="status" id="status">원화 파일을 확인하는 중입니다.</p></section>
+<section class="card panel"><h2>① 머리카락</h2><div class="options"><button type="button" data-hair="long" aria-pressed="true">🌸 긴 웨이브</button><button type="button" data-hair="bob" aria-pressed="false">🌷 단발머리</button></div><h2>② 드레스</h2><div class="options"><button type="button" data-dress="pink" aria-pressed="true">💗 꽃빛 분홍</button><button type="button" data-dress="lavender" aria-pressed="false">💜 라벤더</button></div>
+<h2>③ 작품 이름</h2><div class="formline"><input type="text" id="name" value="나의 꽃빛공주" maxlength="32" aria-label="공주 이름"><button type="button" id="saveGallery" class="primary">💾 보관하기</button></div><button type="button" id="saveArt" class="primary">🖼️ 현재 조립 모습 PNG 저장</button><p class="explanation">현재 그림은 <b>뒷머리 → 드레스 → 공통 얼굴 → 앞머리</b> 순서로 실제 합성합니다. 저장한 공주는 아래 시험 보관함에 그림과 이름이 함께 나타납니다.</p>
+<details><summary>실제 사용 중인 부품 확인</summary><div id="parts" class="parts"></div></details></section></div>
+<div class="warn"><b>기존 웹툰 앱 보호:</b> 이번 시험판은 별도 HTML입니다. 기존 <code>index.html</code>, 그림 그리기, 웹툰, 작품 보관함을 수정하지 않습니다. 시험 보관함도 별도 키를 사용합니다. 아직 조립 품질을 검증하는 단계이며, 두 드레스는 우선 <b>같은 맞춤 실루엣의 분홍·라벤더 색상</b>으로 준비했습니다. 새로운 옷 형태는 목선 검증 후 추가할 예정입니다.</div>
+<h2 class="block-heading">네 가지 조합을 모두 확인</h2><div id="four" class="four" aria-label="4가지 조립 결과"></div>
+<h2 class="block-heading">💝 시험 공주 보관함</h2><div id="gallery" class="saved"></div>
+</main>
+<script>
+(()=>{'use strict';
+const W=480,H=840,VERSION='45362',by=id=>document.getElementById(id),state={hair:'long',dress:'pink'},imgs={};
+const files={face:'face-common.png',longBack:'hair-long-back.png',longFront:'hair-long-front.png',bobBack:'hair-bob-back.png',bobFront:'hair-bob-front.png',pink:'dress-pink.png',lavender:'dress-lavender.png'};
+const STORAGE='webtoon.princessModularLabV2.records';let ready=false;
+function paint(g,hair,dress){g.clearRect(0,0,g.canvas.width,g.canvas.height);g.save();g.scale(g.canvas.width/W,g.canvas.height/H);for(const k of [hair+'Back',dress,'face',hair+'Front'])if(imgs[k])g.drawImage(imgs[k],0,0,W,H);g.restore()}
+function setPressed(){document.querySelectorAll('[data-hair]').forEach(b=>b.setAttribute('aria-pressed',String(state.hair===b.dataset.hair)));document.querySelectorAll('[data-dress]').forEach(b=>b.setAttribute('aria-pressed',String(state.dress===b.dataset.dress)))}
+function update(){setPressed();if(ready)paint(by('preview').getContext('2d'),state.hair,state.dress)}
+function makeCanvas(hair,dress,w=240){const c=document.createElement('canvas');c.width=w;c.height=Math.round(w*H/W);paint(c.getContext('2d'),hair,dress);return c}
+function storeGet(){try{const a=JSON.parse(localStorage.getItem(STORAGE)||'[]');return Array.isArray(a)?a:[]}catch{return []}}
+function storeSet(a){localStorage.setItem(STORAGE,JSON.stringify(a))}
+function gallery(){const root=by('gallery');root.replaceChildren();const arr=storeGet();if(!arr.length){root.textContent='아직 저장한 공주가 없어요.';return}
+for(const row of arr.slice().reverse()){
+const item=document.createElement('article'),c=makeCanvas(row.hair,row.dress,140),title=document.createElement('strong'),load=document.createElement('button'),del=document.createElement('button');
+title.textContent=row.name||'꽃빛공주';load.textContent='다시 꾸미기';del.textContent='삭제';load.onclick=()=>{state.hair=row.hair;state.dress=row.dress;by('name').value=row.name;update();scrollTo({top:0,behavior:'smooth'})};del.onclick=()=>{if(confirm('시험 보관함에서 이 공주만 삭제할까요?')){storeSet(storeGet().filter(x=>x.id!==row.id));gallery()}};item.append(c,title,load,del);root.append(item)
+}}
+const needs=['face','longBack','longFront','bobBack','bobFront','pink','lavender'];
+const getImg=(file)=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>reject(Error(file));i.src=file+'?v='+VERSION});
+Promise.allSettled(Object.entries(files).map(async([key,file])=>[key,await getImg(file)])).then(out=>{const failures=[];out.forEach((r,i)=>{if(r.status==='fulfilled'){const [key,img]=r.value;imgs[key]=img}else failures.push(Object.values(files)[i])});
+ready=needs.every(k=>imgs[k]);if(!ready){by('status').textContent='불러오지 못한 파일: '+failures.join(', ');return}
+by('status').textContent='새 기준 그림의 독립 부품 7개를 읽었습니다. 머리와 드레스를 변경해 보세요.';update();
+const cases=[['long','pink','긴머리 · 꽃빛'],['long','lavender','긴머리 · 라벤더'],['bob','pink','단발 · 꽃빛'],['bob','lavender','단발 · 라벤더']];
+const wrap=by('four');cases.forEach(([hair,dress,label])=>{const fig=document.createElement('figure'),c=makeCanvas(hair,dress,220),cap=document.createElement('figcaption');cap.textContent=label;fig.append(c,cap);wrap.append(fig)});
+const parts=by('parts');Object.entries(files).forEach(([k,file])=>{const image=document.createElement('img');image.src=file+'?v='+VERSION;image.alt=k;image.title=k;parts.append(image)});gallery();
+});
+document.querySelectorAll('[data-hair]').forEach(b=>b.onclick=()=>{state.hair=b.dataset.hair;update()});
+document.querySelectorAll('[data-dress]').forEach(b=>b.onclick=()=>{state.dress=b.dataset.dress;update()});
+by('saveGallery').onclick=()=>{if(!ready)return;const name=by('name').value.trim()||'나의 꽃빛공주';try{const a=storeGet();a.push({id:Date.now()+'-'+Math.random().toString(36).slice(2),name,hair:state.hair,dress:state.dress});storeSet(a);gallery();by('status').textContent='시험 공주 보관함에 저장했습니다. 기존 앱 보관함은 변경하지 않습니다.'}catch(e){by('status').textContent='저장 공간 부족 또는 저장 제한으로 보관하지 못했어요.'}};
+by('saveArt').onclick=()=>{if(!ready)return;const c=makeCanvas(state.hair,state.dress,960);c.toBlob(blob=>{if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(by('name').value.trim()||'꽃빛공주').replace(/[\\/:*?"<>|]/g,'_')+'.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),20000)},'image/png')};
+})();
+</script></body></html>
