@@ -1,28 +1,28 @@
-/* C4.5.36.4 · integrated modular princess maker.
+/* C4.5.36.5 · integrated modular princess maker.
  * Uses independent PNG parts based on the approved flower-princess artwork.
  * Other drawing/webtoon features remain unchanged.
  */
 (()=>{'use strict';
  const root=document.getElementById('assemblyMaker'); if(!root) return;
  const by=id=>root.querySelector('#'+id);
- const W=480,H=840,VERSION='45364';
+ const W=480,H=900,ART_H=840,ART_TOP=18,VERSION='45365';
  const STORE='webtoon.princessAssembly.v2.records';
  const defaults={name:'나의 꽃빛공주',hair:'long',dress:'pink'};
- const files={face:'face-common.png',longBack:'hair-long-back.png',longFront:'hair-long-front.png',bobBack:'hair-bob-back.png',bobFront:'hair-bob-front.png',pink:'dress-pink.png',lavender:'dress-lavender.png'};
- const choices={hair:[['long','🌸 긴 웨이브 머리'],['bob','🌷 단발머리']],dress:[['pink','💗 꽃빛 드레스'],['lavender','💜 라벤더 드레스']]};
+ const files={face:'face-common.png',longBack:'hair-long-back.png',longFront:'hair-long-front.png',bobBack:'hair-bob-back.png',bobFront:'hair-bob-front.png',pink:'dress-pink.png',lavender:'dress-lavender.png',halfBack:'hair-half-back.png',halfFront:'hair-half-front.png',twinBack:'hair-twin-back.png',twinFront:'hair-twin-front.png',sky:'dress-sky.png',short:'dress-short.png'};
+ const choices={hair:[['long','🌸 긴 웨이브 머리'],['bob','🌷 단발머리'],['half','🎀 반묶음 머리'],['twin','💐 양갈래 머리']],dress:[['pink','💗 꽃빛 드레스'],['lavender','💜 라벤더 드레스'],['sky','🩵 하늘빛 드레스'],['short','🌼 발랄한 짧은 드레스']]};
  const imgs={};
  let ready=false, recordId=null, state={...defaults};
  
  const previewWrap=by('pmPreview');
  const canvas=document.createElement('canvas');
- canvas.width=960; canvas.height=1680; canvas.setAttribute('role','img'); canvas.setAttribute('aria-label','현재 꾸미는 꽃빛공주');
+ canvas.width=960; canvas.height=1800; canvas.setAttribute('role','img'); canvas.setAttribute('aria-label','현재 꾸미는 꽃빛공주');
  previewWrap.replaceChildren(canvas);
  const g=canvas.getContext('2d');
  
  function normalize(v){
    const s={...defaults,...(v||{})};
-   s.hair=s.hair==='bob'?'bob':'long';
-   s.dress=s.dress==='lavender'?'lavender':'pink';
+   s.hair=['long','bob','half','twin'].includes(s.hair)?s.hair:'long';
+   s.dress=['pink','lavender','sky','short'].includes(s.dress)?s.dress:'pink';
    s.name=(s.name||'나의 꽃빛공주').toString().slice(0,35);
    return s;
  }
@@ -32,7 +32,7 @@
  function paint(ctx,v){
    const s=normalize(v); ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height); ctx.save();
    ctx.scale(ctx.canvas.width/W, ctx.canvas.height/H);
-   comboParts(s).forEach(k=>{ if(imgs[k]) ctx.drawImage(imgs[k],0,0,W,H); });
+   comboParts(s).forEach(k=>{ if(imgs[k]) ctx.drawImage(imgs[k],0,ART_TOP,W,ART_H); });
    ctx.restore();
  }
  function updateButtons(){
@@ -79,7 +79,7 @@
      const failed=[]; results.forEach((r,i)=>{ if(r.status==='fulfilled'){ const [key,img]=r.value; imgs[key]=img; } else failed.push(Object.values(files)[i]); });
      ready=Object.keys(files).every(k=>imgs[k]);
      if(!ready){ message('공주 그림 파일을 불러오지 못했어요. 실패한 파일: '+failed.join(', ')); return; }
-     render(); refreshGallery(); message('꽃빛공주 독립 부품 7개를 읽었어요. 머리와 드레스를 바꿔 보세요.');
+     render(); refreshGallery(); message('꽃빛공주 머리 4종과 의상 4종을 준비했어요. 신발이 잘리지 않도록 여백도 확보했어요.');
    });
  }
  by('pmName').addEventListener('input', e=>{ state.name=e.target.value.slice(0,35); });
@@ -87,14 +87,14 @@
    if(!ready){ message('공주 그림이 준비된 뒤 저장해 주세요.'); return; }
    state.name=by('pmName').value.trim() || '나의 꽃빛공주';
    const rows=records(); if(!recordId) recordId='assembly-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
-   const data={id:recordId, name:state.name, state:normalize(state), updated:Date.now(), schemaVersion:4, artPack:'flower-modular-v2'};
+   const data={id:recordId, name:state.name, state:normalize(state), updated:Date.now(), schemaVersion:5, artPack:'flower-modular-v3'};
    const idx=rows.findIndex(r=>r.id===recordId); if(idx>=0) rows[idx]=data; else rows.push(data);
    try{ writeRecords(rows); refreshGallery(); message('공주를 저장했어요. 기존 웹툰 작품은 바뀌지 않았어요.'); }catch{ message('기기 저장 공간이 부족해 저장하지 못했어요.'); }
  };
  by('pmNew').onclick=()=>{ state={...defaults}; recordId=null; render(); message('새 꽃빛공주를 꾸며 보세요.'); };
  by('pmExport').onclick=()=>{
    if(!ready){ message('공주 그림이 준비된 뒤 PNG로 저장해 주세요.'); return; }
-   const out=document.createElement('canvas'); out.width=960; out.height=1680; paint(out.getContext('2d'), state);
+   const out=document.createElement('canvas'); out.width=960; out.height=1800; paint(out.getContext('2d'), state);
    out.toBlob(blob=>{ if(!blob){ message('PNG 파일을 만들 수 없어요.'); return; } const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=safeName(state.name||'꽃빛공주')+'.png'; document.body.append(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),60000); message('공주 그림을 PNG로 저장했어요.'); }, 'image/png');
  };
  render(); refreshGallery(); loadAssets();

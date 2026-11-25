@@ -659,7 +659,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.36.4 · 조립식 꽃빛공주 실제 반영</span>
+    <span class="pill">MASTER C4.5.36.5 · 조립식 꽃빛공주 실제 반영</span>
   </header>
 
   <nav class="tabs">
@@ -672,13 +672,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <p id="webtoonLoadingNotice" role="status" aria-live="polite" hidden style="margin:10px 0;padding:10px 14px;background:#fff2d9;border-radius:12px;color:#60472b;font-weight:700"></p>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.36.4)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.36.4 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.36.5)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.36.5 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
     </div>
-    <p class="hint" style="margin-top:7px">새 버전을 GitHub에 게시할 때 기존 GitHub 저장소의 그림·스크립트 파일을 절대로 삭제하지 마세요. 새 ZIP의 <b>파일 16개 전체</b>를 기존 파일이 있는 같은 위치에 게시하고, 기존 <b>rose-style-assets.js, fixed-princess.js, 기존 그림 파일들</b>은 그대로 남겨 두어야 합니다. 새 조립 부품 <b>PNG 7개</b>도 함께 올려 주세요. 앱을 새로 열면 업데이트를 확인합니다. 사용 중에 새 버전이 발견되면 버튼을 눌러 이동할 수 있어요. 작품 저장공간은 초기화하지 않습니다.</p>
+    <p class="hint" style="margin-top:7px">새 버전을 GitHub에 게시할 때 기존 GitHub 저장소의 그림·스크립트 파일을 절대로 삭제하지 마세요. 새 ZIP의 <b>파일 22개 전체</b>를 기존 파일이 있는 같은 위치에 게시하고, 기존 <b>rose-style-assets.js, fixed-princess.js, 기존 그림 파일들</b>은 그대로 남겨 두어야 합니다. 새 조립 부품 <b>PNG 13개</b>도 함께 올려 주세요. 앱을 새로 열면 업데이트를 확인합니다. 사용 중에 새 버전이 발견되면 버튼을 눌러 이동할 수 있어요. 작품 저장공간은 초기화하지 않습니다.</p>
   </details>
 
 
@@ -686,7 +686,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   <section id="studio" class="view active">
   <section class="card pm-maker" id="assemblyMaker" aria-label="고품질 조립식 공주 만들기">
     <h2>🌷 고품질 조립식 공주 만들기</h2>
-    <p class="sub">검증을 통과한 꽃빛공주 부품 7개를 사용해 <b>머리와 드레스를 실제로 조립</b>해요. 기존 그림 그리기와 웹툰 기능은 그대로 유지합니다.</p>
+    <p class="sub">검증을 통과한 꽃빛공주 부품 13개를 사용해 <b>머리 4종과 드레스 4종을 실제로 조립</b>해요. 기존 그림 그리기와 웹툰 기능은 그대로 유지합니다.</p>
     <div class="pm-layout">
       <div class="pm-preview-panel">
         <div id="pmPreview" class="pm-preview" aria-live="polite"></div>
@@ -695,14 +695,14 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <div class="pm-actions"><button id="pmSave" type="button" class="primary">💾 공주 저장</button><button id="pmNew" type="button">🌱 새 공주</button><button id="pmExport" type="button">🖼 PNG 저장</button></div>
       </div>
       <div class="pm-controls">
-        <div class="pm-group"><strong>💇 머리 모양 · 고품질 원화 2종</strong><div class="pm-choices" id="pm_hair"></div></div>
-        <div class="pm-group"><strong>👗 드레스 · 고품질 원화 2종</strong><div class="pm-choices" id="pm_dress"></div></div>
+        <div class="pm-group"><strong>💇 머리 모양 · 고품질 원화 4종</strong><div class="pm-choices" id="pm_hair"></div></div>
+        <div class="pm-group"><strong>👗 드레스 · 고품질 원화 4종</strong><div class="pm-choices" id="pm_dress"></div></div>
         <details class="pm-group"><summary><strong style="display:inline">😊 표정 · 기본 미소</strong></summary><p class="hint">얼굴이 달라지지 않도록 이번에는 고품질 기본 미소만 사용합니다. 놀람·생각하는 표정은 같은 얼굴로 보이는 별도 원화를 준비한 뒤 추가합니다.</p></details>
-        <details class="pm-group"><summary><strong style="display:inline">🎨 색상과 자세</strong></summary><p class="hint">드레스 색상은 분홍/연보라 원화 선택에 포함됩니다. 머리색과 다른 자세는 새 그림 원화가 준비되면 추가합니다.</p></details>
+        <details class="pm-group"><summary><strong style="display:inline">🎨 색상과 자세</strong></summary><p class="hint">분홍·라벤더·하늘빛·짧은 드레스 4종을 사용할 수 있어요. 머리색·자세 변경은 후속 작업입니다.</p></details>
       </div>
     </div>
     <details class="pm-saved" open><summary>💝 새 조립식 공주 보관함</summary><div id="pmSaved"></div></details>
-    <p class="hint"><b>현재 반영 범위:</b> 머리 2종 × 드레스 2종을 자유롭게 교체하고 저장할 수 있습니다. 얼굴은 하나로 고정되며 머리카락과 드레스는 독립된 PNG 부품으로 합성합니다. 자세와 다른 표정은 후속 개발 범위입니다.</p>
+    <p class="hint"><b>현재 반영 범위:</b> 머리 4종 × 드레스 4종을 자유롭게 교체하고 저장할 수 있습니다. 얼굴은 하나로 고정되며 머리카락과 드레스는 독립된 PNG 부품으로 합성합니다. 현재 16가지 조합을 지원하며 자세와 다른 표정은 후속 개발 범위입니다.</p>
   </section>
   <div class="card fp-workshop" id="fixedPrincessWorkshop">
     <h2>🌷 꽃빛공주 꾸미기 — 머리·드레스·신발 스타일</h2>
@@ -1422,7 +1422,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.36.4 · 조립식 꽃빛공주 실제 반영</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.36.5 · 조립식 꽃빛공주 실제 반영</div>
 </div>
 <div id="toast"></div>
 
@@ -1432,6 +1432,6 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <script defer src="app-core.js?v=45331"></script>
 <script defer src="drawing-workshop.js?v=45331"></script>
 <script defer src="fixed-princess.js?v=4522"></script>
-<script defer src="princess-assembly.js?v=45364"></script>
+<script defer src="princess-assembly.js?v=45365"></script>
 </body>
 </html>
