@@ -1,4 +1,4 @@
-/* C4.5.35.3 · high-quality modular princess prototype.
+/* C4.5.35.4 · high-quality modular princess prototype.
  * Independent of app-core.js, drawing-workshop.js, and existing storage.
  * Layered sprite parts: hairstyle and dress rendered separately, without repainting other features.
  */
@@ -10,7 +10,7 @@
  const choices={hair:[['long','🌸 긴 웨이브 머리'],['bob','🌷 단발머리']],dress:[['pink','💗 꽃빛 드레스'],['lavender','💜 라벤더 드레스']]};
  const source={long:{sx:0,sy:0,sw:590,sh:540},bob:{sx:600,sy:0,sw:599,sh:450},pink:{sx:0,sy:530,sw:590,sh:782},lavender:{sx:600,sy:470,sw:599,sh:842}};
  const W=600,H=1052,OFFSET=260,HEAD_Y=315;
- let state={...defaults},recordId=null,ready=false,asset=null,loading=false;
+ let state={...defaults},recordId=null,ready=false,asset=null,sharedFace=null,loading=false;
  const canvas=document.createElement('canvas');canvas.width=W*2;canvas.height=H*2;
  canvas.setAttribute('role','img');canvas.setAttribute('aria-label','현재 조립된 꽃빛공주');
  canvas.style.cssText='display:block;width:100%;height:auto;max-height:640px;object-fit:contain;';
@@ -34,6 +34,9 @@
    // Dress is drawn first; hair naturally overlaps the shoulders and neckline.
    drawPart(context,'dress',state.dress);
    drawPart(context,'hair',state.hair);
+   // Canonical face and neck are one shared immutable part for every hair selection.
+   // Its position, rotation, size and facial features never change with hairstyles.
+   if(sharedFace)context.drawImage(sharedFace,200,HEAD_Y+100,190,232);
    context.setTransform(1,0,0,1,0,0);
  }
  function refresh(){
@@ -60,10 +63,10 @@
    });
  }
  function loadArt(){if(loading||ready)return;loading=true;message('공주 원화를 불러오는 중이에요…');
-   const image=new Image();image.decoding='async';
-   image.onload=()=>{asset=image;ready=true;loading=false;refresh();message('머리와 드레스를 선택해 보세요. 고품질 원화 부품이 조립됩니다.')};
-   image.onerror=()=>{loading=false;message('공주 원화를 불러올 수 없어요. princess-hq-sheet.png가 GitHub에 함께 올라갔는지 확인해 주세요.')};
-   image.src='princess-hq-sheet.png?v=45353';
+   const load=(src)=>new Promise((ok,fail)=>{const im=new Image();im.decoding='async';im.onload=()=>ok(im);im.onerror=()=>fail(new Error(src));im.src=src});
+   Promise.all([load('princess-hq-sheet.png?v=45354'),load('princess-shared-face.png?v=45354')])
+     .then(([sheet,face])=>{asset=sheet;sharedFace=face;ready=true;loading=false;refresh();message('머리 모양을 바꿔도 얼굴과 고개 위치는 그대로 유지돼요.')})
+     .catch(e=>{loading=false;message('공주 원화를 불러올 수 없어요. 공주 그림 파일 2개가 함께 업로드되었는지 확인해 주세요.')});
  }
  by('pmPreview').replaceChildren(canvas);
  by('pmName').addEventListener('input',e=>state.name=e.target.value.slice(0,35));
