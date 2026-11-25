@@ -1,4 +1,4 @@
-/* C4.5.35.5 · high-quality modular princess prototype.
+/* C4.5.35.7 · high-quality modular princess prototype.
  * Independent of app-core.js, drawing-workshop.js, and existing storage.
  * Layered sprite parts: hairstyle and dress rendered separately, without repainting other features.
  */
@@ -26,7 +26,7 @@
  function getRecords(){try{const a=JSON.parse(localStorage.getItem(STORE)||'[]');return Array.isArray(a)?a:[]}catch{return []}}
  function writeRecords(a){localStorage.setItem(STORE,JSON.stringify(a))}
  function message(s){const el=by('pmMessage');if(el)el.textContent=s}
- function drawPart(c,kind,key){const a=source[key];if(!a)return;let y=kind==='hair'?HEAD_Y:(key==='lavender'?470:530);c.drawImage(asset,a.sx,a.sy,a.sw,a.sh,0,y,a.sw,a.sh)}
+ function drawPart(c,kind,key){const a=source[key];if(!a)return;let y=kind==='hair'?HEAD_Y:(key==='lavender'?470:530);c.drawImage(asset,a.sx,a.sy,a.sw,a.sh,kind==='dress'&&key==='lavender'?9:0,y,a.sw,a.sh)}
  function paint(){
    if(!ready)return;
    context.setTransform(2,0,0,2,0,-OFFSET*2);
@@ -47,7 +47,7 @@
    const st=normalize(value);
    g.setTransform(.25,0,0,.25,0,-OFFSET*.25);
    const dress=source[st.dress],hair=source[st.hair];
-   g.drawImage(asset,dress.sx,dress.sy,dress.sw,dress.sh,0,st.dress==='lavender'?470:530,dress.sw,dress.sh);
+   g.drawImage(asset,dress.sx,dress.sy,dress.sw,dress.sh,st.dress==='lavender'?9:0,st.dress==='lavender'?470:530,dress.sw,dress.sh);
    g.drawImage(asset,hair.sx,hair.sy,hair.sw,hair.sh,0,HEAD_Y,hair.sw,hair.sh);
    if(sharedFace)g.drawImage(sharedFace,200,HEAD_Y+105,190,180);
    return sc.toDataURL('image/png');
@@ -97,7 +97,7 @@
  }
  function loadArt(){if(loading||ready)return;loading=true;message('공주 원화를 불러오는 중이에요…');
    const load=(src)=>new Promise((ok,fail)=>{const im=new Image();im.decoding='async';im.onload=()=>ok(im);im.onerror=()=>fail(new Error(src));im.src=src});
-   Promise.all([load('princess-hq-sheet.png?v=45355'),load('princess-shared-face.png?v=45355')])
+   Promise.all([load('princess-hq-sheet.png?v=45357'),load('princess-shared-face.png?v=45357')])
      .then(([sheet,face])=>{asset=sheet;sharedFace=face;ready=true;loading=false;refresh();showRecords();message('머리 모양을 바꿔도 얼굴과 고개 위치는 그대로 유지돼요.')})
      .catch(e=>{loading=false;message('공주 원화를 불러올 수 없어요. 공주 그림 파일 2개가 함께 업로드되었는지 확인해 주세요.')});
  }
