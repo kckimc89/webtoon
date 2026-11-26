@@ -1,0 +1,114 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#fbf0fb"><title>마법의 공주 꾸미기 · 독립 실험실 2.0</title><style>
+:root{font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',system-ui,sans-serif;color:#4a3452;background:#fbf5fd}*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#fff8fc,#f4ecff);min-height:100vh}button,input,select{font:inherit}button{cursor:pointer;touch-action:manipulation}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #9e69dc;outline-offset:2px}header{max-width:1160px;margin:auto;padding:21px 16px 5px}h1{font-size:clamp(24px,4vw,34px);margin:0 0 8px;line-height:1.25}header p{color:#76637d;line-height:1.6;margin:3px 0 10px}.pill{display:inline-block;color:#713aa0;background:#f1e2fa;border-radius:30px;padding:5px 12px;font-size:12px;font-weight:800;margin-bottom:9px}.layout{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(290px,.85fr);gap:15px;padding:8px 16px 35px}.card{background:rgba(255,255,255,.94);border:1px solid #edd7ed;border-radius:21px;box-shadow:0 8px 30px #8f639b10;padding:14px}.art-panel{min-width:0}.stage{position:relative;width:100%;overflow:hidden;border-radius:17px;background:#fff;isolation:isolate;display:grid;place-items:center;min-height:440px}.stage canvas{display:block;max-width:100%;max-height:min(69vh,740px);height:auto;width:auto;aspect-ratio:720 / 840}.glow{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0;background:radial-gradient(ellipse at 50% 42%,var(--glow,#ffc0e7) 0%,transparent 63%);transition:opacity .3s;z-index:1}.stage.illuminated .glow{opacity:.27}.stage.flash .glow{animation:blaze .86s ease-out}@keyframes blaze{0%{opacity:.03;transform:scale(.5)}30%{opacity:.85}100%{opacity:.28;transform:scale(1.4)}}.sparkles{pointer-events:none;position:absolute;inset:0;z-index:2}.sparkles span{position:absolute;display:block;color:var(--spark,#f5caed);text-shadow:0 0 9px #fff,0 0 13px currentColor;font-size:var(--sz,18px);animation:twinkle calc(1.7s + var(--delay,0s)) ease-in-out infinite alternate;opacity:.8}@keyframes twinkle{to{opacity:.3;transform:scale(.58) translateY(6px)}}.bar{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:10px}.action{border:1px solid #e2cde9;border-radius:11px;background:white;color:#5c406b;min-height:43px;padding:9px 12px;font-weight:750}.action.primary{background:#7646b4;border-color:#7646b4;color:white}.action.soft{background:#fff0f7}.status{min-height:35px;text-align:center;font-size:13px;color:#805f82;line-height:1.5;padding:5px 0}.panel h2{font-size:17px;margin:5px 0 11px}.panel section+section{margin-top:17px;border-top:1px dashed #e7d5eb;padding-top:16px}.hero-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.hero{display:flex;flex-direction:column;gap:4px;align-items:center;border:2px solid #f0e5f1;border-radius:12px;background:#fff;padding:6px 2px;min-width:0;color:#5a4364;font-size:11px;font-weight:750}.hero.on{border-color:#965ec0;background:#f9edff}.hero img{height:83px;width:100%;object-fit:contain}.lights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.light{border:2px solid #e8ddea;background:white;border-radius:12px;padding:10px 4px;font-weight:800;font-size:13px;min-height:52px;color:#5b465f}.light.on{border-color:#8850bb;background:#f3e7ff}.swatch{display:inline-block;width:18px;height:18px;border-radius:50%;box-shadow:0 0 0 2px #fff,0 0 0 3px #eadfed;margin-right:4px;vertical-align:middle}.line{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0;color:#66536d;font-size:14px}.line select{padding:7px 8px;min-width:130px;max-width:60%;border:1px solid #d8c6e1;background:#fff;border-radius:10px}.line input[type=range]{width:56%;accent-color:#9b67c8}.effect-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.effect-row button{border:1px solid #e6d2e6;border-radius:10px;padding:9px 4px;background:#fff;color:#604a64;font-weight:750;font-size:12px}.effect-row button.on{background:#f1e5ff;border:2px solid #925bc5}.hint{color:#89768e;font-size:12px;line-height:1.55;margin:10px 0}.caption{font-size:14px;color:#735d7d;font-weight:750;text-align:center;padding-top:3px}.gallery{max-width:1160px;margin:0 auto 30px;padding:0 16px 20px}.gallery .card{padding:18px}.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}.saved{background:#fff;border:1px solid #ebd7e9;border-radius:14px;text-align:center;padding:9px;display:grid;gap:6px}.saved img{max-height:180px;width:100%;object-fit:contain}.saved strong{font-size:13px;overflow-wrap:anywhere}.saved .row{display:flex;gap:5px;justify-content:center}.saved button{font-size:12px;border:1px solid #ddd0e4;padding:7px;border-radius:8px;background:#fff;color:#62436e}.note{max-width:1160px;padding:0 16px 35px;margin:auto;color:#796581;font-size:13px;line-height:1.6}.note strong{color:#5a3768}@media(max-width:760px){.layout{grid-template-columns:1fr}.stage{min-height:330px}.stage canvas{max-height:58vh}.hero-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.hero img{height:72px}.card{padding:11px}}@media(max-width:390px){.hero-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero img{height:65px}}@media(prefers-reduced-motion:reduce){.sparkles span,.stage.flash .glow{animation:none}}
+</style></head><body>
+<header><span class="pill">기존 앱과 분리된 독립 시험판 · MAGIC LAB 2.0</span><h1>🪄 마법의 공주 꾸미기</h1><p>기존 웹툰 창작극장의 공주를 고르고, 마법봉으로 빛을 비춰 보세요. <strong>원래 얼굴과 머리 모양은 유지</strong>하고, 공주 전체에 부드러운 빛을 비춥니다. 피부색은 최대한 보호합니다.</p></header>
+<main class="layout"><div class="card art-panel"><div class="stage" id="stage"><canvas id="art" width="720" height="840" aria-label="마법으로 꾸민 공주 미리보기"></canvas><div id="glow" class="glow"></div><div id="sparkles" class="sparkles" aria-hidden="true"></div></div><div class="caption" id="currentName">공주 그림을 준비하는 중…</div><div class="bar"><button type="button" class="action soft" id="compare">👀 원본 잠깐 보기</button><button type="button" class="action" id="reset">↩ 원래대로</button><button type="button" class="action primary" id="download">🖼 PNG 저장</button></div><p class="status" id="status" role="status">기존 공주 그림을 확인하고 있습니다.</p></div>
+<div class="card panel"><section><h2>① 👸 공주 고르기</h2><div class="hero-grid" id="heroes"></div><p class="hint">기존 웹툰 창작극장의 공주 원화 7종을 그대로 사용합니다. 선택하면 원본을 보존한 채 빛 효과를 바꿉니다.</p></section><section><h2>② 🌈 마법의 빛 비추기</h2><div class="lights" id="lights"></div><div class="line"><label for="mix">두 번째 빛 섞기</label><select id="mix"><option value="none">섞지 않기</option></select></div><div class="line"><label for="strength">마법빛 세기 <output id="strengthValue">45%</output></label><input type="range" min="0" max="100" step="5" value="45" id="strength"></div><div class="line"><label for="skin">피부색 보호 <output id="skinValue">90%</output></label><input type="range" min="0" max="100" step="5" value="90" id="skin"></div><button type="button" class="action primary" id="magic" style="width:100%">🪄 공주에게 마법 걸기!</button><p class="hint">옷 영역을 따로 오리지 않고 전체에 빛을 입힙니다. 피부색과 비슷한 색은 자동으로 반응을 줄입니다. 색이 비슷한 드레스도 함께 보호될 수 있어요.</p></section><section><h2>③ ✨ 반짝임 마법</h2><div class="effect-row" id="effects"><button type="button" data-effect="none" class="on">없음</button><button type="button" data-effect="star">⭐ 별빛</button><button type="button" data-effect="flower">🌸 꽃잎</button><button type="button" data-effect="snow">❄️ 눈꽃</button><button type="button" data-effect="moon">🌙 달빛</button><button type="button" data-effect="rainbow">🌈 무지개</button></div><div class="bar"><input id="artName" aria-label="공주 이름" maxlength="36" placeholder="공주 이름" style="border:1px solid #ddcee4;padding:11px;border-radius:10px;min-width:120px;flex:1"><button id="save" type="button" class="action primary">💝 꾸민 공주 보관하기</button></div></section></div></main>
+<section class="gallery"><div class="card"><h2 style="font-size:19px;margin:2px 0 13px">💝 마법 공주 보관함</h2><div id="gallery" class="gallery-grid"></div></div></section>
+<div class="note"><strong>안전한 독립 시험판:</strong> 이 폴더의 <code>magic-princess-light-v2.html</code>을 열어 사용합니다. 기존 <code>index.html</code>이나 웹툰 그림 그리기·작품 보관함은 변경하지 않습니다. 꾸민 공주 설정은 이 실험실 전용 저장 공간에만 저장합니다. 이 버전은 <b>전체 빛 + 피부색 보호</b>를 시험합니다. 피부색에 가까운 의상 색도 함께 보호될 수 있으므로 결과를 비교해 주세요.</div>
+<script>
+(()=>{'use strict';
+const W=720,H=840, BASE='./', STORAGE='webtoon.magicPrincessLab.v2';
+const princesses=[
+ ['princess_flower','🌸 꽃 공주'],['princess_moon','🌙 달빛 공주'],['princess_fairy','🧚 반짝이 요정'],['princess_strawberry','🍓 딸기 공주'],['princess_emerald','🌿 에메랄드 공주'],['princess_starlight','⭐ 별빛 요정'],['princess_pearl','🐚 진주 공주']
+];
+const lights=[['none','원래 색','#eee7e8',null],['pink','분홍빛','#ff9fc8',.935],['violet','보랏빛','#bd92f1',.765],['sky','하늘빛','#78cffb',.54],['mint','민트빛','#6fdcbd',.45],['gold','황금빛','#f6ca70',.12],['peach','복숭아빛','#fba98d',.032],['rainbow','무지개빛','#d9aaf8',.83]];
+const effectSymbols={star:'✦',flower:'✿',snow:'❄',moon:'✧',rainbow:'✦'};
+const $=id=>document.getElementById(id), state={hero:'princess_flower',light:'none',mix:'none',strength:45,skin:90,effect:'none'}, imgs={}, originals={};
+let ready=false, compare=false, activeSaveId=null;let paintTicket=0;
+function msg(s){$('status').textContent=s}
+function smoothstep(a,b,x){const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t)}
+function rgbToHsv(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;let h=0;if(d){if(max===r)h=((g-b)/d)%6;else if(max===g)h=(b-r)/d+2;else h=(r-g)/d+4;h/=6;if(h<0)h+=1;}return [h,max===0?0:d/max,max]}
+function hsvToRgb(h,s,v){const q=h*6,i=Math.floor(q),f=q-i,p=v*(1-s),t=v*(1-s*f),u=v*(1-s*(1-f));let a;if(i%6===0)a=[v,t,p];else if(i%6===1)a=[u,v,p];else if(i%6===2)a=[p,v,t];else if(i%6===3)a=[p,u,v];else if(i%6===4)a=[t,p,v];else a=[v,p,u];return a.map(n=>Math.round(n*255))}
+function targetHue(){const a=lights.find(x=>x[0]===state.light)?.[3];const b=lights.find(x=>x[0]===state.mix)?.[3];if(a==null)return null;if(b==null)return a;const x=Math.cos(a*Math.PI*2)+Math.cos(b*Math.PI*2),y=Math.sin(a*Math.PI*2)+Math.sin(b*Math.PI*2);return (Math.atan2(y,x)/(2*Math.PI)+1)%1}
+// No hard-edged garment masks. A continuous light field affects the entire artwork,
+// attenuated smoothly by pixel skin-colour probability (not by a geometric selection).
+function skinLikelihood(h,s,v){
+ const warmHue=Math.min(Math.abs(h-.073),1-Math.abs(h-.073));
+ const hueWeight=1-smoothstep(.055,.15,warmHue);
+ const satWeight=smoothstep(.065,.16,s)*(1-smoothstep(.44,.78,s));
+ const brightWeight=smoothstep(.42,.75,v);
+ return Math.max(0,Math.min(1,hueWeight*satWeight*brightWeight));
+}
+function lightRGB(dst,src,hue,strength,skinProtection){
+ if(hue==null||strength<=0)return;
+ const a=dst.data,b=src.data;
+ const scale=strength/100,guard=skinProtection/100;
+ for(let i=0;i<a.length;i+=4){
+   if(b[i+3]<2)continue;
+   const [h,s,v]=rgbToHsv(b[i],b[i+1],b[i+2]);
+   const protection=skinLikelihood(h,s,v)*guard;
+   const response=scale*(1-.93*protection);
+   // Preserve fine linework: saturation and brightness shift smoothly.
+   const chromaResponse=smoothstep(.045,.24,s);
+   const w=response*(.18+.68*chromaResponse);
+   let localHue=hue;
+   if(state.light==='rainbow'){
+      const px=(i/4)%src.width, py=Math.floor(i/4/src.width);
+      localHue=(.85+px/src.width*.42+py/src.height*.14)%1;
+   }
+   const delta=((localHue-h+1.5)%1)-.5;
+   const newH=(h+delta*w+1)%1;
+   const newS=Math.min(.92,Math.max(0,s+response*(.10+.065*chromaResponse)*(1-s)));
+   const newV=Math.min(1,v+(1-v)*response*.085);
+   const [r,g,bl]=hsvToRgb(newH,newS,newV);
+   a[i]=r;a[i+1]=g;a[i+2]=bl;
+ }
+}
+function drawSymbol(ctx,x,y,r,type,col){ctx.save();ctx.translate(x,y);ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=9;if(type==='flower'){ctx.font=`${r*2}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✿',0,0);}else if(type==='snow'){ctx.font=`${r*2}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('❄',0,0);}else{ctx.beginPath();for(let j=0;j<8;j++){const angle=j*Math.PI/4-Math.PI/2,rad=(j%2? r*.25:r);const xx=Math.cos(angle)*rad,yy=Math.sin(angle)*rad;if(!j)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy)}ctx.closePath();ctx.fill()}ctx.restore()}
+function staticEffects(ctx,hero,effect){if(effect==='none')return;const colors=effect==='moon'?['#a9b6ff','#e4e9ff']:effect==='snow'?['#a7d7ff','#ffffff']:effect==='flower'?['#f3acd6','#f8d0ee']:effect==='rainbow'?['#f0a2c1','#a2c5ff','#a4dbbb','#f6c979']:['#f7d1a0','#d5c3f9'];for(let i=0;i<19;i++){const x=((i*191+23)%600)+60,y=((i*137+49)%695)+55;drawSymbol(ctx,x,y,(i%4)+4,effect==='flower'?'flower':effect==='snow'?'snow':'star',colors[i%colors.length]);}}
+function draw(bgEffects=true){
+ const c=$('art'),ctx=c.getContext('2d',{willReadFrequently:true});
+ ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+ const img=imgs[state.hero];if(!img)return;
+ const ratio=Math.min((W*.91)/img.width,(H*.91)/img.height);
+ const dw=Math.round(img.width*ratio),dh=Math.round(img.height*ratio),x=Math.round((W-dw)/2),y=Math.round((H-dh)/2);
+ const hue=targetHue();
+ if(!compare&&hue!=null&&state.strength>0){
+   // Soft luminous aura is drawn BEHIND the figure, including in the saved PNG.
+   const centerX=W/2,centerY=H*.49;
+   const bloom=ctx.createRadialGradient(centerX,centerY,20,centerX,centerY,W*.53);
+   const col=lights.find(l=>l[0]===state.light)?.[2]||'#efb7ec';
+   bloom.addColorStop(0,hexRgba(col,.14*state.strength/100));
+   bloom.addColorStop(.66,hexRgba(col,.05*state.strength/100));
+   bloom.addColorStop(1,'rgba(255,255,255,0)');
+   ctx.fillStyle=bloom;ctx.fillRect(0,0,W,H);
+ }
+ const temp=document.createElement('canvas');temp.width=img.width;temp.height=img.height;
+ const tc=temp.getContext('2d',{willReadFrequently:true});tc.drawImage(img,0,0);
+ if(!compare&&hue!=null&&state.strength>0){
+   const before=originals[state.hero];
+   const after=tc.getImageData(0,0,temp.width,temp.height);
+   lightRGB(after,before,hue,state.strength,state.skin);
+   tc.putImageData(after,0,0);
+ }
+ ctx.drawImage(temp,x,y,dw,dh);
+ if(bgEffects&&!compare)staticEffects(ctx,state.hero,state.effect);
+ $('currentName').textContent=princesses.find(p=>p[0]===state.hero)?.[1]+(compare?' · 원본':state.light==='none'?' · 원래 색':` · ${lights.find(x=>x[0]===state.light)?.[1]} 마법`);
+}
+function hexRgba(hex,alpha){const z=hex.replace('#','');const r=parseInt(z.slice(0,2),16),g=parseInt(z.slice(2,4),16),b=parseInt(z.slice(4,6),16);return `rgba(${r},${g},${b},${alpha})`}
+function effectsUI(){document.querySelectorAll('[data-effect]').forEach(b=>{b.classList.toggle('on',b.dataset.effect===state.effect)})}
+function sparkleUI(){const root=$('sparkles');root.replaceChildren();$('stage').classList.toggle('illuminated',state.light!=='none'&&!compare);if(state.effect==='none')return;const col=state.effect==='snow'?'#7daaf5':state.effect==='flower'?'#e588b9':'#b78ade';for(let i=0;i<18;i++){const s=document.createElement('span');s.textContent=effectSymbols[state.effect]||'✦';s.style.left=(10+(i*43+7)%81)+'%';s.style.top=(8+(i*31+13)%78)+'%';s.style.setProperty('--sz',(12+i%4*5)+'px');s.style.setProperty('--delay',(i%7*.13)+'s');s.style.color=state.effect==='rainbow'?['#ea96bd','#b5a5ff','#9aceb2','#f8ca85'][i%4]:col;root.append(s)}}
+function choiceUI(){document.querySelectorAll('[data-hero]').forEach(b=>b.classList.toggle('on',b.dataset.hero===state.hero));document.querySelectorAll('[data-light]').forEach(b=>b.classList.toggle('on',b.dataset.light===state.light));$('strength').value=String(state.strength);$('strengthValue').textContent=state.strength+'%';$('skin').value=String(state.skin);$('skinValue').textContent=state.skin+'%';$('mix').value=state.mix;effectsUI();sparkleUI();const color=lights.find(l=>l[0]===state.light)?.[2]||'#ead6ec';$('stage').style.setProperty('--glow',color)}
+function redraw(){choiceUI();draw()}
+function activateLight(){if(!ready)return;$('stage').classList.remove('flash');void $('stage').offsetWidth;$('stage').classList.add('flash');setTimeout(()=>$('stage').classList.remove('flash'),950);redraw();msg('반짝! 공주에게 빛이 닿았습니다. 👀 원본 보기로 비교해 보세요.')}
+function records(){try{const v=JSON.parse(localStorage.getItem(STORAGE)||'[]');return Array.isArray(v)?v:[]}catch{return []}}
+function saveRows(a){localStorage.setItem(STORAGE,JSON.stringify(a))}
+function snapshot(){draw();return $('art').toDataURL('image/png')}
+function thumb(){draw();const sm=document.createElement('canvas');sm.width=180;sm.height=210;sm.getContext('2d').drawImage($('art'),0,0,180,210);return sm.toDataURL('image/webp',.80)}
+function gallery(){const root=$('gallery');root.replaceChildren();const a=records();if(!a.length){root.style.display='block';root.textContent='아직 꾸민 공주가 없어요. 마음에 드는 공주를 보관해 보세요.';return}root.style.display='grid';for(const r of a.slice().reverse()){
+ const box=document.createElement('div');box.className='saved';const im=document.createElement('img');im.src=r.thumb||'';im.alt=r.name+' 그림';const t=document.createElement('strong');t.textContent=r.name;const bar=document.createElement('div');bar.className='row';const open=document.createElement('button');open.textContent='다시 꾸미기';open.onclick=()=>{Object.assign(state,r.state);if(!Number.isFinite(state.skin))state.skin=90;activeSaveId=r.id;$('artName').value=r.name;redraw();scrollTo({top:0,behavior:'smooth'});msg('꾸민 공주 설정을 불러왔습니다.')};const del=document.createElement('button');del.textContent='삭제';del.onclick=()=>{if(!confirm('이 마법 실험실의 저장본만 삭제할까요?'))return;saveRows(records().filter(v=>v.id!==r.id));gallery()};bar.append(open,del);box.append(im,t,bar);root.append(box)}}
+function loadFile(src){return new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>reject(new Error(src));i.src=BASE+src})}
+function init(){
+ const heroes=$('heroes');princesses.forEach(([key,label])=>{const b=document.createElement('button');b.type='button';b.className='hero';b.dataset.hero=key;const im=document.createElement('img');im.src=BASE+key+'.webp';im.alt='';const name=document.createElement('span');name.textContent=label;b.append(im,name);b.onclick=()=>{state.hero=key;activeSaveId=null;$('artName').value=label.replace(/^\S+\s/,'')+'의 마법';redraw()};heroes.append(b)});
+ const area=$('lights');lights.forEach(([key,label,color])=>{const b=document.createElement('button');b.type='button';b.className='light';b.dataset.light=key;const sw=document.createElement('span');sw.className='swatch';sw.style.background=color;b.append(sw,document.createTextNode(label));b.onclick=()=>{state.light=key;if(key==='none')state.mix='none';activateLight()};area.append(b);if(key!=='none'){const option=document.createElement('option');option.value=key;option.textContent=label;$('mix').append(option)}});
+ $('mix').onchange=e=>{state.mix=e.target.value;if(state.light==='none')state.light='pink';activateLight()};$('strength').oninput=e=>{state.strength=Number(e.target.value);redraw()};$('skin').oninput=e=>{state.skin=Number(e.target.value);redraw()};
+ document.querySelectorAll('[data-effect]').forEach(b=>b.onclick=()=>{state.effect=b.dataset.effect;activateLight()});$('magic').onclick=activateLight;$('reset').onclick=()=>{state.light='none';state.mix='none';state.strength=45;state.skin=90;state.effect='none';redraw();msg('선택한 공주의 원본 색으로 돌아왔어요.')};
+ const orig=$('compare');const hold=()=>{compare=true;draw();$('stage').classList.remove('illuminated');orig.textContent='👀 원본 보는 중…'};const release=()=>{compare=false;draw();sparkleUI();orig.textContent='👀 원본 잠깐 보기'};
+ orig.addEventListener('pointerdown',hold);['pointerup','pointercancel','pointerleave'].forEach(k=>orig.addEventListener(k,release));orig.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();hold()}});orig.addEventListener('keyup',release);
+ $('download').onclick=()=>{if(!ready)return;const name=($('artName').value.trim()||'마법의 공주').replace(/[\\/:*?"<>|]/g,'_');const a=document.createElement('a');a.href=snapshot();a.download=name+'.png';document.body.append(a);a.click();a.remove();msg('꾸민 공주 PNG를 저장하도록 요청했습니다. 기기의 다운로드 목록을 확인해 주세요.')};
+ $('save').onclick=()=>{if(!ready)return;const name=$('artName').value.trim()||'마법의 공주';const stateCopy={...state};const thumbnail=thumb();const a=records();const id=activeSaveId||('magic-'+Date.now());const obj={id,name,thumb:thumbnail,state:stateCopy};const idx=a.findIndex(r=>r.id===id);if(idx<0)a.push(obj);else a[idx]=obj;try{saveRows(a);activeSaveId=id;gallery();msg('마법 공주 보관함에 저장했습니다. 원래 웹툰 앱의 작품은 변경되지 않았어요.')}catch{msg('기기 저장 공간이 부족할 수 있어요. PNG 저장을 이용해 보세요.')}};
+ const entries=princesses.map(([key])=>[key,'webp']);Promise.allSettled(entries.map(async([n,ext])=>[n,await loadFile(n+'.'+ext)])).then(rs=>{const errors=[];rs.forEach((r,i)=>{if(r.status==='fulfilled'){const [n,im]=r.value;imgs[n]=im;const cv=document.createElement('canvas');cv.width=im.width;cv.height=im.height;const cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(im,0,0);originals[n]=cx.getImageData(0,0,im.width,im.height)}else errors.push(entries[i].join('.'))});ready=princesses.every(([k])=>imgs[k]&&originals[k]);if(!ready){msg('그림 파일을 읽지 못했습니다: '+errors.join(', '));return}$('artName').value='꽃 공주의 마법';redraw();gallery();msg('공주 원화 7종을 불러왔습니다. 전체 빛과 피부색 보호를 조절해 보세요!')});choiceUI();
+}init();
+})();
+</script></body></html>
