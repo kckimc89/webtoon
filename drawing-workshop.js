@@ -1,4 +1,4 @@
-/* C4.5.36.4.2 | Protect iPad canvas selection, real front layer, focused zoom. */
+/* C4.5.36.4.3 | Protect iPad canvas selection, real front layer, focused zoom. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -152,10 +152,10 @@ function render(){stopInk();compose(X,$('dwShowBackground').checked);const e=sel
  comicEditUi();listLayers()}
 // Raw pixels avoid blocking iPad Safari to PNG-encode the whole drawing at every new stroke.
 function snap(){syncCutoutElement();return {a:U.getImageData(0,0,W,H),b:P.getImageData(0,0,W,H),els:clone(els),sel}}
-function remember(){history.push(snap());if(history.length>8)history.shift();redo.length=0}
+function remember(){history.push(snap());if(history.length>15)history.shift();redo.length=0}
 async function refreshImages(){cache.clear();await Promise.all(els.filter(e=>e.kind==='image').map(async e=>{try{if(e.origin)await ensureDrawingHeroArt(e.origin);let src=e.premiumKey?propSrc(e.premiumKey):e.origin?heroSrc(e.origin,e.expression||'기뻐요'):e.src;if(!src)return;let im=await imload(src);if(e.variant==='outline'&&e.origin){im=await imload(await outline(im))}cache.set(e.id,im)}catch(err){console.warn('그림 불러오기 실패',err)}}))}
 async function restore(s){cutoutEdit=null;els=clone(s.els||[]);sel=s.sel||null;U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);if(s.a instanceof ImageData&&s.b instanceof ImageData){U.putImageData(s.a,0,0);P.putImageData(s.b,0,0)}else{const [a,b]=await Promise.all([imload(s.a),imload(s.b)]);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H)}await refreshImages();render()}
-async function undo(a,b){if(!a.length)return;b.push(snap());await restore(a.pop())}
+async function undo(a,b){if(!a.length)return;b.push(snap());if(b.length>15)b.shift();await restore(a.pop())}
 $('dwUndo').onclick=()=>undo(history,redo).catch(err=>msg(err.message));$('dwRedo').onclick=()=>undo(redo,history).catch(err=>msg(err.message));
 function pt(ev){const r=C.getBoundingClientRect();return {x:(ev.clientX-r.left)*W/r.width,y:(ev.clientY-r.top)*H/r.height}}
 function localPt(e,p){const dx=p.x-e.x,dy=p.y-e.y,a=-(e.rotation||0);return {x:dx*Math.cos(a)-dy*Math.sin(a),y:dx*Math.sin(a)+dy*Math.cos(a)}}
