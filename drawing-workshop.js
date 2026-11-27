@@ -1,4 +1,4 @@
-/* C4.5.36.4.9 | Protect iPad canvas selection, real front layer, focused zoom. */
+/* C4.5.36.4.13 | Background convert/clear and exact background placement. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -150,9 +150,53 @@ function drawCoverImage(g,im){
  const scale=Math.max(W/sw,H/sh),dw=sw*scale,dh=sh*scale,dx=(W-dw)/2,dy=(H-dh)/2;
  g.clearRect(0,0,W,H);g.drawImage(im,dx,dy,dw,dh);
 }
+function drawImageElementToCanvas(g,e,im){
+ g.save();
+ g.clearRect(0,0,W,H);
+ g.translate(e.x,e.y);
+ g.rotate(e.rotation||0);
+ g.scale(e.flip?-1:1,1);
+ g.imageSmoothingEnabled=true;
+ g.imageSmoothingQuality='high';
+ g.drawImage(im,-e.w/2,-e.h/2,e.w,e.h);
+ g.restore();
+}
+function contextHasPixels(ctx){
+ const d=ctx.getImageData(0,0,W,H).data;
+ for(let i=3;i<d.length;i+=4)if(d[i]>0)return true;
+ return false;
+}
 async function setSelectedImageAsBackground(){
  const e=selectedImageElement();if(!e)return msg('먼저 가져온 그림을 선택해 주세요.');
- const im=await elementImage(e),bg=cv(),g=bg.getContext('2d');drawCoverImage(g,im);remember();U.clearRect(0,0,W,H);U.drawImage(bg,0,0,W,H);render();msg('선택한 그림을 그림판 배경에 채웠어요. 원래 그림은 그대로 남아 있어요.');
+ const im=await elementImage(e),bg=cv(),g=bg.getContext('2d');
+ drawImageElementToCanvas(g,e,im);
+ remember();
+ U.clearRect(0,0,W,H);
+ U.drawImage(bg,0,0,W,H);
+ resetDrawingZoom();
+ render();
+ msg('선택한 그림을 지금 보이는 크기와 위치 그대로 그림판 배경에 넣었어요. 원래 그림은 그대로 남아 있어요.');
+}
+async function convertBackgroundToImage(){
+ if(!contextHasPixels(U))return msg('그림판 배경이 아직 없어요.');
+ remember();
+ const src=under.toDataURL('image/png');
+ const n={id:eId(),kind:'image',src,x:W/2,y:H/2,w:W,h:H,rotation:0,flip:false,opacity:1,visible:true,locked:false,aboveInk:false};
+ U.clearRect(0,0,W,H);
+ els.push(n);
+ cache.delete(n.id);
+ sel=n.id;
+ await refreshImages();
+ render();
+ imageActionUi();
+ msg('배경 그림을 다시 움직일 수 있는 그림으로 가져왔어요. 이제 오리기나 이동을 할 수 있어요.');
+}
+function clearDrawingBackground(){
+ if(!contextHasPixels(U))return msg('지울 배경이 아직 없어요.');
+ remember();
+ U.clearRect(0,0,W,H);
+ render();
+ msg('그림판 배경을 지웠어요.');
 }
 async function registerSelectedAsBackground(){
  const e=selectedImageElement();if(!e)return msg('먼저 가져온 그림을 선택해 주세요.');
@@ -476,6 +520,12 @@ function end(ev){
 const zoomView=$('dwZoomViewport'),zoomWrap=$('dwCanvasWrap'),zoomLabel=$('dwZoomLevel');
 let zoomRatio=1,panMode=false,panPointer=null;
 
+function resetDrawingZoom(){
+ navTouches.clear();pinch=null;panPointer=null;panMode=false;
+ if(panButton){panButton.setAttribute('aria-pressed','false');panButton.textContent='✋ 확대 화면 이동';}
+ zoomTo(1);
+ if(zoomView){zoomView.scrollLeft=0;zoomView.scrollTop=0;}
+}
 function zoomTo(value){
  if(!zoomView||!zoomWrap)return;
  const oldSize=zoomWrap.getBoundingClientRect().width||zoomView.clientWidth||640;
@@ -624,7 +674,7 @@ $('dwFloatHeroMode').onchange=async ev=>{
 
 const swatches=['#303038','#ffffff','#e7659e','#ed9a58','#f2c455','#78ba8c','#65bdda','#678eda','#9a7bc7','#b16f58'];swatches.forEach(hex=>{const b=document.createElement('button');b.type='button';b.className='dw-swatch';b.style.background=hex;b.title=hex;b.onclick=()=>{ink=hex;$('dwColor').value=hex;sync()};$('dwColors').append(b)});
 function sync(){[...$('dwColors').children].forEach((b,i)=>b.classList.toggle('selected',swatches[i]===ink))}sync();$('dwColor').oninput=e=>{ink=e.target.value;sync()};$('dwSize').oninput=e=>{$('dwSizeLabel').textContent=thick=Number(e.target.value)};$('dwShowBackground').onchange=render;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.onclick=()=>setMode(b.dataset.dwTool));
-$('dwBlank').onclick=()=>{if(!confirm('새 도화지를 열까요? 저장하지 않은 그림은 사라집니다.'))return;els=[];sel=null;cache.clear();U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);history=[];redo=[];currentId=null;$('dwName').value='새 그림';setMode('pen')};
+$('dwBlank').onclick=()=>{if(!confirm('새 도화지를 열까요? 저장하지 않은 그림은 사라집니다.'))return;els=[];sel=null;cache.clear();U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);history=[];redo=[];currentId=null;$('dwName').value='새 그림';resetDrawingZoom();setMode('pen')};
 $('dwPreciseUndo').onclick=()=>{if(precise){precise.strokes.pop();preciseGuide();imageActionUi()}};
 $('dwPreciseReset').onclick=()=>{if(precise){precise.strokes=[];preciseGuide();imageActionUi()}};
 $('dwPreciseShow').onclick=()=>preciseFinish(true);$('dwPreciseDone').onclick=()=>preciseFinish(false);$('dwPreciseCancel').onclick=preciseCancel;$('dwPreciseClose').onclick=()=>{$('dwPrecisePreview').hidden=true};
@@ -633,6 +683,8 @@ if($('dwCropImageRect'))$('dwCropImageRect').onclick=()=>beginImageCrop('imageCr
 if($('dwFinishCrop'))$('dwFinishCrop').onclick=()=>finishImageCrop(true);
 if($('dwSetSelectedAsBg'))$('dwSetSelectedAsBg').onclick=()=>setSelectedImageAsBackground().catch(e=>msg('배경 적용 실패: '+e.message));
 if($('dwRegisterBg'))$('dwRegisterBg').onclick=()=>registerSelectedAsBackground().catch(e=>msg('배경 등록 실패: '+e.message));
+if($('dwBgToImage'))$('dwBgToImage').onclick=()=>convertBackgroundToImage().catch(e=>msg('배경 그림 가져오기 실패: '+e.message));
+if($('dwClearBg'))$('dwClearBg').onclick=()=>clearDrawingBackground();
 function previewPng(){const c=document.createElement('canvas');c.width=1280;c.height=1280;const g=c.getContext('2d');g.fillStyle='white';g.fillRect(0,0,1280,1280);g.scale(2,2);compose(g,true);return c.toDataURL('image/png')}
 $('dwExport').onclick=()=>{const a=document.createElement('a');a.href=previewPng();a.download=($('dwName').value.trim()||'내 그림').replace(/[\\/:*?"<>|]/g,'_')+'.png';a.click()};
 // Retain the exact IndexedDB database/store/shape used by C4.5.17.
@@ -642,7 +694,7 @@ async function tx(mode,fn){const db=await dbopen();try{return await new Promise(
 const all=()=>tx('readonly',s=>s.getAll());
 async function save(silent=false){const entry={id:currentId||'drawing-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),name:$('dwName').value.trim()||'내 그림',preview:previewPng(),under:under.toDataURL(),paint:paint.toDataURL(),outline:null,elements:clone(els),updated:Date.now()};const prev=currentId?await tx('readonly',s=>s.get(currentId)):null;if(prev?.registered)entry.registered=true;await tx('readwrite',s=>s.put(entry));currentId=entry.id;await galleryRefresh();if(!silent)msg('그림과 편집 상태를 보관함에 저장했어요!');return entry}
 $('dwSave').onclick=()=>save().catch(e=>msg('저장 실패: '+e.message));
-async function openSaved(item){if(!confirm('저장한 그림을 다시 열까요? 저장하지 않은 작업은 사라집니다.'))return;const [a,b]=await Promise.all([imload(item.under||cv().toDataURL()),imload(item.paint||cv().toDataURL())]);U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H);els=clone(item.elements||[]);await refreshImages();sel=null;currentId=item.id;history=[];redo=[];$('dwName').value=item.name;setMode('select');msg('저장한 그림을 다시 열었어요.')}
+async function openSaved(item){if(!confirm('저장한 그림을 다시 열까요? 저장하지 않은 작업은 사라집니다.'))return;const [a,b]=await Promise.all([imload(item.under||cv().toDataURL()),imload(item.paint||cv().toDataURL())]);U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H);els=clone(item.elements||[]);await refreshImages();sel=null;currentId=item.id;history=[];redo=[];$('dwName').value=item.name;resetDrawingZoom();setMode('select');msg('저장한 그림을 다시 열었어요.')}
 async function registry(){try{window.webtoonDrawingHeroes=(await all()).filter(q=>q.registered).sort((a,b)=>b.updated-a.updated).map(q=>({id:q.id,name:q.name,preview:q.preview}));if(typeof renderCharacterChoices==='function')renderCharacterChoices()}catch(e){console.warn(e)}}
 window.webtoonDrawingUnregister=async function(id){if(!confirm('주인공 선택 목록에서 등록을 해제할까요? 원본과 웹툰은 남아요.'))return;const item=await tx('readonly',s=>s.get(id));if(!item)return;item.registered=false;await tx('readwrite',s=>s.put(item));await registry();await galleryRefresh()};
 async function register(item){item.registered=true;await tx('readwrite',s=>s.put(item));await registry();await galleryRefresh();settings.custom=item.preview;settings.hero='custom';settings.studioPrincess=false;settings.studioRecipe=null;if(typeof renderCharacterChoices==='function')renderCharacterChoices();if(typeof switchView==='function')switchView('make');msg('내 그림을 웹툰 주인공으로 등록했어요!')}
@@ -698,8 +750,8 @@ async function comicExtract(box){
  els.push(element);cache.set(element.id,picture);sel=element.id;setMode('select');
  msg('주인공을 오려냈어요! 끌어서 움직이고 손잡이로 크기를 바꿔 보세요.');
 }
-function comicClear(){stopCutoutEdit(false);resetPointerState();U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);els=[];sel=null;cache.clear();history=[];redo=[];currentId=null;setMode('pen')}
-async function comicLoadPanel(panel){stopCutoutEdit(false);resetPointerState();const [a,b]=await Promise.all([imload(panel.under),imload(panel.paint)]);U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H);els=clone(panel.elements||[]);sel=null;currentId=null;history=[];redo=[];await refreshImages();setMode('select')}
+function comicClear(){stopCutoutEdit(false);resetPointerState();U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);els=[];sel=null;cache.clear();history=[];redo=[];currentId=null;resetDrawingZoom();setMode('pen')}
+async function comicLoadPanel(panel){stopCutoutEdit(false);resetPointerState();const [a,b]=await Promise.all([imload(panel.under),imload(panel.paint)]);U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H);els=clone(panel.elements||[]);sel=null;currentId=null;history=[];redo=[];await refreshImages();resetDrawingZoom();setMode('select')}
 function comicSyncTitle(){if(comic)comic.title=$('dwComicTitle').value.trim()||'나의 그림 이야기'}
 async function comicPersist(){if(!comic)return;comicSyncTitle();comic.updated=Date.now();await comicTx('readwrite',s=>s.put(comic));}
 function comicUi(){const active=!!comic;$('dwComicEditor').hidden=!active;if(!active){if(tool==='comicCrop'||tool==='comicLasso')setMode('pen');if(tool==='imageCropRect')setMode('select');comicEditUi();imageActionUi();return;}$('dwComicTitle').value=comic.title;$('dwComicStatus').textContent=`${comicIndex+1}컷 편집 중 · 총 ${comic.panels.length}컷`;
