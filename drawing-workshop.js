@@ -448,16 +448,16 @@ function end(ev){
 // View-only magnification; canvas pixels, pencil thickness and saved work do not change.
 const zoomView=$('dwZoomViewport'),zoomWrap=$('dwCanvasWrap'),zoomLabel=$('dwZoomLevel');
 let zoomRatio=1,panMode=false,panPointer=null;
-const zoomBase=()=>zoomView?.clientWidth||zoomWrap?.clientWidth||640;
+
 function zoomTo(value){
  if(!zoomView||!zoomWrap)return;
- const prev=zoomRatio,centerX=(zoomView.scrollLeft+zoomView.clientWidth/2)/(zoomBase()*prev),centerY=(zoomView.scrollTop+zoomView.clientHeight/2)/(zoomBase()*prev);
+ const oldSize=zoomWrap.getBoundingClientRect().width||zoomView.clientWidth||640;
+ const centerX=(zoomView.scrollLeft+zoomView.clientWidth/2)/oldSize,centerY=(zoomView.scrollTop+zoomView.clientHeight/2)/oldSize;
  zoomRatio=Math.max(1,Math.min(6,value));
- zoomWrap.style.width=(zoomBase()*zoomRatio)+'px';
- zoomWrap.style.maxWidth='none';zoomWrap.style.margin='0';
+ zoomWrap.style.setProperty('--dw-zoom-width',(zoomRatio*100)+'%');
  zoomView.style.maxHeight=zoomRatio>1?'min(75vh,790px)':'none';
  if(zoomLabel)zoomLabel.textContent=Math.round(zoomRatio*100)+'%';
- requestAnimationFrame(()=>{zoomView.scrollLeft=Math.max(0,centerX*zoomBase()*zoomRatio-zoomView.clientWidth/2);zoomView.scrollTop=Math.max(0,centerY*zoomBase()*zoomRatio-zoomView.clientHeight/2)});
+ requestAnimationFrame(()=>{const size=zoomWrap.getBoundingClientRect().width;zoomView.scrollLeft=zoomRatio===1?0:Math.max(0,centerX*size-zoomView.clientWidth/2);zoomView.scrollTop=zoomRatio===1?0:Math.max(0,centerY*size-zoomView.clientHeight/2)});
 }
 for(const b of document.querySelectorAll('[data-dw-zoom]'))b.addEventListener('click',()=>zoomTo(Number(b.dataset.dwZoom)));
 const panButton=$('dwPanMode');
@@ -467,7 +467,7 @@ if(zoomView){
  const panMove=ev=>{if(!panPointer||ev.pointerId!==panPointer.id)return;ev.preventDefault();zoomView.scrollLeft=panPointer.left-(ev.clientX-panPointer.x);zoomView.scrollTop=panPointer.top-(ev.clientY-panPointer.y)};
  C.addEventListener('pointerdown',panStart,true);C.addEventListener('pointermove',panMove,true);
  const panEnd=ev=>{if(panPointer?.id===ev.pointerId)panPointer=null};C.addEventListener('pointerup',panEnd,true);C.addEventListener('pointercancel',panEnd,true);
- const viewportObserver=new ResizeObserver(()=>{if(zoomRatio!==1)zoomWrap.style.width=(zoomBase()*zoomRatio)+'px'});viewportObserver.observe(zoomView);
+ // Percentage sizing tracks viewport changes at every zoom level without stale pixel widths.
 }
 
 const drawingSurface=$('dwCanvasWrap');
