@@ -79,7 +79,8 @@ function preciseGuide(){
 function preciseSample(ev){const stroke=precise?.strokes.at(-1);if(!stroke)return;const samples=ev.getCoalescedEvents?.()||[];for(const v of [...samples,ev]){const p=pt(v);const q=stroke.at(-1);if(!q||Math.hypot(p.x-q.x,p.y-q.y)>.06)stroke.push(p)}}
 function preciseStart(ev){if(!precise||preciseBusy||precisePointer!==null)return;if(ev.pointerType==='touch'&&Date.now()-lastPencilAt<650)return;if(ev.pointerType==='pen')lastPencilAt=Date.now();ev.preventDefault();const p=pt(ev),last=precisePoints().at(-1);const tolerance=Math.max(2,18*640/C.getBoundingClientRect().width);if(last&&Math.hypot(p.x-last.x,p.y-last.y)>tolerance){msg('마지막 보라색 점 근처에서 이어 그려 주세요.');return}precise.strokes.push([p]);precisePointer=ev.pointerId;try{C.setPointerCapture(ev.pointerId)}catch(_){}preciseGuide();imageActionUi()}
 function preciseEnd(ev){if(ev.pointerId!==precisePointer)return;if(ev.type==='pointerup')preciseSample(ev);precisePointer=null;preciseGuide();imageActionUi()}
-function preciseCancel(){precise=null;precisePointer=null;clearComicGuide();$('dwPrecisePreview').hidden=true;setMode('select')}
+function releasePreciseLock(){const e=els.find(q=>q.id===precise?.id);if(e)e.locked=precise.wasLocked;}
+function preciseCancel(){releasePreciseLock();precise=null;precisePointer=null;clearComicGuide();$('dwPrecisePreview').hidden=true;setMode('select')}
 async function preciseResult(){
  const session=precise,e=els.find(x=>x.id===session?.id),pts=precisePoints();if(!e||pts.length<8)throw Error('외곽선을 한 바퀴 따라 그려 주세요.');
  const tolerance=Math.max(3,20*640/C.getBoundingClientRect().width);if(Math.hypot(pts[0].x-pts.at(-1).x,pts[0].y-pts.at(-1).y)>tolerance)throw Error('시작점까지 이어서 외곽선을 닫아 주세요.');
@@ -89,14 +90,14 @@ async function preciseResult(){
  const dx=((l+r)/2/iw-.5)*e.w*(e.flip?-1:1),dy=((t+b)/2/ih-.5)*e.h,a=e.rotation||0;
  return {session,e,out,x:e.x+dx*Math.cos(a)-dy*Math.sin(a),y:e.y+dx*Math.sin(a)+dy*Math.cos(a),w:(r-l)/iw*e.w,h:(b-t)/ih*e.h};
 }
-async function preciseFinish(preview){if(preciseBusy||precisePointer!==null)return;preciseBusy=true;imageActionUi();try{const q=await preciseResult();if(precise!==q.session)return;const src=q.out.toDataURL('image/png');if(preview){$('dwPrecisePreviewImage').src=src;$('dwPrecisePreview').hidden=false;return}remember();q.e.visible=false;const n={id:eId(),kind:'image',src,x:q.x,y:q.y,w:q.w,h:q.h,rotation:q.e.rotation||0,flip:!!q.e.flip,opacity:1,visible:true,locked:false,aboveInk:!!q.e.aboveInk};els.push(n);cache.set(n.id,q.out);sel=n.id;preciseCancel();msg('오려낸 그림을 추가했어요. 원본은 그림 층 관리에서 다시 볼 수 있어요.')}catch(e){msg(e.message)}finally{preciseBusy=false;imageActionUi()}}
+async function preciseFinish(preview){if(preciseBusy||precisePointer!==null)return;preciseBusy=true;imageActionUi();try{const q=await preciseResult();if(precise!==q.session)return;const src=q.out.toDataURL('image/png');if(preview){$('dwPrecisePreviewImage').src=src;$('dwPrecisePreview').hidden=false;return}releasePreciseLock();remember();q.e.visible=false;const n={id:eId(),kind:'image',src,x:q.x,y:q.y,w:q.w,h:q.h,rotation:q.e.rotation||0,flip:!!q.e.flip,opacity:1,visible:true,locked:false,aboveInk:!!q.e.aboveInk};els.push(n);cache.set(n.id,q.out);sel=n.id;preciseCancel();msg('오려낸 그림을 추가했어요. 원본은 그림 층 관리에서 다시 볼 수 있어요.')}catch(e){msg(e.message)}finally{preciseBusy=false;imageActionUi()}}
 function imageActionUi(){
  const chosen=selectedImageElement(),cropping=(tool==='imageCropRect'||tool==='imageCropLasso');
  const free=$('dwCropImageFree'),rect=$('dwCropImageRect'),done=$('dwFinishCrop'),bg=$('dwSetSelectedAsBg'),reg=$('dwRegisterBg'),status=$('dwImageActionStatus');
- if(free)free.disabled=!chosen;
- if(rect)rect.disabled=!chosen;
- if(bg)bg.disabled=!chosen;
- if(reg)reg.disabled=!chosen;
+ if(free)free.disabled=!chosen||!!precise;
+ if(rect)rect.disabled=!chosen||!!precise;
+ if(bg)bg.disabled=!chosen||!!precise;
+ if(reg)reg.disabled=!chosen||!!precise;
  if(done)done.hidden=tool!=='imageCropRect';
  const panel=$('dwPreciseTools');if(panel){panel.hidden=tool!=='imageCropLasso';for(const b of panel.querySelectorAll('button'))b.disabled=preciseBusy; $('dwPreciseUndo').disabled=preciseBusy||!precise?.strokes.length;}
  if(status){
@@ -109,7 +110,7 @@ function beginImageCrop(mode){
  const e=selectedImageElement();
  if(!e)return msg('먼저 가져온 그림을 하나 선택해 주세요.');
  if(cutoutEdit)return msg('주인공 부분 수정을 먼저 끝내 주세요.');
- if(mode==='imageCropLasso'){precise={id:e.id,strokes:[]};$('dwPrecisePreview').hidden=true;}
+ if(mode==='imageCropLasso'){if(precise)return;precise={id:e.id,strokes:[],wasLocked:!!e.locked};e.locked=true;$('dwPrecisePreview').hidden=true;}
  setMode(mode);
  msg(mode==='imageCropLasso'?'남길 부분을 자유선으로 둘러 그려 주세요.':'남길 부분을 네모로 둘러 주세요.');
  imageActionUi();
@@ -229,9 +230,9 @@ function drawBubbleLetters(c,e){
 function drawEl(c,e){c.save();c.globalAlpha=e.opacity??1;c.translate(e.x,e.y);c.rotate(e.rotation||0);c.scale(e.flip?-1:1,1);if(e.kind==='shape'){shapePath(c,e);if(e.fill!==null){c.fillStyle=e.fill||'#e6a5d5';c.fill()}if(e.stroke!==null){c.strokeStyle=e.stroke||'#805b96';c.lineWidth=5;c.stroke()}if(e.shape==='bubble'&&e.text){drawBubbleLetters(c,e)}}else{const im=cache.get(e.id);if(im){c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(im,-e.w/2,-e.h/2,e.w,e.h)}}c.restore()}
 function compose(c,white=false){c.clearRect(0,0,W,H);if(white){c.fillStyle='white';c.fillRect(0,0,W,H)}c.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false&&!e.aboveInk)drawEl(c,e)});c.drawImage(paint,0,0);els.forEach(e=>{if(e.visible!==false&&e.aboveInk)drawEl(c,e)})}
 function selected(){return els.find(e=>e.id===sel)}
-function setMode(mode){if(mode!=='imageCropLasso'&&precise){precise=null;precisePointer=null;$('dwPrecisePreview').hidden=true;}resetPointerState();tool=mode;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.classList.toggle('active',b.dataset.dwTool===mode));render()}
+function setMode(mode){if(mode!=='imageCropLasso'&&precise){releasePreciseLock();precise=null;precisePointer=null;$('dwPrecisePreview').hidden=true;}resetPointerState();tool=mode;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.classList.toggle('active',b.dataset.dwTool===mode));render()}
 function listLayers(){const root=$('dwLayerList');root.replaceChildren();if(!els.length){root.textContent='그림을 추가하면 이곳에서 각각 선택할 수 있어요.';return}for(const e of [...els].reverse()){
- const row=document.createElement('div');row.className='dw-layer-row'+(sel===e.id?' selected':'');const nm=document.createElement('button');nm.type='button';nm.className='dw-layer-name';nm.textContent=layerName(e);nm.onclick=()=>{sel=e.id;setMode('select')};row.append(nm);
+ const row=document.createElement('div');if(precise)row.style.pointerEvents='none';row.className='dw-layer-row'+(sel===e.id?' selected':'');const nm=document.createElement('button');nm.type='button';nm.className='dw-layer-name';nm.textContent=layerName(e);nm.onclick=()=>{sel=e.id;setMode('select')};row.append(nm);
  const add=(label,act)=>{const b=document.createElement('button');b.type='button';b.className='dw-layer-action';b.textContent=label;b.onclick=act;row.append(b)};
  add(e.visible===false?'보기':'숨기기',()=>{remember();e.visible=e.visible===false;render()});add(e.locked?'풀기':'잠그기',()=>{remember();e.locked=!e.locked;render()});add('앞으로',()=>{sel=e.id;order(1)});add('뒤로',()=>{sel=e.id;order(-1)});add('지우기',()=>remove(e.id));root.append(row)
  }}
@@ -479,7 +480,7 @@ function zoomTo(value){
  if(!zoomView||!zoomWrap)return;
  const oldSize=zoomWrap.getBoundingClientRect().width||zoomView.clientWidth||640;
  const centerX=(zoomView.scrollLeft+zoomView.clientWidth/2)/oldSize,centerY=(zoomView.scrollTop+zoomView.clientHeight/2)/oldSize;
- zoomRatio=Math.max(1,Math.min(6,value));
+ zoomRatio=Math.max(1,Math.min(20,value));
  zoomWrap.style.setProperty('--dw-zoom-width',(zoomRatio*100)+'%');
  zoomView.style.maxHeight=zoomRatio>1?'min(75vh,790px)':'none';
  if(zoomLabel)zoomLabel.textContent=Math.round(zoomRatio*100)+'%';
@@ -487,6 +488,26 @@ function zoomTo(value){
  requestAnimationFrame(()=>{const size=zoomWrap.getBoundingClientRect().width;zoomView.scrollLeft=zoomRatio===1?0:Math.max(0,centerX*size-zoomView.clientWidth/2);zoomView.scrollTop=zoomRatio===1?0:Math.max(0,centerY*size-zoomView.clientHeight/2)});
 }
 for(const b of document.querySelectorAll('[data-dw-zoom]'))b.addEventListener('click',()=>zoomTo(Number(b.dataset.dwZoom)));
+// Touch navigation is independent of the Pencil and of object transforms.
+const navTouches=new Map();let pinch=null,navEnabled=true;
+const navButton=$('dwTouchNav');
+navButton.onclick=()=>{navEnabled=!navEnabled;navTouches.clear();pinch=null;navButton.textContent=navEnabled?'손가락: 화면 이동·확대':'손가락: 그리기·객체 조절';navButton.setAttribute('aria-pressed',String(navEnabled));};
+function touchNav(ev){
+ if(ev.pointerType!=='touch'||(!navEnabled&&!navTouches.has(ev.pointerId)&&!precise))return;
+ ev.preventDefault();ev.stopImmediatePropagation();
+ if(ev.type==='pointerdown'){
+  if(activePointerType==='pen'||precisePointer!==null||Date.now()-lastPencilAt<250)return;
+  navTouches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});try{C.setPointerCapture(ev.pointerId)}catch(_){}
+  if(navTouches.size===2){const [a,b]=navTouches.values();const r=zoomView.getBoundingClientRect(),size=zoomWrap.getBoundingClientRect().width;const x=(a.x+b.x)/2-r.left-zoomView.clientLeft,y=(a.y+b.y)/2-r.top-zoomView.clientTop;pinch={distance:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y)),ratio:zoomRatio,fx:(zoomView.scrollLeft+x)/size,fy:(zoomView.scrollTop+y)/size};}
+ }else if(ev.type==='pointermove'&&navTouches.has(ev.pointerId)){
+  const old=navTouches.get(ev.pointerId);navTouches.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+  if(pinch&&navTouches.size===2){const [a,b]=navTouches.values(),r=zoomView.getBoundingClientRect();const x=(a.x+b.x)/2-r.left-zoomView.clientLeft,y=(a.y+b.y)/2-r.top-zoomView.clientTop;
+   zoomRatio=Math.max(1,Math.min(20,pinch.ratio*Math.hypot(a.x-b.x,a.y-b.y)/pinch.distance));zoomWrap.style.setProperty('--dw-zoom-width',(zoomRatio*100)+'%');zoomView.style.maxHeight=zoomRatio>1?'min(75vh,790px)':'none';zoomLabel.textContent=Math.round(zoomRatio*100)+'%';const size=zoomWrap.getBoundingClientRect().width;zoomView.scrollLeft=pinch.fx*size-x;zoomView.scrollTop=pinch.fy*size-y;if(precise)preciseGuide();
+  }else if(navTouches.size===1&&zoomRatio>1){zoomView.scrollLeft-=ev.clientX-old.x;zoomView.scrollTop-=ev.clientY-old.y;}
+ }else if(ev.type==='pointerup'||ev.type==='pointercancel'||ev.type==='lostpointercapture'){navTouches.delete(ev.pointerId);pinch=null;}
+}
+for(const type of ['pointerdown','pointermove','pointerup','pointercancel','lostpointercapture'])C.addEventListener(type,touchNav,true);
+window.addEventListener('blur',()=>{navTouches.clear();pinch=null;});
 const panButton=$('dwPanMode');
 if(panButton)panButton.onclick=()=>{panMode=!panMode;panButton.setAttribute('aria-pressed',String(panMode));panButton.textContent=panMode?'✋ 화면 이동 중 · 그리기로 돌아가기':'✋ 확대 화면 이동';resetPointerState()};
 if(zoomView){
