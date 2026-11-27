@@ -1,4 +1,4 @@
-/* C4.5.36.4.1 | Drawing bucket: large enclosed-region fill without spilling outside. */
+/* C4.5.36.4.2 | Protect iPad canvas selection, real front layer, focused zoom. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -14,8 +14,8 @@ const P=paint.getContext('2d',{willReadFrequently:true}),U=under.getContext('2d'
 const inkBackdrop=document.createElement('canvas');inkBackdrop.width=1280;inkBackdrop.height=1280;
 const B=inkBackdrop.getContext('2d');B.setTransform(2,0,0,2,0,0);
 let inkFrame=0,inkCacheReady=false;
-function prepareInk(){B.clearRect(0,0,W,H);if($('dwShowBackground').checked){B.fillStyle='#fff';B.fillRect(0,0,W,H)}B.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false)drawEl(B,e)});inkCacheReady=true}
-function drawInkFrame(){inkFrame=0;if(!inkCacheReady)return;X.save();X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,C.width,C.height);X.drawImage(inkBackdrop,0,0);X.drawImage(paint,0,0,C.width,C.height);X.restore()}
+function prepareInk(){B.clearRect(0,0,W,H);if($('dwShowBackground').checked){B.fillStyle='#fff';B.fillRect(0,0,W,H)}B.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false&&!e.aboveInk)drawEl(B,e)});inkCacheReady=true}
+function drawInkFrame(){inkFrame=0;if(!inkCacheReady)return;X.save();X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,C.width,C.height);X.drawImage(inkBackdrop,0,0);X.drawImage(paint,0,0,C.width,C.height);X.restore();X.save();X.setTransform(2,0,0,2,0,0);els.forEach(e=>{if(e.visible!==false&&e.aboveInk)drawEl(X,e)});X.restore()}
 function scheduleInk(){if(tool==='eraser'&&!inkFrame)inkFrame=requestAnimationFrame(drawInkFrame)}
 function stopInk(){if(inkFrame){cancelAnimationFrame(inkFrame);inkFrame=0}inkCacheReady=false;clearLive()}
 let els=[],sel=null,cache=new Map(),tool='pen',ink='#d76eab',thick=11,drag=null,active=null,last=null,currentId=null,history=[],redo=[];
@@ -122,7 +122,7 @@ function drawBubbleLetters(c,e){
  const gap=font*1.22,top=-(lines.length-1)*gap/2-e.h*.055;lines.forEach((line,i)=>c.fillText(line,0,top+i*gap,maxW));c.restore();
 }
 function drawEl(c,e){c.save();c.globalAlpha=e.opacity??1;c.translate(e.x,e.y);c.rotate(e.rotation||0);c.scale(e.flip?-1:1,1);if(e.kind==='shape'){shapePath(c,e);if(e.fill!==null){c.fillStyle=e.fill||'#e6a5d5';c.fill()}if(e.stroke!==null){c.strokeStyle=e.stroke||'#805b96';c.lineWidth=5;c.stroke()}if(e.shape==='bubble'&&e.text){drawBubbleLetters(c,e)}}else{const im=cache.get(e.id);if(im){c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(im,-e.w/2,-e.h/2,e.w,e.h)}}c.restore()}
-function compose(c,white=false){c.clearRect(0,0,W,H);if(white){c.fillStyle='white';c.fillRect(0,0,W,H)}c.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false)drawEl(c,e)});c.drawImage(paint,0,0)}
+function compose(c,white=false){c.clearRect(0,0,W,H);if(white){c.fillStyle='white';c.fillRect(0,0,W,H)}c.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false&&!e.aboveInk)drawEl(c,e)});c.drawImage(paint,0,0);els.forEach(e=>{if(e.visible!==false&&e.aboveInk)drawEl(c,e)})}
 function selected(){return els.find(e=>e.id===sel)}
 function setMode(mode){resetPointerState();tool=mode;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.classList.toggle('active',b.dataset.dwTool===mode));render()}
 function listLayers(){const root=$('dwLayerList');root.replaceChildren();if(!els.length){root.textContent='그림을 추가하면 이곳에서 각각 선택할 수 있어요.';return}for(const e of [...els].reverse()){
@@ -273,6 +273,7 @@ function resetPointerState(){
  stopInk();active=null;activePointerType=null;last=null;drag=null;gesture=null;touchPoints.clear();
 }
 function down(ev){
+ if(panMode&&zoomRatio>1)return;
  if(tool==='comicCrop'||tool==='comicLasso'){
   if(!comic)return;ev.preventDefault();if(comicSelectBox)return;
   // Ignore a palm/finger while Apple Pencil is active in the cutout tool.
@@ -307,7 +308,7 @@ function down(ev){
   let e=selected();let action=e&&!e.locked?hitHandle(e,p):null;if(!action){e=pick(p);action=e?'move':null}sel=e?.id||null;drag=null;if(e&&!e.locked){remember();const a=localPt(e,p);drag={action,p,ox:e.x,oy:e.y,ow:e.w,oh:e.h,angle:e.rotation||0,startAngle:Math.atan2(p.y-e.y,p.x-e.x),dist:Math.hypot(a.x,a.y)}}
  }else{remember();if(tool==='bucket'){flood(p);active=null;render()}else{const cutoutNow=editingCutout();if(!cutoutNow&&tool==='eraser')prepareInk();clearLive();pen(p,p);if(!cutoutNow&&tool==='eraser')drawInkFrame()}}if(tool==='select')render()}
 let objectFrame=0;function scheduleObjectRender(){if(!objectFrame)objectFrame=requestAnimationFrame(()=>{objectFrame=0;render()})}
-function move(ev){if(tool==='comicCrop'||tool==='comicLasso'){
+function move(ev){if(panMode&&zoomRatio>1)return;if(tool==='comicCrop'||tool==='comicLasso'){
  if(comicSelectBox&&ev.pointerId===comicSelectBox.id){
   ev.preventDefault();const p=pt(ev);comicSelectBox.end=p;
   if(comicSelectBox.mode==='lasso'){
@@ -338,6 +339,7 @@ function move(ev){if(tool==='comicCrop'||tool==='comicLasso'){
  // Object gestures need only paint once per animation frame, not rebuild all layer buttons on every move.
  scheduleObjectRender()}
 function end(ev){
+ if(panMode&&zoomRatio>1)return;
  if(tool==='comicCrop'||tool==='comicLasso'){
   if(!comicSelectBox||comicSelectBox.id!==ev.pointerId)return;
   ev.preventDefault();
@@ -361,6 +363,31 @@ function end(ev){
 // during Pencil rests, long presses, double taps, or accidental drag gestures.
 // Only the canvas and its noninteractive overlay are guarded. Inputs, menus,
 // text fields, and the intentional comic lasso / object selection stay usable.
+// View-only magnification; canvas pixels, pencil thickness and saved work do not change.
+const zoomView=$('dwZoomViewport'),zoomWrap=$('dwCanvasWrap'),zoomLabel=$('dwZoomLevel');
+let zoomRatio=1,panMode=false,panPointer=null;
+const zoomBase=()=>zoomView?.clientWidth||zoomWrap?.clientWidth||640;
+function zoomTo(value){
+ if(!zoomView||!zoomWrap)return;
+ const prev=zoomRatio,centerX=(zoomView.scrollLeft+zoomView.clientWidth/2)/(zoomBase()*prev),centerY=(zoomView.scrollTop+zoomView.clientHeight/2)/(zoomBase()*prev);
+ zoomRatio=Math.max(1,Math.min(4,value));
+ zoomWrap.style.width=(zoomBase()*zoomRatio)+'px';
+ zoomWrap.style.maxWidth='none';zoomWrap.style.margin='0';
+ zoomView.style.maxHeight=zoomRatio>1?'min(75vh,790px)':'none';
+ if(zoomLabel)zoomLabel.textContent=Math.round(zoomRatio*100)+'%';
+ requestAnimationFrame(()=>{zoomView.scrollLeft=Math.max(0,centerX*zoomBase()*zoomRatio-zoomView.clientWidth/2);zoomView.scrollTop=Math.max(0,centerY*zoomBase()*zoomRatio-zoomView.clientHeight/2)});
+}
+for(const b of document.querySelectorAll('[data-dw-zoom]'))b.addEventListener('click',()=>zoomTo(Number(b.dataset.dwZoom)));
+const panButton=$('dwPanMode');
+if(panButton)panButton.onclick=()=>{panMode=!panMode;panButton.setAttribute('aria-pressed',String(panMode));panButton.textContent=panMode?'✋ 화면 이동 중 · 그리기로 돌아가기':'✋ 확대 화면 이동';resetPointerState()};
+if(zoomView){
+ const panStart=ev=>{if(!panMode||zoomRatio<=1)return;ev.preventDefault();panPointer={id:ev.pointerId,x:ev.clientX,y:ev.clientY,left:zoomView.scrollLeft,top:zoomView.scrollTop};try{C.setPointerCapture(ev.pointerId)}catch(_){}};
+ const panMove=ev=>{if(!panPointer||ev.pointerId!==panPointer.id)return;ev.preventDefault();zoomView.scrollLeft=panPointer.left-(ev.clientX-panPointer.x);zoomView.scrollTop=panPointer.top-(ev.clientY-panPointer.y)};
+ C.addEventListener('pointerdown',panStart,true);C.addEventListener('pointermove',panMove,true);
+ const panEnd=ev=>{if(panPointer?.id===ev.pointerId)panPointer=null};C.addEventListener('pointerup',panEnd,true);C.addEventListener('pointercancel',panEnd,true);
+ const viewportObserver=new ResizeObserver(()=>{if(zoomRatio!==1)zoomWrap.style.width=(zoomBase()*zoomRatio)+'px'});viewportObserver.observe(zoomView);
+}
+
 const drawingSurface=$('dwCanvasWrap');
 if(drawingSurface){
  const isDrawingSurface=node=>node===C||node===live||node===comicGuide||node===drawingSurface;
@@ -371,6 +398,12 @@ if(drawingSurface){
  // PointerEvent stream is active. Disable native gesture defaults locally.
  for(const name of ['gesturestart','gesturechange']){
   drawingSurface.addEventListener(name,ev=>ev.preventDefault(),{passive:false});
+ }
+ // Native Safari selection menus should never activate on empty drawing UI.
+ const drawRoot=$('draw');
+ if(drawRoot){
+  const editable='button,input,select,textarea,[contenteditable],label,summary,a,option';
+  for(const name of ['selectstart','dragstart','contextmenu'])drawRoot.addEventListener(name,ev=>{if(!ev.target.closest?.(editable))ev.preventDefault()},{capture:true});
  }
  C.setAttribute('draggable','false');
  live.setAttribute('draggable','false');
@@ -433,7 +466,7 @@ $('dwAddTextBubble').onclick=()=>{add({kind:'shape',shape:'bubble',fill:'#ffffff
 $('dwBubbleText').addEventListener('focus',()=>{if(selected()?.shape==='bubble')remember()});
 $('dwBubbleText').addEventListener('input',ev=>{const e=selected();if(e?.shape==='bubble'){e.text=ev.target.value;render()}});
 $('dwBubbleVoice').onclick=()=>{const t=$('dwBubbleText');t.focus();msg('아이패드 키보드의 🎤 마이크를 눌러 말해 주세요.')};
-function order(dest){const i=els.findIndex(e=>e.id===sel);if(i<0)return;let j=typeof dest==='number'?Math.max(0,Math.min(els.length-1,i+dest)):dest==='front'?els.length-1:0;if(i===j)return;remember();els.splice(j,0,els.splice(i,1)[0]);render()}
+function order(dest){const i=els.findIndex(e=>e.id===sel);if(i<0)return;const current=els[i];let j=typeof dest==='number'?Math.max(0,Math.min(els.length-1,i+dest)):dest==='front'?els.length-1:0;if(i===j&&dest!=='front'&&dest!=='back')return;remember();els.splice(i,1);current.aboveInk=dest==='front'?true:dest==='back'?false:current.aboveInk;els.splice(Math.min(j,els.length),0,current);render();if(dest==='front')msg('장식품을 펜 그림보다도 앞에 놓았어요.');}
 function remove(id){const e=els.find(q=>q.id===id);if(!e||!confirm('「'+layerName(e)+'」만 지울까요? 다른 그림은 남아요.'))return;remember();if(cutoutEdit&&cutoutEdit.id===id)cutoutEdit=null;els=els.filter(q=>q.id!==id);cache.delete(id);if(sel===id)sel=null;render()}
 function modify(fn){const e=selected();if(!e)return;remember();fn(e);render()}
 const act={back:()=>order('back'),front:()=>order('front'),flip:()=>modify(e=>e.flip=!e.flip),clone:()=>{const e=selected();if(!e)return;const ne=add({...clone(e),id:eId(),x:e.x+25,y:e.y+25});if(e.kind==='image')cache.set(ne.id,cache.get(e.id));render()},delete:()=>remove(sel),deselect:()=>{sel=null;render()}};

@@ -467,6 +467,18 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #assemblyMaker .pm-controls .pm-group{padding:10px}
 #assemblyMaker .pm-controls .pm-group .hint{font-size:13px;line-height:1.4}
 @media(min-width:900px){#assemblyMaker .pm-preview canvas{max-height:790px}}
+
+/* C4.5.36.4.2 — block unwanted native text selection on the drawing UI only. */
+#draw { -webkit-touch-callout:none; }
+#draw :not(input):not(textarea):not([contenteditable]){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#draw input,#draw textarea { -webkit-user-select:text;user-select:text;-webkit-touch-callout:default }
+#draw .dw-zoom-tools{display:flex;flex-wrap:wrap;gap:7px;align-items:center;padding:9px;margin:8px 0;background:#faf3ff;border:1px solid #d6bbea;border-radius:12px}
+#draw .dw-zoom-tools button{min-height:40px;padding:6px 10px;border-radius:9px}
+#draw #dwPanMode[aria-pressed="true"]{background:#7e55bc;color:#fff}
+#draw .dw-zoom-tools small{flex-basis:100%;line-height:1.4;color:#665475}
+#draw .dw-zoom-viewport{position:relative;width:100%;max-width:min(98vw,1000px);max-height:none;margin:0 auto;overflow:auto;overscroll-behavior:contain;border:2px solid #c8afdd;border-radius:14px;background:white;-webkit-overflow-scrolling:touch}
+#draw #dwZoomViewport #dwCanvasWrap{border:0!important;box-shadow:none!important;border-radius:0!important;max-width:none!important;margin:0!important;overflow:hidden!important;touch-action:none}
+#draw #dwZoomViewport #dwCanvasWrap canvas{width:100%;height:auto;display:block}
 </style>
 <style>
 .draw-workshop{max-width:1120px;margin:0 auto}.draw-actions,.dw-tools,.dw-options,.dw-savebar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:12px 0}.draw-workshop button,.dw-label{touch-action:manipulation}.dw-label{font-weight:700}.draw-workshop select,.draw-workshop input[type=text]{max-width:210px}.dw-tools .active{background:#8052bc;color:#fff;border-color:#8052bc}.dw-colors{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.dw-swatch{width:33px;height:33px!important;min-height:33px!important;border:2px solid #d4ccdc;border-radius:50%;padding:0!important}.dw-swatch.selected{outline:3px solid #8a5acb;outline-offset:2px}.dw-options label{display:flex;gap:7px;align-items:center}.dw-options input[type=range]{width:130px}.dw-canvas-wrap{max-width:660px;margin:12px auto;border:2px solid #c8afdd;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 3px 10px #76518d25;line-height:0;touch-action:none}.dw-canvas-wrap canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;touch-action:none;cursor:crosshair}.dw-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}.dw-card{border:1px solid #e2d2eb;border-radius:12px;padding:8px;background:#fff}.dw-card img{width:100%;aspect-ratio:1;object-fit:contain;background:linear-gradient(45deg,#f6f3f9 25%,transparent 25%),linear-gradient(-45deg,#f6f3f9 25%,transparent 25%);background-size:22px 22px}.dw-card b{display:block;margin:7px 0;word-break:break-word}.dw-card .actions{display:flex;flex-wrap:wrap;gap:4px}.dw-card button{padding:7px 9px;font-size:12px}.dw-savebar input{min-width:135px}.dw-layer-tools{padding:10px;border:1px solid #e0cee9;border-radius:12px;background:#fdf8ff}.dw-layer-tools select{max-width:180px}.dw-object-controls{display:flex;gap:7px;align-items:center;flex-wrap:wrap;background:#f5ebfc;border:2px solid #d3b5e7;border-radius:12px;padding:9px;margin:10px 0}.dw-object-controls[hidden]{display:none}.dw-object-controls button{padding:8px 10px;font-size:13px}.dw-object-controls label{display:flex;align-items:center;gap:5px;font-size:13px}.dw-object-controls input[type=range]{width:95px}.dw-hero-item{border:1px solid #e1d6e6;border-radius:12px;padding:5px;min-width:0}.dw-hero-item .choice{width:100%}.dw-remove-hero{width:100%;margin-top:5px;background:#fff5f5;color:#98424f;border:1px solid #e5bbc5}.dw-hero-item img{max-height:110px;object-fit:contain}@media(max-width:680px){.dw-tools button,.draw-actions button{padding:9px}.dw-savebar button{flex:1}.dw-canvas-wrap{margin:8px -5px}}
@@ -659,7 +671,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.36.4.1 · 조립식 꽃빛공주 실제 반영</span>
+    <span class="pill">MASTER C4.5.36.4.2 · 조립식 꽃빛공주 실제 반영</span>
   </header>
 
   <nav class="tabs">
@@ -672,8 +684,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <p id="webtoonLoadingNotice" role="status" aria-live="polite" hidden style="margin:10px 0;padding:10px 14px;background:#fff2d9;border-radius:12px;color:#60472b;font-weight:700"></p>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.36.4.1)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.36.4.1 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.36.4.2)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.36.4.2 · 최신 버전 확인 전</p>
     <div class="btns">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="installLatestVersion" type="button" class="primary" hidden>⬆️ 새 버전 열기</button>
@@ -981,8 +993,20 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <button type="button" data-dw-action="delete">지우기</button>
           <button type="button" data-dw-action="deselect">선택 해제</button>
         </div>
-      <div class="dw-canvas-wrap" id="dwCanvasWrap">
-        <canvas id="dwCanvas" width="1280" height="1280" aria-label="Apple Pencil 그림판. 손가락으로도 그릴 수 있습니다."></canvas>
+      <div class="dw-zoom-tools" aria-label="그림 확대 및 이동">
+        <strong>🔍 부분 확대</strong>
+        <button type="button" data-dw-zoom="1">100%</button>
+        <button type="button" data-dw-zoom="1.5">150%</button>
+        <button type="button" data-dw-zoom="2">200%</button>
+        <button type="button" data-dw-zoom="3">300%</button>
+        <button type="button" id="dwPanMode" aria-pressed="false">✋ 확대 화면 이동</button>
+        <span id="dwZoomLevel" aria-live="polite">100%</span>
+        <small>확대한 뒤 ✋ 화면 이동으로 원하는 부분을 옮기고, 다시 누르면 그 부분에 그릴 수 있어요.</small>
+      </div>
+      <div class="dw-zoom-viewport" id="dwZoomViewport">
+        <div class="dw-canvas-wrap" id="dwCanvasWrap">
+          <canvas id="dwCanvas" width="1280" height="1280" aria-label="Apple Pencil 그림판. 손가락으로도 그릴 수 있습니다."></canvas>
+        </div>
       </div>
       <p class="hint">✏️ 그리기 모드에서는 펜으로 그리고, 👆 선택·이동에서는 밑그림·도형을 잡아 옮겨요. 선택한 그림은 손잡이 또는 버튼으로 바꿀 수 있어요. 주인공 원화는 훼손되지 않습니다.</p>
       <div class="dw-savebar">
@@ -1422,7 +1446,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.36.4.1 · 조립식 꽃빛공주 실제 반영</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.36.4.2 · 조립식 꽃빛공주 실제 반영</div>
 </div>
 <div id="toast"></div>
 
@@ -1430,7 +1454,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <script defer src="rose-style-assets.js"></script>
 <script defer src="studio-prop-art.js?v=45331"></script>
 <script defer src="app-core.js?v=45331"></script>
-<script defer src="drawing-workshop.js?v=453641"></script>
+<script defer src="drawing-workshop.js?v=453642"></script>
 <script defer src="fixed-princess.js?v=4522"></script>
 <script defer src="princess-assembly.js?v=45364"></script>
 </body>
