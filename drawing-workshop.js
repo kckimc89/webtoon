@@ -56,6 +56,87 @@ const hero=heroes.find(q=>q.id===id);return hero?princessThumb(hero):null}catch(
 function propSrc(key){try{return typeof premiumPropImages!=='undefined'?premiumPropImages[key]:null}catch(e){return null}}
 function layerName(e){if(e.premiumKey)return '💎 '+e.premiumKey;if(e.origin)return (names[e.origin]||'주인공')+' · '+(e.expression||'기뻐요');if(e.kind==='shape')return (shapeNames[e.shape]||'도형')+' 도형';return e.comicCutout?'🎨 내가 그린 주인공':e.template?'연습 밑그림':'가져온 그림'}
 function activeCutoutElement(){const e=selected();return e&&e.kind==='image'&&e.comicCutout?e:null}
+function selectedImageElement(){const e=selected();return e&&e.kind==='image'?e:null}
+async function elementImage(e){
+ if(!e||e.kind!=='image')throw new Error('그림을 먼저 선택해 주세요.');
+ if(cache.get(e.id))return cache.get(e.id);
+ if(e.origin)await ensureDrawingHeroArt(e.origin);
+ let src=e.premiumKey?propSrc(e.premiumKey):e.origin?heroSrc(e.origin,e.expression||'기뻐요'):e.src;
+ if(!src)throw new Error('그림 파일을 찾지 못했어요.');
+ let im=await imload(src);
+ if(e.variant==='outline'&&e.origin)im=await imload(await outline(im));
+ cache.set(e.id,im);return im;
+}
+function imageLocalPt(e,p){const a=localPt(e,p);return {x:e.flip?-a.x:a.x,y:a.y}}
+function imageActionUi(){
+ const chosen=selectedImageElement(),cropping=(tool==='imageCropRect'||tool==='imageCropLasso');
+ const free=$('dwCropImageFree'),rect=$('dwCropImageRect'),done=$('dwFinishCrop'),bg=$('dwSetSelectedAsBg'),reg=$('dwRegisterBg'),status=$('dwImageActionStatus');
+ if(free)free.disabled=!chosen;
+ if(rect)rect.disabled=!chosen;
+ if(bg)bg.disabled=!chosen;
+ if(reg)reg.disabled=!chosen;
+ if(done)done.hidden=!cropping;
+ if(status){
+  status.textContent=cropping
+   ? (tool==='imageCropLasso'?'가져온 그림의 남길 부분을 자유선으로 둘러 그려 주세요. 손을 떼면 오려집니다.':'가져온 그림의 남길 부분을 네모로 둘러 주세요. 손을 떼면 오려집니다.')
+   : (chosen?'선택한 그림을 오리거나 그림판 배경/웹툰 배경으로 쓸 수 있어요.':'가져온 그림을 선택하면 부분 오리기와 배경 등록을 사용할 수 있어요.');
+ }
+}
+function beginImageCrop(mode){
+ const e=selectedImageElement();
+ if(!e)return msg('먼저 가져온 그림을 하나 선택해 주세요.');
+ if(cutoutEdit)return msg('주인공 부분 수정을 먼저 끝내 주세요.');
+ setMode(mode);
+ msg(mode==='imageCropLasso'?'남길 부분을 자유선으로 둘러 그려 주세요.':'남길 부분을 네모로 둘러 주세요.');
+ imageActionUi();
+}
+function finishImageCrop(cancel){
+ comicSelectBox=null;clearComicGuide();
+ if(tool==='imageCropRect'||tool==='imageCropLasso'){setMode('select');if(cancel)msg('오리기를 취소했어요.');}
+ imageActionUi();
+}
+async function cropSelectedImage(box){
+ const e=selectedImageElement();
+ if(!e)return msg('먼저 가져온 그림을 선택해 주세요.');
+ const srcImage=await elementImage(e);
+ const iw=Math.max(1,Math.round(srcImage.naturalWidth||srcImage.width||e.w||1));
+ const ih=Math.max(1,Math.round(srcImage.naturalHeight||srcImage.height||e.h||1));
+ const stagePts=box.mode==='lasso'?box.points:[box.start,{x:box.end.x,y:box.start.y},box.end,{x:box.start.x,y:box.end.y}];
+ if(stagePts.length<3)return msg('조금 더 크게 둘러 그려 주세요.');
+ const imgPts=stagePts.map(p=>{const lp=imageLocalPt(e,p);return {x:Math.max(0,Math.min(iw,(lp.x/Math.max(1,e.w)+0.5)*iw)),y:Math.max(0,Math.min(ih,(lp.y/Math.max(1,e.h)+0.5)*ih))}});
+ const minX=Math.floor(Math.min(...imgPts.map(p=>p.x))),maxX=Math.ceil(Math.max(...imgPts.map(p=>p.x)));
+ const minY=Math.floor(Math.min(...imgPts.map(p=>p.y))),maxY=Math.ceil(Math.max(...imgPts.map(p=>p.y)));
+ const cropW=maxX-minX,cropH=maxY-minY;
+ if(cropW<8||cropH<8)return msg('오릴 영역이 너무 작아요. 조금 더 크게 선택해 주세요.');
+ const out=document.createElement('canvas');out.width=Math.max(1,cropW);out.height=Math.max(1,cropH);
+ const g=out.getContext('2d',{willReadFrequently:true});
+ g.save();g.beginPath();g.moveTo(imgPts[0].x-minX,imgPts[0].y-minY);imgPts.slice(1).forEach(p=>g.lineTo(p.x-minX,p.y-minY));g.closePath();g.clip();g.drawImage(srcImage,-minX,-minY,iw,ih);g.restore();
+ const data=g.getImageData(0,0,out.width,out.height).data;let visible=false;for(let i=3;i<data.length;i+=4){if(data[i]>10){visible=true;break}}
+ if(!visible)return msg('선택한 부분에서 그림을 찾지 못했어요. 다시 둘러 그려 주세요.');
+ const stageMinX=Math.min(...stagePts.map(p=>p.x)),stageMaxX=Math.max(...stagePts.map(p=>p.x));
+ const stageMinY=Math.min(...stagePts.map(p=>p.y)),stageMaxY=Math.max(...stagePts.map(p=>p.y));
+ remember();
+ e.src=out.toDataURL('image/png');e.origin=null;e.premiumKey=null;e.template=null;e.comicCutout=false;
+ e.w=Math.max(18,stageMaxX-stageMinX);e.h=Math.max(18,stageMaxY-stageMinY);e.x=(stageMinX+stageMaxX)/2;e.y=(stageMinY+stageMaxY)/2;
+ cache.set(e.id,out);render();msg('선택한 부분만 오렸어요. 이제 옮기거나 배경으로 사용할 수 있어요.');
+}
+function drawCoverImage(g,im){
+ const sw=Math.max(1,im.naturalWidth||im.width||W),sh=Math.max(1,im.naturalHeight||im.height||H);
+ const scale=Math.max(W/sw,H/sh),dw=sw*scale,dh=sh*scale,dx=(W-dw)/2,dy=(H-dh)/2;
+ g.clearRect(0,0,W,H);g.drawImage(im,dx,dy,dw,dh);
+}
+async function setSelectedImageAsBackground(){
+ const e=selectedImageElement();if(!e)return msg('먼저 가져온 그림을 선택해 주세요.');
+ const im=await elementImage(e),bg=cv(),g=bg.getContext('2d');drawCoverImage(g,im);remember();U.clearRect(0,0,W,H);U.drawImage(bg,0,0,W,H);render();msg('선택한 그림을 그림판 배경에 채웠어요. 원래 그림은 그대로 남아 있어요.');
+}
+async function registerSelectedAsBackground(){
+ const e=selectedImageElement();if(!e)return msg('먼저 가져온 그림을 선택해 주세요.');
+ const im=await elementImage(e),bg=cv(),g=bg.getContext('2d');drawCoverImage(g,im);
+ const payload={name:(layerName(e)||$('dwName')?.value||'내 배경').replace(/^💎\s*/,'').slice(0,40),src:bg.toDataURL('image/png')};
+ if(typeof window.webtoonRegisterBackground==='function')window.webtoonRegisterBackground(payload);
+ else try{const key='webtoon-custom-backgrounds-v1';const raw=localStorage.getItem(key);const list=raw?JSON.parse(raw):[];list.unshift({id:'userbg-'+Date.now(),...payload});localStorage.setItem(key,JSON.stringify(list.slice(0,24)))}catch(err){}
+ msg('웹툰 배경으로 등록했어요. 웹툰 만들기/꾸미기에서 배경 선택 목록의 「내가 넣은 배경」에서 고를 수 있어요.');
+}
 function syncCutoutElement(){
  if(!cutoutEdit)return;
  const e=els.find(q=>q.id===cutoutEdit.id);
@@ -149,7 +230,7 @@ function render(){stopInk();compose(X,$('dwShowBackground').checked);const e=sel
  }}
  const bubbleEditor=$('dwBubbleTextEditor');if(bubbleEditor){bubbleEditor.hidden=!(floatingActive&&e.kind==='shape'&&e.shape==='bubble');if(!bubbleEditor.hidden&&document.activeElement!==$('dwBubbleText'))$('dwBubbleText').value=e.text||''}
  if(floatHero){floatHero.hidden=!(floatingActive&&e.origin);if(!floatHero.hidden)$('dwFloatHeroMode').value=e.variant||'original'}
- comicEditUi();listLayers()}
+ comicEditUi();imageActionUi();listLayers()}
 // Raw pixels avoid blocking iPad Safari to PNG-encode the whole drawing at every new stroke.
 function snap(){syncCutoutElement();return {a:U.getImageData(0,0,W,H),b:P.getImageData(0,0,W,H),els:clone(els),sel}}
 function remember(){history.push(snap());if(history.length>15)history.shift();redo.length=0}
@@ -274,12 +355,12 @@ function resetPointerState(){
 }
 function down(ev){
  if(panMode&&zoomRatio>1)return;
- if(tool==='comicCrop'||tool==='comicLasso'){
-  if(!comic)return;ev.preventDefault();if(comicSelectBox)return;
+ if(tool==='comicCrop'||tool==='comicLasso'||tool==='imageCropRect'||tool==='imageCropLasso'){
+  if(tool==='comicCrop'||tool==='comicLasso'){if(!comic)return;}ev.preventDefault();if(comicSelectBox)return;
   // Ignore a palm/finger while Apple Pencil is active in the cutout tool.
   if(ev.pointerType==='touch'&&Date.now()-lastPencilAt<650)return;
   if(ev.pointerType==='pen')lastPencilAt=Date.now();
-  const p=pt(ev);comicSelectBox={mode:tool==='comicLasso'?'lasso':'rect',id:ev.pointerId,start:p,end:p,points:[p]};
+  const p=pt(ev);comicSelectBox={mode:(tool==='comicLasso'||tool==='imageCropLasso')?'lasso':'rect',id:ev.pointerId,start:p,end:p,points:[p]};
   try{C.setPointerCapture(ev.pointerId)}catch(_){}showComicGuide();return
  }
  // Never allow a palm to replace an active Pencil stroke. Delay touch drawing
@@ -308,7 +389,7 @@ function down(ev){
   let e=selected();let action=e&&!e.locked?hitHandle(e,p):null;if(!action){e=pick(p);action=e?'move':null}sel=e?.id||null;drag=null;if(e&&!e.locked){remember();const a=localPt(e,p);drag={action,p,ox:e.x,oy:e.y,ow:e.w,oh:e.h,angle:e.rotation||0,startAngle:Math.atan2(p.y-e.y,p.x-e.x),dist:Math.hypot(a.x,a.y)}}
  }else{remember();if(tool==='bucket'){flood(p);active=null;render()}else{const cutoutNow=editingCutout();if(!cutoutNow&&tool==='eraser')prepareInk();clearLive();pen(p,p);if(!cutoutNow&&tool==='eraser')drawInkFrame()}}if(tool==='select')render()}
 let objectFrame=0;function scheduleObjectRender(){if(!objectFrame)objectFrame=requestAnimationFrame(()=>{objectFrame=0;render()})}
-function move(ev){if(panMode&&zoomRatio>1)return;if(tool==='comicCrop'||tool==='comicLasso'){
+function move(ev){if(panMode&&zoomRatio>1)return;if(tool==='comicCrop'||tool==='comicLasso'||tool==='imageCropRect'||tool==='imageCropLasso'){
  if(comicSelectBox&&ev.pointerId===comicSelectBox.id){
   ev.preventDefault();const p=pt(ev);comicSelectBox.end=p;
   if(comicSelectBox.mode==='lasso'){
@@ -340,13 +421,14 @@ function move(ev){if(panMode&&zoomRatio>1)return;if(tool==='comicCrop'||tool==='
  scheduleObjectRender()}
 function end(ev){
  if(panMode&&zoomRatio>1)return;
- if(tool==='comicCrop'||tool==='comicLasso'){
+ if(tool==='comicCrop'||tool==='comicLasso'||tool==='imageCropRect'||tool==='imageCropLasso'){
   if(!comicSelectBox||comicSelectBox.id!==ev.pointerId)return;
   ev.preventDefault();
-  if(ev.type==='pointercancel'){comicSelectBox=null;clearComicGuide();msg('선택이 취소됐어요. 다시 둘러 그려 주세요.');return}
+  if(ev.type==='pointercancel'){comicSelectBox=null;clearComicGuide();if(tool==='imageCropRect'||tool==='imageCropLasso'){finishImageCrop(true)}else msg('선택이 취소됐어요. 다시 둘러 그려 주세요.');return}
   const p=pt(ev),b=comicSelectBox;b.end=p;
   if(b.mode==='lasso'&&Math.hypot(p.x-b.points.at(-1).x,p.y-b.points.at(-1).y)>1)b.points.push(p);
   comicSelectBox=null;clearComicGuide();
+  if(tool==='imageCropRect'||tool==='imageCropLasso'){cropSelectedImage(b).catch(err=>msg('그림 오리기 오류: '+err.message)).finally(()=>finishImageCrop(false));return}
   comicExtract(b).catch(err=>msg('주인공 선택 오류: '+err.message));return
  }
  touchPoints.delete(ev.pointerId);
@@ -491,6 +573,11 @@ $('dwFloatHeroMode').onchange=async ev=>{
 const swatches=['#303038','#ffffff','#e7659e','#ed9a58','#f2c455','#78ba8c','#65bdda','#678eda','#9a7bc7','#b16f58'];swatches.forEach(hex=>{const b=document.createElement('button');b.type='button';b.className='dw-swatch';b.style.background=hex;b.title=hex;b.onclick=()=>{ink=hex;$('dwColor').value=hex;sync()};$('dwColors').append(b)});
 function sync(){[...$('dwColors').children].forEach((b,i)=>b.classList.toggle('selected',swatches[i]===ink))}sync();$('dwColor').oninput=e=>{ink=e.target.value;sync()};$('dwSize').oninput=e=>{$('dwSizeLabel').textContent=thick=Number(e.target.value)};$('dwShowBackground').onchange=render;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.onclick=()=>setMode(b.dataset.dwTool));
 $('dwBlank').onclick=()=>{if(!confirm('새 도화지를 열까요? 저장하지 않은 그림은 사라집니다.'))return;els=[];sel=null;cache.clear();U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);history=[];redo=[];currentId=null;$('dwName').value='새 그림';setMode('pen')};
+if($('dwCropImageFree'))$('dwCropImageFree').onclick=()=>beginImageCrop('imageCropLasso');
+if($('dwCropImageRect'))$('dwCropImageRect').onclick=()=>beginImageCrop('imageCropRect');
+if($('dwFinishCrop'))$('dwFinishCrop').onclick=()=>finishImageCrop(true);
+if($('dwSetSelectedAsBg'))$('dwSetSelectedAsBg').onclick=()=>setSelectedImageAsBackground().catch(e=>msg('배경 적용 실패: '+e.message));
+if($('dwRegisterBg'))$('dwRegisterBg').onclick=()=>registerSelectedAsBackground().catch(e=>msg('배경 등록 실패: '+e.message));
 function previewPng(){const c=document.createElement('canvas');c.width=1280;c.height=1280;const g=c.getContext('2d');g.fillStyle='white';g.fillRect(0,0,1280,1280);g.scale(2,2);compose(g,true);return c.toDataURL('image/png')}
 $('dwExport').onclick=()=>{const a=document.createElement('a');a.href=previewPng();a.download=($('dwName').value.trim()||'내 그림').replace(/[\\/:*?"<>|]/g,'_')+'.png';a.click()};
 // Retain the exact IndexedDB database/store/shape used by C4.5.17.
@@ -560,7 +647,7 @@ function comicClear(){stopCutoutEdit(false);resetPointerState();U.clearRect(0,0,
 async function comicLoadPanel(panel){stopCutoutEdit(false);resetPointerState();const [a,b]=await Promise.all([imload(panel.under),imload(panel.paint)]);U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H);els=clone(panel.elements||[]);sel=null;currentId=null;history=[];redo=[];await refreshImages();setMode('select')}
 function comicSyncTitle(){if(comic)comic.title=$('dwComicTitle').value.trim()||'나의 그림 이야기'}
 async function comicPersist(){if(!comic)return;comicSyncTitle();comic.updated=Date.now();await comicTx('readwrite',s=>s.put(comic));}
-function comicUi(){const active=!!comic;$('dwComicEditor').hidden=!active;if(!active){if(tool==='comicCrop'||tool==='comicLasso')setMode('pen');comicEditUi();return;}$('dwComicTitle').value=comic.title;$('dwComicStatus').textContent=`${comicIndex+1}컷 편집 중 · 총 ${comic.panels.length}컷`;
+function comicUi(){const active=!!comic;$('dwComicEditor').hidden=!active;if(!active){if(tool==='comicCrop'||tool==='comicLasso')setMode('pen');if(tool==='imageCropRect'||tool==='imageCropLasso')setMode('select');comicEditUi();imageActionUi();return;}$('dwComicTitle').value=comic.title;$('dwComicStatus').textContent=`${comicIndex+1}컷 편집 중 · 총 ${comic.panels.length}컷`;
  const strip=$('dwComicStrip');strip.replaceChildren();comic.panels.forEach((panel,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-current',String(comicIndex===i));const im=new Image();im.src=i===comicIndex?previewPng():panel.preview;im.alt=`${i+1}컷`;const title=document.createElement('div');title.textContent=`${i+1}컷 ${i===comicIndex?'✏️':''}`;b.append(im,title);b.onclick=()=>comicGuard(async()=>{await comicSavePanel();comicIndex=i;await comicLoadPanel(comic.panels[i]);comicUi()});strip.append(b)});comicEditUi()}
 async function comicSavePanel(){if(!comic)return;comic.panels[comicIndex]=comicSnapshot();await comicPersist()}
 async function comicGuard(fn){if(comicBusy)return;comicBusy=true;try{await fn()}catch(err){console.error(err);msg('웹툰 작업 오류: '+(err.message||err))}finally{comicBusy=false}}
