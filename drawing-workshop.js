@@ -1,4 +1,4 @@
-/* C4.5.25-28.2 | Pencil input recovery + two-pass guarded smart fill. */
+/* C4.5.36.4.1 | Drawing bucket: large enclosed-region fill without spilling outside. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -230,7 +230,9 @@ function flood(p){
   const q=new Int32Array(n),seen=new Uint8Array(n);
   let head=0,tail=1,edge=false,minX=W,maxX=0,minY=H,maxY=0;
   q[0]=pos;seen[pos]=1;
-  const limit=Math.floor(n*.42);
+  // Large closed faces can cover more than 42% of the drawing.
+  // The open-to-canvas-edge check below, not a small area cap, protects the page.
+  const limit=Math.floor(n*.94);
   while(head<tail){
    const k=q[head++],x=k%W,y=(k/W)|0;
    if(x===0||x===W-1||y===0||y===H-1){edge=true;break}
@@ -244,15 +246,15 @@ function flood(p){
   }
   if(edge||head<12)return null;
   // A narrow open line can make an implausibly huge paint region.
-  if((maxX-minX+1)*(maxY-minY+1)>n*.62)return null;
+  if((maxX-minX+1)*(maxY-minY+1)>n*.97)return null;
   return {q,count:head};
  }
  let region=null;
- for(const radius of [4,8]){
+ for(const radius of [2,4,8,12]){
   region=enclosedRegion(closeBarrier(barrier,radius));
   if(region)break;
  }
- if(!region){msg('아직 색칠 범위를 확실히 찾지 못했어요. 빈틈을 조금 이어 그리거나 더 안쪽을 눌러 주세요.');return}
+ if(!region){msg('이 영역의 선이 도화지 가장자리와 이어져 있거나 빈틈이 있을 수 있어요. 선을 확인한 뒤 안쪽을 눌러 주세요.');return}
  const result=U.getImageData(0,0,W,H),out=result.data;
  let changed=0;
  for(let j=0;j<region.count;j++){
