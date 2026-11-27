@@ -36,7 +36,7 @@ html.page-zoom-locked, html.page-zoom-locked body {touch-action:pan-x pan-y;}
 #versionPanel #pageZoomToggle[aria-pressed="true"] {background:#e3f4eb;color:#285d43;}
 </style>
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C4.5.36.4.5</title>
+<title>나만의 웹툰 창작극장 C4.5.36.4.6</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -500,7 +500,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 #assemblyMaker .pm-controls .pm-group .hint{font-size:13px;line-height:1.4}
 @media(min-width:900px){#assemblyMaker .pm-preview canvas{max-height:790px}}
 
-/* C4.5.36.4.4 — block unwanted native text selection on the drawing UI only. */
+/* C4.5.36.4.6 — block unwanted native text selection on the drawing UI only. */
 #draw { -webkit-touch-callout:none; }
 #draw :not(input):not(textarea):not([contenteditable]){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #draw input,#draw textarea { -webkit-user-select:text;user-select:text;-webkit-touch-callout:default }
@@ -703,7 +703,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.36.4.4 · 조립식 꽃빛공주 실제 반영</span>
+    <span class="pill">MASTER C4.5.36.4.6 · 그림 자원 활용</span>
   </header>
 
   <nav class="tabs">
@@ -716,8 +716,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <p id="webtoonLoadingNotice" role="status" aria-live="polite" hidden style="margin:10px 0;padding:10px 14px;background:#fff2d9;border-radius:12px;color:#60472b;font-weight:700"></p>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.36.4.4)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.36.4.4 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.36.4.6)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.36.4.6 · 최신 버전 확인 전</p>
     <div class="btns version-action-row">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="pageZoomToggle" type="button" class="secondary" aria-pressed="true">🔒 확대 방지 중 · 해제</button>
@@ -875,14 +875,14 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
                 <p class="hint">기본 단발 공주의 웃는 원화는 보존합니다. 같은 얼굴·머리·드레스·두 손을 모은 자세로 그린 다른 표정 원화만 골라 추가합니다. 저장 후에는 단발 공주에서 완성한 표정만 선택할 수 있습니다.</p>
                 <div id="roseBobSlotStatus" class="roseBobSlotStatus" aria-live="polite">준비된 원화: 기뻐요 (기본 1장)</div>
                 <div class="roseArtworkInputs" id="roseBobInputs"></div>
-                <div class="btns"><button id="roseBobSave" type="button" class="primary">💾 선택한 표정만 추가</button><button id="roseBobClear" type="button" class="secondary">추가한 표정 초기화</button></div>
+                <div class="btns"><button id="roseBobSave" type="button" class="primary">💾 선택한 표정만 추가</button><button id="roseBobClear" type="button" class="ghost">추가한 표정 초기화</button></div>
                 <p id="roseBobNotice" class="hint" aria-live="polite">새 그림을 선택하지 않으면 아무것도 바뀌지 않습니다. 저장 자료는 이 기기의 별도 보관함에 유지됩니다.</p>
               </details>
               <details class="roseArtworkAdmin"><summary>⚙️ 부모용 · 별도 공주 원화 등록</summary>
                 <p class="hint">표정 6종을 같은 공주·같은 머리·같은 드레스로 그린 <b>PNG/WebP/JPG 원화</b>를 한 장 이상 등록합니다. 원본을 변형해 가짜 단발·새 옷으로 표시하지 않습니다. 등록한 그림은 이 기기의 저장 공간에만 보관되며 다른 기기로 자동 동기화되지 않습니다. 기존 머리·드레스 형태 선택은 새 원화를 고른 상태에서는 적용되지 않습니다.</p>
                 <label>새 스타일 이름 <input id="roseArtworkName" type="text" maxlength="30" placeholder="예: 단발머리와 궁전 드레스"/></label>
                 <div class="roseArtworkInputs" id="roseArtworkInputs"></div>
-                <div class="btns"><button id="roseArtworkSave" type="button" class="primary">💾 선택한 원화 등록</button><button id="roseArtworkDelete" type="button" class="secondary">선택한 등록 원화 삭제</button></div>
+                <div class="btns"><button id="roseArtworkSave" type="button" class="primary">💾 선택한 원화 등록</button><button id="roseArtworkDelete" type="button" class="ghost">선택한 등록 원화 삭제</button></div>
                 <p id="roseArtworkNotice" class="hint" aria-live="polite">사진을 등록하면 기존 원본을 변경하지 않고 별도 스타일로 추가됩니다.</p>
               </details>
             </section>
@@ -942,7 +942,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
   <section id="draw" class="view">
     <div class="card draw-workshop">
       <h2>🖍 내 그림 만들기 — 모든 공주·동물친구와 함께</h2>
-      <p class="sub">Apple Pencil이나 손가락으로 그림을 그리고, 색칠하고, 사진앱의 삽화나 스크린샷도 가져와 오리고, 배경으로 쓰고, 나만의 주인공으로 만들 수 있어요. 기존 공주·동물친구·저장 작품은 그대로 유지됩니다.</p>
+      <p class="sub">Apple Pencil이나 손가락으로 그림을 그리고, 색칠하고, 나만의 주인공을 만들어요. 원본 공주와 기존 웹툰은 변경하지 않아요.</p>
       <div class="draw-actions">
         <button type="button" id="dwBlank" class="secondary">＋ 빈 도화지</button>
         <label for="dwTemplate" class="dw-label">🧩 연습 밑그림 추가</label><select id="dwTemplate" aria-label="색칠하기 밑그림">
@@ -966,7 +966,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <p class="hint">고품질 그림을 고르고, 도화지에서 끌어 옮기세요. 크기·회전·반전·그림 층도 조절할 수 있어요.</p>
         <div id="dwPremiumGallery" class="dw-premium-gallery" role="group" aria-label="고품질 장식품 선택"></div>
       </details>
-      <details class="dw-premium-panel" open><summary>🖼 가져온 그림 활용하기 (사진·삽화·스크린샷)</summary>
+      <details class="dw-premium-panel"><summary>🖼 가져온 그림 활용하기 (사진·삽화·스크린샷)</summary>
         <p class="hint">가져온 그림을 먼저 👆 선택·이동으로 고른 뒤 사용해 주세요. 자유선·네모로 일부만 오릴 수 있고, 오린 그림이나 원본 그림을 그림판 배경 또는 웹툰 배경으로 등록할 수 있어요. 고정(🔒)을 하면 배치가 흔들리지 않아요.</p>
         <div class="draw-actions dw-layer-tools">
           <button id="dwCropImageFree" type="button" class="secondary">✂ 자유선으로 오리기</button>
@@ -1183,7 +1183,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
       </div>
       <div class="btns" style="margin-top:14px">
         <button id="makeComic" class="primary" type="button">🎉 컷 초안 만들기</button>
-        <button id="gotoEdit" class="secondary" type="button">📖 만들어진 웹툰 보러 가기</button>
+        <button id="gotoEdit" class="ghost" type="button">📖 만들어진 웹툰 보러 가기</button>
       </div>
     </div>
   </section>
@@ -1195,15 +1195,15 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <h2 id="comicTitle">나의 웹툰</h2>
           <p class="sub">전체 컷 또는 큰 한 컷을 선택하고, 같은 편집 도구로 배경·동작·소품을 꾸며 보세요. 그림 속 공주와 소품을 손가락으로 직접 이동하고 두 손가락으로 크기와 방향을 바꿀 수 있어요. 이제 표정·단순 배경·말풍선도 바로 선택해요. GPT 없이 작동합니다.</p>
         </div>
-        <button id="backToMake" class="secondary" type="button">← 주인공 바꾸기</button>
+        <button id="backToMake" class="ghost" type="button">← 주인공 바꾸기</button>
       </div>
       <div id="comicArea" class="comic two"></div>
       <div class="comicModeRow" aria-label="웹툰 컷 보기 방식">
         <button id="modeAll" class="secondary" type="button" aria-pressed="true">▦ 전체 컷 보기</button>
         <button id="modeSingle" class="secondary" type="button" aria-pressed="false">🔎 한 컷 크게 보기</button>
-        <button id="modePrev" class="secondary" type="button">◀ 이전</button>
+        <button id="modePrev" class="ghost" type="button">◀ 이전</button>
         <span id="modePage" class="modePage">1 / 4</span>
-        <button id="modeNext" class="secondary" type="button">다음 ▶</button>
+        <button id="modeNext" class="ghost" type="button">다음 ▶</button>
       <button type="button" id="saveSelectedPhoto" class="primary">📷 이 컷을 사진으로 저장</button></div>
       <div class="quickPanel" id="quickEditPanel">
         <div class="quickPanelTitle">🎨 쉬운 꾸미기 — 위 그림을 보면서 아래 버튼을 눌러요</div>
@@ -1238,6 +1238,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <div class="quickPanelTitle" style="margin-top:12px">🌈 배경 고르기 — 장면과 단순 배경을 한곳에서</div>
         <label class="block" for="panelBg">🌄 모든 배경 중에서 고르기</label>
         <select id="panelBg" aria-label="장면 배경과 단순 배경 모두 선택" style="width:100%;min-height:48px;font-size:16px;margin:5px 0 10px"></select>
+<details class="dw-premium-panel" style="margin:8px 0"><summary>🖼 내가 넣은 배경 관리</summary><div id="customBgManager" class="dw-gallery" style="margin-top:10px"></div><p class="hint">목록에서 숨겨도 이전 웹툰의 배경은 남아요.</p></details>
         <p class="hint">아래는 자주 쓰는 단순 배경이에요. 숲·성·바다·꽃정원·학교·우주는 위 목록에서 선택하세요.</p>
         <div class="quickBtns" id="quickBackgroundBtns" aria-label="단순 배경 빠른 선택">
           <button type="button" class="quickBgButton" data-quick-bg="plain_white"><span class="quickBgDot" style="background:#fff"></span>흰색</button>
@@ -1358,7 +1359,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
             <div><label class="block" for="itemTint">소품 색상 (기본 소품 SVG 지원)</label><select id="itemTint"><option value="normal">원래 색</option><option value="red">빨강·분홍</option><option value="orange">주황·노랑</option><option value="blue">파랑</option><option value="green">초록</option><option value="purple">보라</option></select></div>
             <div><label class="block">소품 뒤집기</label><button type="button" class="secondary" id="flipItem">↔ 좌우 뒤집기</button></div>
           </div>
-          <div class="btns"><button type="button" class="secondary" id="duplicateItem">➕ 같은 소품 하나 더</button><button type="button" class="secondary" id="removeItem">🗑 선택한 소품 지우기</button></div>
+          <div class="btns"><button type="button" class="secondary" id="duplicateItem">➕ 같은 소품 하나 더</button><button type="button" class="ghost" id="removeItem">🗑 선택한 소품 지우기</button></div>
           <div class="friendPropPicker">
             <label class="block" for="friendPropKind">🐾 동물 친구를 소품·조연으로 추가</label>
             <div class="grid2"><select id="friendPropKind"><option value="dog">🐶 몽이 (강아지)</option><option value="cat">🐱 루루 (고양이)</option><option value="rabbit">🐰 보송이 (토끼)</option><option value="fairy">🧚 기존 요정</option></select><select id="friendPropEmotion"><option value="기뻐요">기뻐요</option><option value="놀랐어요">놀랐어요</option><option value="슬퍼요">슬퍼요</option><option value="화났어요">화났어요</option><option value="생각해요">생각해요</option><option value="신나요">신나요</option></select></div>
@@ -1410,8 +1411,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
  <div id="pSavedCards" class="savedHeroCards"></div>
  <p class="hint">주인공 보관함은 이제 IndexedDB에 저장합니다. 이전 보관함은 그대로 두고 읽어옵니다. Safari 웹사이트 데이터를 지우면 사라질 수 있으므로 중요한 작품은 전시관의 전체 백업을 저장하세요.</p>
 </details>
-<div class="btns"><button type="button" class="secondary" id="copyBg">🌄 배경을 다른 컷에도 적용</button><button type="button" class="secondary" id="copyProps">🎨 꾸민 소품 4컷 모두 적용</button><button type="button" class="secondary" id="copyHero">🐰 주인공 설정을 다른 컷에도 적용</button><button type="button" class="secondary" id="undoEdit">↶ 실행 취소</button><button type="button" class="secondary" id="redoEdit">↷ 다시 실행</button></div>
-        <div class="btns"><button type="button" class="secondary" id="centerHero">↩ 주인공 제자리</button><button type="button" class="secondary" id="centerItem">↩ 선택 소품 제자리</button><button type="button" class="secondary" id="resetStage">🔄 이 컷 배치 초기화</button></div>
+<div class="btns"><button type="button" class="secondary" id="copyBg">🌄 배경을 다른 컷에도 적용</button><button type="button" class="secondary" id="copyProps">🎨 꾸민 소품 4컷 모두 적용</button><button type="button" class="secondary" id="copyHero">🐰 주인공 설정을 다른 컷에도 적용</button><button type="button" class="ghost" id="undoEdit">↶ 실행 취소</button><button type="button" class="ghost" id="redoEdit">↷ 다시 실행</button></div>
+        <div class="btns"><button type="button" class="secondary" id="centerHero">↩ 주인공 제자리</button><button type="button" class="ghost" id="centerItem">↩ 선택 소품 제자리</button><button type="button" class="ghost" id="resetStage">🔄 이 컷 배치 초기화</button></div>
         <p class="hint" id="composerHint">현재 컷의 주인공과 소품만 움직입니다. 다른 컷은 그대로예요.</p>
       </div>
       <label class="block">🎤 아이디어를 더 말해 보세요</label>
@@ -1423,7 +1424,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
       </div>
       <div class="aiInfo" id="ideaResult" role="status" aria-live="polite">예: “배경을 우주로, 토끼는 작게, 별 3개 추가해 줘.” 준비된 배경·소품·크기·방향·말풍선 등은 바로 적용할 수 있어요. 새 등장인물이나 새로운 그림 자체는 만들지 못해요. 새로운 얼굴·복잡한 행동은 자동 생성되지 않습니다.</div>
       <div class="btns" style="margin-top:10px">
-        <button id="prevPanel" class="secondary" type="button">← 이전 컷</button>
+        <button id="prevPanel" class="ghost" type="button">← 이전 컷</button>
         <button id="nextPanel" class="primary" type="button">다음 컷 →</button>
       </div>
     </div>
@@ -1441,7 +1442,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
       <div id="referenceFrame" class="aiHide aiTransfer" aria-live="polite">
         <p id="referenceMessage" class="hint">복사할 그림을 준비합니다.</p>
         <img id="referencePreview" class="aiPacketPreview" alt="현재 컷 그림과 아이의 수정 요청이 함께 담긴 이미지">
-        <div class="btns"><button id="saveReference" type="button" class="secondary">📥 붙여넣기가 안 되면 그림 저장</button></div>
+        <div class="btns"><button id="saveReference" type="button" class="ghost">📥 붙여넣기가 안 되면 그림 저장</button></div>
         <p class="hint">아이패드에서 그림 복사가 지원되지 않으면 위 이미지를 길게 눌러 복사하거나 저장한 뒤 GPT에 첨부하세요. 앱이 GPT 대화방의 첨부칸에 직접 넣을 수는 없습니다.</p>
       </div>
       <div class="btns" style="margin:10px 0 14px"><button class="secondary" data-open-gpt type="button">💬 GPT 대화방 열기</button></div>
@@ -1452,13 +1453,13 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
         <textarea id="aiAnswer" rows="4" placeholder="[웹툰 컷 수정안] 또는 [웹툰 이야기 정리] 내용을 붙여넣으세요."></textarea>
         <div class="btns"><button id="aiReview" class="secondary" type="button">🔍 수정안 미리보기</button></div>
         <div id="aiPreviewBox" class="aiBox aiHide" role="status"></div>
-        <div id="aiApproveRow" class="btns aiHide"><button id="aiApprove" class="primary" type="button">✅ 좋아요! 웹툰에 적용</button><button id="aiCancel" class="secondary" type="button">다시 생각할래요</button></div>
+        <div id="aiApproveRow" class="btns aiHide"><button id="aiApprove" class="primary" type="button">✅ 좋아요! 웹툰에 적용</button><button id="aiCancel" class="ghost" type="button">다시 생각할래요</button></div>
         <label class="block" for="aiImagePaste" style="margin-top:15px">🖼 GPT가 만든 새 그림 가져오기</label>
         <div id="aiImagePaste" class="imagePasteZone" contenteditable="true" role="textbox" aria-label="복사한 그림을 여기에 붙여넣기" data-placeholder="이곳을 길게 누르고 그림 붙여넣기" spellcheck="false"></div>
-        <div class="btns" style="margin:10px 0 8px"><button id="aiPasteButton" class="secondary" type="button">📋 그림 붙여넣기</button><button id="aiChooseImage" class="secondary" type="button">📷 사진 선택</button></div>
+        <div class="btns" style="margin:10px 0 8px"><button id="aiPasteButton" class="secondary" type="button">📋 그림 붙여넣기</button><button id="aiChooseImage" class="ghost" type="button">📷 사진 선택</button></div>
         <input id="aiImageFile" type="file" accept="image/*" aria-label="선택한 컷에 그림 가져오기" style="display:none">
         <img id="aiImportedPreview" class="aiPreview aiHide" alt="가져올 그림 미리보기">
-        <div class="btns" style="margin-top:8px"><button id="aiUseImage" class="primary" type="button">✅ 선택한 컷에 그림 적용</button><button id="aiResetImage" class="secondary" type="button">↩ 기본 그림으로</button></div>
+        <div class="btns" style="margin-top:8px"><button id="aiUseImage" class="primary" type="button">✅ 선택한 컷에 그림 적용</button><button id="aiResetImage" class="ghost" type="button">↩ 기본 그림으로</button></div>
         <p id="aiImageInfo" class="hint">이미지를 선택한 뒤 적용을 누르세요.</p>
       </details>
     </div></details>
@@ -1467,7 +1468,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
       <p class="sub">전시관에 저장하고, 필요하면 PNG 그림으로도 보관할 수 있어요.</p>
       <div class="btns">
         <button id="saveWork" class="primary" type="button">🏆 전시관에 작품 저장</button>
-        <button id="downloadJson" class="secondary" type="button">📦 작품 파일 저장</button>
+        <button id="downloadJson" class="ghost" type="button">📦 작품 파일 저장</button>
       </div>
     </div>
   </section>
@@ -1479,26 +1480,26 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <h2>전시관</h2>
           <p class="sub">완성한 웹툰을 다시 열고 이어서 고칠 수 있어요.</p>
         </div>
-        <button id="refreshLibrary" class="secondary" type="button">새로 보기</button>
+        <button id="refreshLibrary" class="ghost" type="button">새로 보기</button>
       </div>
       <div class="btns" style="margin-bottom:12px">
         <button id="backupWorks" class="secondary" type="button">전체 백업 저장</button>
-        <button id="restoreWorks" class="secondary" type="button">백업 불러오기</button>
+        <button id="restoreWorks" class="ghost" type="button">백업 불러오기</button>
         <input id="restoreFile" type="file" accept="application/json" hidden>
       </div>
       <div id="works" class="works"></div>
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.36.4.4 · 조립식 꽃빛공주 실제 반영</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.36.4.6 · 그림 자원 활용</div>
 </div>
 <div id="toast"></div>
 
 
 <script defer src="rose-style-assets.js"></script>
 <script defer src="studio-prop-art.js?v=45331"></script>
-<script defer src="app-core.js?v=453645"></script>
-<script defer src="drawing-workshop.js?v=453645"></script>
+<script defer src="app-core.js?v=453646"></script>
+<script defer src="drawing-workshop.js?v=453646"></script>
 <script defer src="fixed-princess.js?v=4522"></script>
 <script defer src="princess-assembly.js?v=45364"></script>
 </body>

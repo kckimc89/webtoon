@@ -557,7 +557,7 @@ function renderCharacterChoices(){
 
 function renderStoryChoices(){const wrap=$('storyChoices');wrap.innerHTML='';stories.forEach(s=>{const b=document.createElement('button');b.type='button';b.className='story'+(settings.story===s.id?' selected':'');b.innerHTML=`<div class="big">${s.icon}</div><div>${s.title}</div>`;b.onclick=()=>{settings.story=s.id;settings.title=s.titleValue;settings.idea=s.idea;$('storyTitle').value=settings.title;$('storyIdea').value=settings.idea;renderStoryChoices()};wrap.appendChild(b)})}
 function renderCounts(){ $$('#countChoices .countBtn').forEach(b=>{b.classList.toggle('selected',Number(b.dataset.count)===settings.count);b.onclick=()=>{settings.count=Number(b.dataset.count);renderCounts()}})}
-function initSelectors(){['panelEmotion','panelPose','panelAction','panelBg','panelProp'].forEach(id=>{const el=$(id);el.innerHTML=''});emotions.forEach(v=>$('panelEmotion').insertAdjacentHTML('beforeend',`<option>${v}</option>`));poses.forEach(v=>$('panelPose').insertAdjacentHTML('beforeend',`<option>${v}</option>`));actions.forEach(v=>$('panelAction').insertAdjacentHTML('beforeend',`<option>${v}</option>`));populateBackgroundSelect($('panelBg'));populateBackgroundSelect($('baseBackground'),settings.baseBackground||'forest');props.forEach(v=>$('panelProp').insertAdjacentHTML('beforeend',`<option>${v}</option>`))}
+function initSelectors(){['panelEmotion','panelPose','panelAction','panelBg','panelProp'].forEach(id=>{const el=$(id);el.innerHTML=''});emotions.forEach(v=>$('panelEmotion').insertAdjacentHTML('beforeend',`<option>${v}</option>`));poses.forEach(v=>$('panelPose').insertAdjacentHTML('beforeend',`<option>${v}</option>`));actions.forEach(v=>$('panelAction').insertAdjacentHTML('beforeend',`<option>${v}</option>`));populateBackgroundSelect($('panelBg'));populateBackgroundSelect($('baseBackground'),settings.baseBackground||'forest');renderCustomBgManager();props.forEach(v=>$('panelProp').insertAdjacentHTML('beforeend',`<option>${v}</option>`))}
 function clone(obj){return JSON.parse(JSON.stringify(obj))}
 function buildPanels(){const seed=storyTemplates[settings.story]||storyTemplates.key;const count=settings.count;const base=seed.slice(0,count).map((p,i)=>({...clone(p), background:i===0?settings.baseBackground:(p.background||settings.baseBackground), mood:'bright',...(isPrincess(settings.hero)?{princessLook:clone(princessDefaults[settings.hero])}:{})})); if(count===2){base[1].caption=base[base.length-1].caption;base[1].speech=base[base.length-1].speech;base[1].emotion=base[base.length-1].emotion;base[1].pose=base[base.length-1].pose;base[1].action=base[base.length-1].action;base[1].prop=base[base.length-1].prop;} return base;}
 function makeComic(){settings.heroName=$('heroName').value.trim()||'루루';settings.heroTrait=$('heroTrait').value.trim()||'용감한 친구';settings.title=$('storyTitle').value.trim()||'나의 웹툰';settings.idea=$('storyIdea').value.trim()||'신나는 모험';settings.baseBackground=$('baseBackground').value;state={title:settings.title,hero:settings.hero,heroName:settings.heroName,heroTrait:settings.heroTrait,custom:settings.custom,studioPrincess:Boolean(settings.studioPrincess),studioRecipe:settings.studioRecipe?clone(settings.studioRecipe):null,story:settings.story,panels:buildPanels()};selected=0;renderComic();switchView('edit');toast('컷 초안을 만들었어요! 이제 표정과 자세를 바꿔 보세요.')}
@@ -814,8 +814,8 @@ function readCustomBackgrounds(){
   }catch(e){console.warn('사용자 배경 읽기 실패',e);return []}
 }
 function writeCustomBackgrounds(list){
-  try{localStorage.setItem(customBackgroundStorageKey,JSON.stringify((list||[]).slice(0,24)))}
-  catch(e){console.warn('사용자 배경 저장 실패',e)}
+  try{localStorage.setItem(customBackgroundStorageKey,JSON.stringify(list||[]))}
+  catch(e){throw new Error('배경 저장 공간이 부족해요. 기존 자료는 그대로 남아 있어요.')} 
 }
 function injectCustomBackground(item){
   if(!item||!item.id||!item.src)return;
@@ -837,7 +837,7 @@ function populateBackgroundSelect(el,selectedValue){
     simpleItems.forEach(k=>{const opt=document.createElement('option');opt.value=k;opt.textContent=bgMeta[k].name;group.append(opt)});
     el.append(group);
   }
-  const custom=readCustomBackgrounds();
+  const custom=readCustomBackgrounds().filter(item=>!item.hidden||item.id===current);
   if(custom.length){
     const group=document.createElement('optgroup');group.label='🖼 내가 넣은 배경';
     custom.forEach(item=>{injectCustomBackground(item);const opt=document.createElement('option');opt.value=item.id;opt.textContent=item.name||'내 배경';group.append(opt)});
@@ -854,19 +854,14 @@ window.webtoonRegisterBackground=function(payload){
   const id=payload.id||('userbg-'+Date.now()+'-'+Math.random().toString(36).slice(2,7));
   const item={id,name:(payload.name||'내 배경').slice(0,40),src:payload.src};
   const list=readCustomBackgrounds().filter(v=>v.id!==id);
-  list.unshift(item);writeCustomBackgrounds(list);injectCustomBackground(item);refreshBackgroundSelectors();
+  list.unshift(item);writeCustomBackgrounds(list);injectCustomBackground(item);refreshBackgroundSelectors();renderCustomBgManager();
   return item;
 };
-window.webtoonUnregisterBackground=function(id){
-  if(!id)return;
-  const list=readCustomBackgrounds().filter(v=>v.id!==id);writeCustomBackgrounds(list);
-  if(bgMeta[id]&&bgMeta[id].custom)delete bgMeta[id];
-  if(selectableBackgrounds[id]&&String(selectableBackgrounds[id]).startsWith('data:image/'))delete selectableBackgrounds[id];
-  if(settings.baseBackground===id)settings.baseBackground='forest';
-  if(state&&state.panels){state.panels.forEach(p=>{if(p.background===id)p.background='forest'})}
-  refreshBackgroundSelectors();
-  if(typeof renderComic==='function')try{renderComic()}catch(e){}
-};
+function renderCustomBgManager(){
+ const root=document.getElementById('customBgManager');if(!root)return;root.replaceChildren();const list=readCustomBackgrounds();if(!list.length){root.textContent='아직 등록한 배경이 없어요.';return;}
+ for(const item of list){const card=document.createElement('div');card.className='dw-card';const img=new Image();img.src=item.src;img.alt=item.name;img.style.cssText='width:100%;max-height:110px;object-fit:contain';const title=document.createElement('b');title.textContent=item.name+(item.hidden?' (숨김)':'');card.append(img,title);for(const [label,action] of [['이름 바꾸기',()=>{const n=prompt('배경 이름',item.name);if(n===null||!n.trim())return;item.name=n.trim().slice(0,40)}],[item.hidden?'다시 표시':'목록에서 숨기기',()=>{item.hidden=!item.hidden}]]){const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=label;button.onclick=()=>{try{action();writeCustomBackgrounds(list);injectCustomBackground(item);refreshBackgroundSelectors();renderCustomBgManager()}catch(e){toast(e.message)}};card.append(button)}root.append(card)}
+}
+window.webtoonUnregisterBackground=function(id){const list=readCustomBackgrounds();const item=list.find(x=>x.id===id);if(!item)return;item.hidden=true;writeCustomBackgrounds(list);refreshBackgroundSelectors();renderCustomBgManager()};
 window.webtoonListCustomBackgrounds=readCustomBackgrounds;
 for(const [id,[name,color]] of Object.entries(simpleBgSettings)){
  const decor=id==='plain_sparkles'?`<g fill="#fff" opacity=".86"><path d="M47 42l6 16 16 6-16 6-6 16-6-16-16-6 16-6Z"/><path d="M255 32l4 11 11 4-11 4-4 11-4-11-11-4 11-4Z"/><path d="M217 140l5 13 13 5-13 5-5 13-5-13-13-5 13-5Z"/></g>`:
@@ -2183,7 +2178,7 @@ syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
 // C4.5.9: One source of truth for installed version; manifest supplied with each ZIP.
 // A GitHub Pages deployment must publish BOTH index.html and version.json in the same folder.
-const WEBTOON_APP_VERSION='4.5.33.2';
+const WEBTOON_APP_VERSION='4.5.36.4.6';
 let latestPublishedVersion=null;
 let initialVersionCheck=true;
 let versionCheckInFlight=false;
