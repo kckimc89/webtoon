@@ -491,9 +491,12 @@ for(const b of document.querySelectorAll('[data-dw-zoom]'))b.addEventListener('c
 // Touch navigation is independent of the Pencil and of object transforms.
 const navTouches=new Map();let pinch=null,navEnabled=true;
 const navButton=$('dwTouchNav');
-navButton.onclick=()=>{navEnabled=!navEnabled;navTouches.clear();pinch=null;navButton.textContent=navEnabled?'손가락: 화면 이동·확대':'손가락: 그리기·객체 조절';navButton.setAttribute('aria-pressed',String(navEnabled));};
+navButton.onclick=()=>{navEnabled=!navEnabled;navTouches.clear();pinch=null;navButton.textContent=navEnabled?'손가락: 화면 이동·확대 (선택 모드 제외)':'손가락: 그리기·객체 조절';navButton.setAttribute('aria-pressed',String(navEnabled));};
 function touchNav(ev){
  if(ev.pointerType!=='touch'||(!navEnabled&&!navTouches.has(ev.pointerId)&&!precise))return;
+ // In selection mode preserve the original object handles and two-finger transforms.
+ // Explicit screen-move mode still routes touches to canvas navigation.
+ if(tool==='select'&&!panMode&&!navTouches.has(ev.pointerId))return;
  ev.preventDefault();ev.stopImmediatePropagation();
  if(ev.type==='pointerdown'){
   if(activePointerType==='pen'||precisePointer!==null||Date.now()-lastPencilAt<250)return;
