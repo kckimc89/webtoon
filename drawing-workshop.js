@@ -1,4 +1,4 @@
-/* C4.5.36.4.3 | Protect iPad canvas selection, real front layer, focused zoom. */
+/* C4.5.36.4.9 | Protect iPad canvas selection, real front layer, focused zoom. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -22,6 +22,7 @@ let els=[],sel=null,cache=new Map(),tool='pen',ink='#d76eab',thick=11,drag=null,
 let cutoutEdit=null;
 const touchPoints=new Map();let gesture=null;
 // Character extraction is only enabled inside the comic editor, never in free drawing.
+let precise=null, precisePointer=null, preciseBusy=false;
 let comicSelectBox=null;const comicGuide=cv();comicGuide.id='dwComicSelectionGuide';comicGuide.setAttribute('aria-hidden','true');Object.assign(comicGuide.style,{position:'absolute',left:'0',top:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:'2'});C.parentElement.appendChild(comicGuide);const CG=comicGuide.getContext('2d');
 function clearComicGuide(){CG.clearRect(0,0,W,H)}
 function showComicGuide(){
@@ -68,6 +69,27 @@ async function elementImage(e){
  cache.set(e.id,im);return im;
 }
 function imageLocalPt(e,p){const a=localPt(e,p);return {x:e.flip?-a.x:a.x,y:a.y}}
+function precisePoints(){return precise?precise.strokes.flat():[]}
+function preciseGuide(){
+ clearComicGuide();if(!precise)return;const pts=precisePoints();if(!pts.length)return;
+ const k=640/Math.max(1,C.getBoundingClientRect().width);
+ CG.save();CG.strokeStyle='#7529b6';CG.lineWidth=Math.max(.25,2*k);CG.lineJoin='round';CG.lineCap='round';CG.setLineDash([5*k,3*k]);CG.beginPath();CG.moveTo(pts[0].x,pts[0].y);for(const p of pts.slice(1))CG.lineTo(p.x,p.y);CG.stroke();CG.setLineDash([]);
+ for(const p of [pts[0],pts.at(-1)]){CG.beginPath();CG.arc(p.x,p.y,4*k,0,Math.PI*2);CG.fillStyle='#fff';CG.fill();CG.stroke()}CG.restore();
+}
+function preciseSample(ev){const stroke=precise?.strokes.at(-1);if(!stroke)return;const samples=ev.getCoalescedEvents?.()||[];for(const v of [...samples,ev]){const p=pt(v);const q=stroke.at(-1);if(!q||Math.hypot(p.x-q.x,p.y-q.y)>.06)stroke.push(p)}}
+function preciseStart(ev){if(!precise||preciseBusy||precisePointer!==null)return;if(ev.pointerType==='touch'&&Date.now()-lastPencilAt<650)return;if(ev.pointerType==='pen')lastPencilAt=Date.now();ev.preventDefault();const p=pt(ev),last=precisePoints().at(-1);const tolerance=Math.max(2,18*640/C.getBoundingClientRect().width);if(last&&Math.hypot(p.x-last.x,p.y-last.y)>tolerance){msg('마지막 보라색 점 근처에서 이어 그려 주세요.');return}precise.strokes.push([p]);precisePointer=ev.pointerId;try{C.setPointerCapture(ev.pointerId)}catch(_){}preciseGuide();imageActionUi()}
+function preciseEnd(ev){if(ev.pointerId!==precisePointer)return;if(ev.type==='pointerup')preciseSample(ev);precisePointer=null;preciseGuide();imageActionUi()}
+function preciseCancel(){precise=null;precisePointer=null;clearComicGuide();$('dwPrecisePreview').hidden=true;setMode('select')}
+async function preciseResult(){
+ const session=precise,e=els.find(x=>x.id===session?.id),pts=precisePoints();if(!e||pts.length<8)throw Error('외곽선을 한 바퀴 따라 그려 주세요.');
+ const tolerance=Math.max(3,20*640/C.getBoundingClientRect().width);if(Math.hypot(pts[0].x-pts.at(-1).x,pts[0].y-pts.at(-1).y)>tolerance)throw Error('시작점까지 이어서 외곽선을 닫아 주세요.');
+ const im=await elementImage(e);if(precise!==session)throw Error('오리기가 취소됐어요.');const iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height;
+ const ps=pts.map(p=>{const q=imageLocalPt(e,p);return {x:(q.x/e.w+.5)*iw,y:(q.y/e.h+.5)*ih}});let l=iw,r=0,t=ih,b=0;for(const q of ps){l=Math.min(l,q.x);r=Math.max(r,q.x);t=Math.min(t,q.y);b=Math.max(b,q.y)}l=Math.max(0,Math.floor(l));t=Math.max(0,Math.floor(t));r=Math.min(iw,Math.ceil(r));b=Math.min(ih,Math.ceil(b));if(r-l<2||b-t<2)throw Error('조금 더 큰 영역을 선택해 주세요.');
+ const out=document.createElement('canvas');out.width=r-l;out.height=b-t;const g=out.getContext('2d');g.beginPath();g.moveTo(ps[0].x-l,ps[0].y-t);for(const q of ps.slice(1))g.lineTo(q.x-l,q.y-t);g.closePath();g.clip();g.drawImage(im,-l,-t);const pixels=g.getImageData(0,0,out.width,out.height).data;let visible=false;for(let i=3;i<pixels.length;i+=4)if(pixels[i]){visible=true;break}if(!visible)throw Error('선택한 부분에 그림이 없어요.');
+ const dx=((l+r)/2/iw-.5)*e.w*(e.flip?-1:1),dy=((t+b)/2/ih-.5)*e.h,a=e.rotation||0;
+ return {session,e,out,x:e.x+dx*Math.cos(a)-dy*Math.sin(a),y:e.y+dx*Math.sin(a)+dy*Math.cos(a),w:(r-l)/iw*e.w,h:(b-t)/ih*e.h};
+}
+async function preciseFinish(preview){if(preciseBusy||precisePointer!==null)return;preciseBusy=true;imageActionUi();try{const q=await preciseResult();if(precise!==q.session)return;const src=q.out.toDataURL('image/png');if(preview){$('dwPrecisePreviewImage').src=src;$('dwPrecisePreview').hidden=false;return}remember();q.e.visible=false;const n={id:eId(),kind:'image',src,x:q.x,y:q.y,w:q.w,h:q.h,rotation:q.e.rotation||0,flip:!!q.e.flip,opacity:1,visible:true,locked:false,aboveInk:!!q.e.aboveInk};els.push(n);cache.set(n.id,q.out);sel=n.id;preciseCancel();msg('오려낸 그림을 추가했어요. 원본은 그림 층 관리에서 다시 볼 수 있어요.')}catch(e){msg(e.message)}finally{preciseBusy=false;imageActionUi()}}
 function imageActionUi(){
  const chosen=selectedImageElement(),cropping=(tool==='imageCropRect'||tool==='imageCropLasso');
  const free=$('dwCropImageFree'),rect=$('dwCropImageRect'),done=$('dwFinishCrop'),bg=$('dwSetSelectedAsBg'),reg=$('dwRegisterBg'),status=$('dwImageActionStatus');
@@ -75,10 +97,11 @@ function imageActionUi(){
  if(rect)rect.disabled=!chosen;
  if(bg)bg.disabled=!chosen;
  if(reg)reg.disabled=!chosen;
- if(done)done.hidden=!cropping;
+ if(done)done.hidden=tool!=='imageCropRect';
+ const panel=$('dwPreciseTools');if(panel){panel.hidden=tool!=='imageCropLasso';for(const b of panel.querySelectorAll('button'))b.disabled=preciseBusy; $('dwPreciseUndo').disabled=preciseBusy||!precise?.strokes.length;}
  if(status){
   status.textContent=cropping
-   ? (tool==='imageCropLasso'?'가져온 그림의 남길 부분을 자유선으로 둘러 그려 주세요. 손을 떼면 오려집니다.':'가져온 그림의 남길 부분을 네모로 둘러 주세요. 손을 떼면 오려집니다.')
+   ? (tool==='imageCropLasso'?'펜슬로 외곽선을 따라 그린 뒤 그림판 위의 오리기 완료를 눌러 주세요.':'가져온 그림의 남길 부분을 네모로 둘러 주세요. 손을 떼면 오려집니다.')
    : (chosen?'선택한 그림을 오리거나 그림판 배경/웹툰 배경으로 쓸 수 있어요.':'가져온 그림을 선택하면 부분 오리기와 배경 등록을 사용할 수 있어요.');
  }
 }
@@ -86,6 +109,7 @@ function beginImageCrop(mode){
  const e=selectedImageElement();
  if(!e)return msg('먼저 가져온 그림을 하나 선택해 주세요.');
  if(cutoutEdit)return msg('주인공 부분 수정을 먼저 끝내 주세요.');
+ if(mode==='imageCropLasso'){precise={id:e.id,strokes:[]};$('dwPrecisePreview').hidden=true;}
  setMode(mode);
  msg(mode==='imageCropLasso'?'남길 부분을 자유선으로 둘러 그려 주세요.':'남길 부분을 네모로 둘러 주세요.');
  imageActionUi();
@@ -205,7 +229,7 @@ function drawBubbleLetters(c,e){
 function drawEl(c,e){c.save();c.globalAlpha=e.opacity??1;c.translate(e.x,e.y);c.rotate(e.rotation||0);c.scale(e.flip?-1:1,1);if(e.kind==='shape'){shapePath(c,e);if(e.fill!==null){c.fillStyle=e.fill||'#e6a5d5';c.fill()}if(e.stroke!==null){c.strokeStyle=e.stroke||'#805b96';c.lineWidth=5;c.stroke()}if(e.shape==='bubble'&&e.text){drawBubbleLetters(c,e)}}else{const im=cache.get(e.id);if(im){c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(im,-e.w/2,-e.h/2,e.w,e.h)}}c.restore()}
 function compose(c,white=false){c.clearRect(0,0,W,H);if(white){c.fillStyle='white';c.fillRect(0,0,W,H)}c.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false&&!e.aboveInk)drawEl(c,e)});c.drawImage(paint,0,0);els.forEach(e=>{if(e.visible!==false&&e.aboveInk)drawEl(c,e)})}
 function selected(){return els.find(e=>e.id===sel)}
-function setMode(mode){resetPointerState();tool=mode;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.classList.toggle('active',b.dataset.dwTool===mode));render()}
+function setMode(mode){if(mode!=='imageCropLasso'&&precise){precise=null;precisePointer=null;$('dwPrecisePreview').hidden=true;}resetPointerState();tool=mode;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.classList.toggle('active',b.dataset.dwTool===mode));render()}
 function listLayers(){const root=$('dwLayerList');root.replaceChildren();if(!els.length){root.textContent='그림을 추가하면 이곳에서 각각 선택할 수 있어요.';return}for(const e of [...els].reverse()){
  const row=document.createElement('div');row.className='dw-layer-row'+(sel===e.id?' selected':'');const nm=document.createElement('button');nm.type='button';nm.className='dw-layer-name';nm.textContent=layerName(e);nm.onclick=()=>{sel=e.id;setMode('select')};row.append(nm);
  const add=(label,act)=>{const b=document.createElement('button');b.type='button';b.className='dw-layer-action';b.textContent=label;b.onclick=act;row.append(b)};
@@ -237,7 +261,7 @@ function remember(){history.push(snap());if(history.length>15)history.shift();re
 async function refreshImages(){cache.clear();await Promise.all(els.filter(e=>e.kind==='image').map(async e=>{try{if(e.origin)await ensureDrawingHeroArt(e.origin);let src=e.premiumKey?propSrc(e.premiumKey):e.origin?heroSrc(e.origin,e.expression||'기뻐요'):e.src;if(!src)return;let im=await imload(src);if(e.variant==='outline'&&e.origin){im=await imload(await outline(im))}cache.set(e.id,im)}catch(err){console.warn('그림 불러오기 실패',err)}}))}
 async function restore(s){cutoutEdit=null;els=clone(s.els||[]);sel=s.sel||null;U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);if(s.a instanceof ImageData&&s.b instanceof ImageData){U.putImageData(s.a,0,0);P.putImageData(s.b,0,0)}else{const [a,b]=await Promise.all([imload(s.a),imload(s.b)]);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H)}await refreshImages();render()}
 async function undo(a,b){if(!a.length)return;b.push(snap());if(b.length>15)b.shift();await restore(a.pop())}
-$('dwUndo').onclick=()=>undo(history,redo).catch(err=>msg(err.message));$('dwRedo').onclick=()=>undo(redo,history).catch(err=>msg(err.message));
+$('dwUndo').onclick=()=>{if(precise){precise.strokes.pop();preciseGuide();imageActionUi();return}undo(history,redo).catch(err=>msg(err.message))};$('dwRedo').onclick=()=>{if(precise)return;undo(redo,history).catch(err=>msg(err.message))};
 function pt(ev){const r=C.getBoundingClientRect();return {x:(ev.clientX-r.left)*W/r.width,y:(ev.clientY-r.top)*H/r.height}}
 function localPt(e,p){const dx=p.x-e.x,dy=p.y-e.y,a=-(e.rotation||0);return {x:dx*Math.cos(a)-dy*Math.sin(a),y:dx*Math.sin(a)+dy*Math.cos(a)}}
 function hit(e,p){const a=localPt(e,p);return Math.abs(a.x)<e.w/2+9&&Math.abs(a.y)<e.h/2+9}
@@ -348,13 +372,14 @@ function flood(p){
 }
 
 function resetPointerState(){
- comicSelectBox=null;clearComicGuide();
+ comicSelectBox=null;precisePointer=null;clearComicGuide();if(precise)preciseGuide();
  if(objectFrame){cancelAnimationFrame(objectFrame);objectFrame=0}
  if(active!==null){try{if(C.hasPointerCapture(active))C.releasePointerCapture(active)}catch(_){}}
  stopInk();active=null;activePointerType=null;last=null;drag=null;gesture=null;touchPoints.clear();
 }
 function down(ev){
  if(panMode&&zoomRatio>1)return;
+ if(tool==='imageCropLasso'){preciseStart(ev);return;}
  if(tool==='comicCrop'||tool==='comicLasso'||tool==='imageCropRect'||tool==='imageCropLasso'){
   if(tool==='comicCrop'||tool==='comicLasso'){if(!comic)return;}ev.preventDefault();if(comicSelectBox)return;
   // Ignore a palm/finger while Apple Pencil is active in the cutout tool.
@@ -389,7 +414,7 @@ function down(ev){
   let e=selected();let action=e&&!e.locked?hitHandle(e,p):null;if(!action){e=pick(p);action=e?'move':null}sel=e?.id||null;drag=null;if(e&&!e.locked){remember();const a=localPt(e,p);drag={action,p,ox:e.x,oy:e.y,ow:e.w,oh:e.h,angle:e.rotation||0,startAngle:Math.atan2(p.y-e.y,p.x-e.x),dist:Math.hypot(a.x,a.y)}}
  }else{remember();if(tool==='bucket'){flood(p);active=null;render()}else{const cutoutNow=editingCutout();if(!cutoutNow&&tool==='eraser')prepareInk();clearLive();pen(p,p);if(!cutoutNow&&tool==='eraser')drawInkFrame()}}if(tool==='select')render()}
 let objectFrame=0;function scheduleObjectRender(){if(!objectFrame)objectFrame=requestAnimationFrame(()=>{objectFrame=0;render()})}
-function move(ev){if(panMode&&zoomRatio>1)return;if(tool==='comicCrop'||tool==='comicLasso'||tool==='imageCropRect'||tool==='imageCropLasso'){
+function move(ev){if(panMode&&zoomRatio>1)return;if(tool==='imageCropLasso'){if(ev.pointerId===precisePointer){ev.preventDefault();preciseSample(ev);preciseGuide();}return;}if(tool==='comicCrop'||tool==='comicLasso'||tool==='imageCropRect'||tool==='imageCropLasso'){
  if(comicSelectBox&&ev.pointerId===comicSelectBox.id){
   ev.preventDefault();const p=pt(ev);comicSelectBox.end=p;
   if(comicSelectBox.mode==='lasso'){
@@ -421,6 +446,7 @@ function move(ev){if(panMode&&zoomRatio>1)return;if(tool==='comicCrop'||tool==='
  scheduleObjectRender()}
 function end(ev){
  if(panMode&&zoomRatio>1)return;
+ if(tool==='imageCropLasso'){preciseEnd(ev);return;}
  if(tool==='comicCrop'||tool==='comicLasso'||tool==='imageCropRect'||tool==='imageCropLasso'){
   if(!comicSelectBox||comicSelectBox.id!==ev.pointerId)return;
   ev.preventDefault();
@@ -457,6 +483,7 @@ function zoomTo(value){
  zoomWrap.style.setProperty('--dw-zoom-width',(zoomRatio*100)+'%');
  zoomView.style.maxHeight=zoomRatio>1?'min(75vh,790px)':'none';
  if(zoomLabel)zoomLabel.textContent=Math.round(zoomRatio*100)+'%';
+ if(precise)requestAnimationFrame(preciseGuide);
  requestAnimationFrame(()=>{const size=zoomWrap.getBoundingClientRect().width;zoomView.scrollLeft=zoomRatio===1?0:Math.max(0,centerX*size-zoomView.clientWidth/2);zoomView.scrollTop=zoomRatio===1?0:Math.max(0,centerY*size-zoomView.clientHeight/2)});
 }
 for(const b of document.querySelectorAll('[data-dw-zoom]'))b.addEventListener('click',()=>zoomTo(Number(b.dataset.dwZoom)));
@@ -494,14 +521,15 @@ if(drawingSurface){
 C.addEventListener('pointerdown',down);C.addEventListener('pointermove',move);
 C.addEventListener('pointerup',end);C.addEventListener('pointercancel',end);
 // An iPad Safari pointerup may arrive outside the canvas after losing capture.
-window.addEventListener('pointerup',ev=>{if(ev.pointerId===active)end(ev)},true);
-window.addEventListener('pointercancel',ev=>{if(ev.pointerId===active)end(ev)},true);
+window.addEventListener('pointerup',ev=>{if(ev.pointerId===active||ev.pointerId===precisePointer)end(ev)},true);
+window.addEventListener('pointercancel',ev=>{if(ev.pointerId===active||ev.pointerId===precisePointer)end(ev)},true);
 // A stale active pointer must not block subsequent Pencil strokes indefinitely.
 // The watchdog only releases the input state; it never removes painted strokes.
 setInterval(()=>{if(active!==null&&tool!=='select'&&Date.now()-lastPointerActivity>8500){
  resetPointerState();if(document.getElementById('draw')?.classList.contains('active'))paintFinishedStroke();
 }},1500);
 C.addEventListener('lostpointercapture',ev=>{
+ if(precisePointer===ev.pointerId){precisePointer=null;preciseGuide();return}
  if(comicSelectBox&&comicSelectBox.id===ev.pointerId){comicSelectBox=null;clearComicGuide();return}
  if(ev.pointerId!==active)return;
  // Called by Safari if touch capture is lost without a matching pointerup.
@@ -573,6 +601,9 @@ $('dwFloatHeroMode').onchange=async ev=>{
 const swatches=['#303038','#ffffff','#e7659e','#ed9a58','#f2c455','#78ba8c','#65bdda','#678eda','#9a7bc7','#b16f58'];swatches.forEach(hex=>{const b=document.createElement('button');b.type='button';b.className='dw-swatch';b.style.background=hex;b.title=hex;b.onclick=()=>{ink=hex;$('dwColor').value=hex;sync()};$('dwColors').append(b)});
 function sync(){[...$('dwColors').children].forEach((b,i)=>b.classList.toggle('selected',swatches[i]===ink))}sync();$('dwColor').oninput=e=>{ink=e.target.value;sync()};$('dwSize').oninput=e=>{$('dwSizeLabel').textContent=thick=Number(e.target.value)};$('dwShowBackground').onchange=render;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.onclick=()=>setMode(b.dataset.dwTool));
 $('dwBlank').onclick=()=>{if(!confirm('새 도화지를 열까요? 저장하지 않은 그림은 사라집니다.'))return;els=[];sel=null;cache.clear();U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);history=[];redo=[];currentId=null;$('dwName').value='새 그림';setMode('pen')};
+$('dwPreciseUndo').onclick=()=>{if(precise){precise.strokes.pop();preciseGuide();imageActionUi()}};
+$('dwPreciseReset').onclick=()=>{if(precise){precise.strokes=[];preciseGuide();imageActionUi()}};
+$('dwPreciseShow').onclick=()=>preciseFinish(true);$('dwPreciseDone').onclick=()=>preciseFinish(false);$('dwPreciseCancel').onclick=preciseCancel;$('dwPreciseClose').onclick=()=>{$('dwPrecisePreview').hidden=true};
 if($('dwCropImageFree'))$('dwCropImageFree').onclick=()=>beginImageCrop('imageCropLasso');
 if($('dwCropImageRect'))$('dwCropImageRect').onclick=()=>beginImageCrop('imageCropRect');
 if($('dwFinishCrop'))$('dwFinishCrop').onclick=()=>finishImageCrop(true);
@@ -647,7 +678,7 @@ function comicClear(){stopCutoutEdit(false);resetPointerState();U.clearRect(0,0,
 async function comicLoadPanel(panel){stopCutoutEdit(false);resetPointerState();const [a,b]=await Promise.all([imload(panel.under),imload(panel.paint)]);U.clearRect(0,0,W,H);P.clearRect(0,0,W,H);U.drawImage(a,0,0,W,H);P.drawImage(b,0,0,W,H);els=clone(panel.elements||[]);sel=null;currentId=null;history=[];redo=[];await refreshImages();setMode('select')}
 function comicSyncTitle(){if(comic)comic.title=$('dwComicTitle').value.trim()||'나의 그림 이야기'}
 async function comicPersist(){if(!comic)return;comicSyncTitle();comic.updated=Date.now();await comicTx('readwrite',s=>s.put(comic));}
-function comicUi(){const active=!!comic;$('dwComicEditor').hidden=!active;if(!active){if(tool==='comicCrop'||tool==='comicLasso')setMode('pen');if(tool==='imageCropRect'||tool==='imageCropLasso')setMode('select');comicEditUi();imageActionUi();return;}$('dwComicTitle').value=comic.title;$('dwComicStatus').textContent=`${comicIndex+1}컷 편집 중 · 총 ${comic.panels.length}컷`;
+function comicUi(){const active=!!comic;$('dwComicEditor').hidden=!active;if(!active){if(tool==='comicCrop'||tool==='comicLasso')setMode('pen');if(tool==='imageCropRect')setMode('select');comicEditUi();imageActionUi();return;}$('dwComicTitle').value=comic.title;$('dwComicStatus').textContent=`${comicIndex+1}컷 편집 중 · 총 ${comic.panels.length}컷`;
  const strip=$('dwComicStrip');strip.replaceChildren();comic.panels.forEach((panel,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-current',String(comicIndex===i));const im=new Image();im.src=i===comicIndex?previewPng():panel.preview;im.alt=`${i+1}컷`;const title=document.createElement('div');title.textContent=`${i+1}컷 ${i===comicIndex?'✏️':''}`;b.append(im,title);b.onclick=()=>comicGuard(async()=>{await comicSavePanel();comicIndex=i;await comicLoadPanel(comic.panels[i]);comicUi()});strip.append(b)});comicEditUi()}
 async function comicSavePanel(){if(!comic)return;comic.panels[comicIndex]=comicSnapshot();await comicPersist()}
 async function comicGuard(fn){if(comicBusy)return;comicBusy=true;try{await fn()}catch(err){console.error(err);msg('웹툰 작업 오류: '+(err.message||err))}finally{comicBusy=false}}

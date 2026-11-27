@@ -2183,7 +2183,7 @@ syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
 // C4.5.9: One source of truth for installed version; manifest supplied with each ZIP.
 // A GitHub Pages deployment must publish BOTH index.html and version.json in the same folder.
-const WEBTOON_APP_VERSION='4.5.36.4.8';
+const WEBTOON_APP_VERSION='4.5.36.4.9';
 let latestPublishedVersion=null;
 let initialVersionCheck=true;
 let versionCheckInFlight=false;
