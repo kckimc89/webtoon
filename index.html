@@ -36,7 +36,7 @@ html.page-zoom-locked, html.page-zoom-locked body {touch-action:pan-x pan-y;}
 #versionPanel #pageZoomToggle[aria-pressed="true"] {background:#e3f4eb;color:#285d43;}
 </style>
 <meta name="theme-color" content="#fff6fb">
-<title>나만의 웹툰 창작극장 C4.5.36.4.14</title>
+<title>나만의 웹툰 창작극장 C4.5.36.4.15</title>
 <link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -501,7 +501,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 @media(min-width:900px){#assemblyMaker .pm-preview canvas{max-height:790px}}
 
 #dwPreciseTools[hidden],#dwPrecisePreview[hidden]{display:none!important}
-/* C4.5.36.4.14 — block unwanted native text selection on the drawing UI only. */
+/* C4.5.36.4.15 — block unwanted native text selection on the drawing UI only. */
 #draw { -webkit-touch-callout:none; }
 #draw :not(input):not(textarea):not([contenteditable]){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #draw input,#draw textarea { -webkit-user-select:text;user-select:text;-webkit-touch-callout:default }
@@ -705,7 +705,7 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     <p>🎬 고화질 캐릭터로 장면마다 달라지는</p>
     <h1>나만의 웹툰 창작극장</h1>
     <p>아이의 상상 → 그림 선택·조합 → 손가락으로 꾸미기</p>
-    <span class="pill">MASTER C4.5.36.4.14 · 그림 자원 활용</span>
+    <span class="pill">MASTER C4.5.36.4.15 · 그림 자원 활용</span>
   </header>
 
   <nav class="tabs">
@@ -718,8 +718,8 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
 <p id="webtoonLoadingNotice" role="status" aria-live="polite" hidden style="margin:10px 0;padding:10px 14px;background:#fff2d9;border-radius:12px;color:#60472b;font-weight:700"></p>
 
   <details class="card" id="versionPanel" style="margin:12px 0;padding:12px 16px">
-    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.36.4.14)</span></summary>
-    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.36.4.14 · 최신 버전 확인 전</p>
+    <summary style="font-size:15px;font-weight:800;cursor:pointer">⚙️ 버전 확인·업데이트 <span style="font-weight:500;color:#795b8c">(현재 C4.5.36.4.15)</span></summary>
+    <p class="sub" id="versionStatus" aria-live="polite" style="margin:9px 0">설치된 버전 C4.5.36.4.15 · 최신 버전 확인 전</p>
     <div class="btns version-action-row">
       <button id="checkVersionNow" type="button" class="secondary">🔄 최신 버전 확인</button>
       <button id="pageZoomToggle" type="button" class="secondary" aria-pressed="true">🔒 확대 방지 중 · 해제</button>
@@ -1042,16 +1042,18 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
           <button type="button" data-dw-action="delete">지우기</button>
           <button type="button" data-dw-action="deselect">선택 해제</button>
         </div>
-      <div class="dw-zoom-tools" aria-label="그림 확대 및 이동">
-        <strong>🔍 부분 확대</strong>
+      <details class="dw-layer-panel" id="dwZoomFold">
+        <summary>🔍 부분 확대 · 필요할 때 열기 <span id="dwZoomLevel" aria-live="polite" style="margin-left:10px;white-space:nowrap">100%</span></summary>
+        <div class="dw-zoom-tools" aria-label="그림 확대 및 이동">
         <button type="button" data-dw-zoom="1">100%</button>
         <button type="button" data-dw-zoom="2.5">250%</button>
         <button type="button" data-dw-zoom="5">500%</button>
         <button type="button" data-dw-zoom="10">1000%</button>
         <button type="button" id="dwPanMode" aria-pressed="false">✋ 확대 화면 이동</button>
-        <button type="button" id="dwTouchNav" aria-pressed="true">손가락: 화면 이동·확대 (선택 모드 제외)</button><span id="dwZoomLevel" aria-live="polite">100%</span>
+        <button type="button" id="dwTouchNav" aria-pressed="true">손가락: 화면 이동·확대 (선택 모드 제외)</button>
         <small>두 손가락으로 최대 2000%까지 확대하세요. 펜슬로 그리거나 손가락 모드를 바꿔 그릴 수 있어요.</small>
-      </div>
+        </div>
+      </details>
       <div id="dwPreciseTools" class="dw-zoom-tools" hidden style="background:#f3e9ff" aria-label="정밀 오리기 도구">
         <strong>✂ 펜슬 정밀 오리기</strong><button type="button" id="dwPreciseUndo">↶ 구간 취소</button><button type="button" id="dwPreciseReset">다시 그리기</button><button type="button" id="dwPreciseShow">👁 미리보기</button><button type="button" id="dwPreciseDone" class="primary">✅ 오리기 완료</button><button type="button" id="dwPreciseCancel">취소</button><small>그림은 오리기 동안 자동 고정됩니다. 마지막 점부터 이어 그려 시작점까지 돌아오세요. 확대·화면 이동 중에도 선이 유지돼요.</small>
       </div>
@@ -1500,15 +1502,15 @@ label.block{display:block;font-weight:850;font-size:14px;margin:8px 0 6px}input[
     </div>
   </section>
 
-  <div class="footer">나만의 웹툰 창작극장 C4.5.36.4.14 · 그림 자원 활용</div>
+  <div class="footer">나만의 웹툰 창작극장 C4.5.36.4.15 · 그림 자원 활용</div>
 </div>
 <div id="toast"></div>
 
 
 <script defer src="rose-style-assets.js"></script>
 <script defer src="studio-prop-art.js?v=45331"></script>
-<script defer src="app-core.js?v=4536414"></script>
-<script defer src="drawing-workshop.js?v=4536414"></script>
+<script defer src="app-core.js?v=4536415"></script>
+<script defer src="drawing-workshop.js?v=4536415"></script>
 <script defer src="fixed-princess.js?v=4522"></script>
 <script defer src="princess-assembly.js?v=45364"></script>
 </body>
