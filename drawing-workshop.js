@@ -1,4 +1,4 @@
-/* C4.5.36.4.13 | Background convert/clear and exact background placement. */
+/* C4.5.36.4.14 | Background convert/clear and exact background placement. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id),W=640,H=640,C=$('dwCanvas');if(!C)return;
 const X=C.getContext('2d',{willReadFrequently:true});C.width=1280;C.height=1280;X.setTransform(2,0,0,2,0,0);X.imageSmoothingEnabled=true;X.imageSmoothingQuality='high';
@@ -14,7 +14,7 @@ const P=paint.getContext('2d',{willReadFrequently:true}),U=under.getContext('2d'
 const inkBackdrop=document.createElement('canvas');inkBackdrop.width=1280;inkBackdrop.height=1280;
 const B=inkBackdrop.getContext('2d');B.setTransform(2,0,0,2,0,0);
 let inkFrame=0,inkCacheReady=false;
-function prepareInk(){B.clearRect(0,0,W,H);if($('dwShowBackground').checked){B.fillStyle='#fff';B.fillRect(0,0,W,H)}B.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false&&!e.aboveInk)drawEl(B,e)});inkCacheReady=true}
+function prepareInk(){B.clearRect(0,0,W,H);if($('dwShowBackground').checked){B.fillStyle='#fff';B.fillRect(0,0,W,H)}drawDrawingBackground(B);B.drawImage(under,0,0);els.forEach(e=>{if(!e.isDrawingBackground&&e.visible!==false&&!e.aboveInk)drawEl(B,e)});inkCacheReady=true}
 function drawInkFrame(){inkFrame=0;if(!inkCacheReady)return;X.save();X.setTransform(1,0,0,1,0,0);X.clearRect(0,0,C.width,C.height);X.drawImage(inkBackdrop,0,0);X.drawImage(paint,0,0,C.width,C.height);X.restore();X.save();X.setTransform(2,0,0,2,0,0);els.forEach(e=>{if(e.visible!==false&&e.aboveInk)drawEl(X,e)});X.restore()}
 function scheduleInk(){if(tool==='eraser'&&!inkFrame)inkFrame=requestAnimationFrame(drawInkFrame)}
 function stopInk(){if(inkFrame){cancelAnimationFrame(inkFrame);inkFrame=0}inkCacheReady=false;clearLive()}
@@ -55,7 +55,7 @@ function heroSrc(id,emotion){if(HQ[id+'|'+emotion])return HQ[id+'|'+emotion];try
 if(typeof premiumPrincessImages!=='undefined'&&premiumPrincessImages[id]?.base)return premiumPrincessImages[id].base;
 const hero=heroes.find(q=>q.id===id);return hero?princessThumb(hero):null}catch(e){console.warn(e);return null}}
 function propSrc(key){try{return typeof premiumPropImages!=='undefined'?premiumPropImages[key]:null}catch(e){return null}}
-function layerName(e){if(e.premiumKey)return '💎 '+e.premiumKey;if(e.origin)return (names[e.origin]||'주인공')+' · '+(e.expression||'기뻐요');if(e.kind==='shape')return (shapeNames[e.shape]||'도형')+' 도형';return e.comicCutout?'🎨 내가 그린 주인공':e.template?'연습 밑그림':'가져온 그림'}
+function layerName(e){if(e.isDrawingBackground)return '🖼 그림판 배경';if(e.premiumKey)return '💎 '+e.premiumKey;if(e.origin)return (names[e.origin]||'주인공')+' · '+(e.expression||'기뻐요');if(e.kind==='shape')return (shapeNames[e.shape]||'도형')+' 도형';return e.comicCutout?'🎨 내가 그린 주인공':e.template?'연습 밑그림':'가져온 그림'}
 function activeCutoutElement(){const e=selected();return e&&e.kind==='image'&&e.comicCutout?e:null}
 function selectedImageElement(){const e=selected();return e&&e.kind==='image'?e:null}
 async function elementImage(e){
@@ -90,7 +90,7 @@ async function preciseResult(){
  const dx=((l+r)/2/iw-.5)*e.w*(e.flip?-1:1),dy=((t+b)/2/ih-.5)*e.h,a=e.rotation||0;
  return {session,e,out,x:e.x+dx*Math.cos(a)-dy*Math.sin(a),y:e.y+dx*Math.sin(a)+dy*Math.cos(a),w:(r-l)/iw*e.w,h:(b-t)/ih*e.h};
 }
-async function preciseFinish(preview){if(preciseBusy||precisePointer!==null)return;preciseBusy=true;imageActionUi();try{const q=await preciseResult();if(precise!==q.session)return;const src=q.out.toDataURL('image/png');if(preview){$('dwPrecisePreviewImage').src=src;$('dwPrecisePreview').hidden=false;return}releasePreciseLock();remember();q.e.visible=false;const n={id:eId(),kind:'image',src,x:q.x,y:q.y,w:q.w,h:q.h,rotation:q.e.rotation||0,flip:!!q.e.flip,opacity:1,visible:true,locked:false,aboveInk:!!q.e.aboveInk};els.push(n);cache.set(n.id,q.out);sel=n.id;preciseCancel();msg('오려낸 그림을 추가했어요. 원본은 그림 층 관리에서 다시 볼 수 있어요.')}catch(e){msg(e.message)}finally{preciseBusy=false;imageActionUi()}}
+async function preciseFinish(preview){if(preciseBusy||precisePointer!==null)return;preciseBusy=true;imageActionUi();try{const q=await preciseResult();if(precise!==q.session)return;const src=q.out.toDataURL('image/png');if(preview){$('dwPrecisePreviewImage').src=src;$('dwPrecisePreview').hidden=false;return}releasePreciseLock();remember();if(!q.e.isDrawingBackground)q.e.visible=false;const n={id:eId(),kind:'image',src,x:q.x,y:q.y,w:q.w,h:q.h,rotation:q.e.rotation||0,flip:!!q.e.flip,opacity:1,visible:true,locked:false,aboveInk:!!q.e.aboveInk};els.push(n);cache.set(n.id,q.out);sel=n.id;preciseCancel();msg('오려낸 그림을 추가했어요. 원본은 보존했어요.')}catch(e){msg(e.message)}finally{preciseBusy=false;imageActionUi()}}
 function imageActionUi(){
  const chosen=selectedImageElement(),cropping=(tool==='imageCropRect'||tool==='imageCropLasso');
  const free=$('dwCropImageFree'),rect=$('dwCropImageRect'),done=$('dwFinishCrop'),bg=$('dwSetSelectedAsBg'),reg=$('dwRegisterBg'),status=$('dwImageActionStatus');
@@ -166,37 +166,34 @@ function contextHasPixels(ctx){
  for(let i=3;i<d.length;i+=4)if(d[i]>0)return true;
  return false;
 }
+// Keep imported backgrounds separate from the flood-fill and ink canvases.
+function drawingBackground(){return els.find(e=>e.isDrawingBackground)}
+function drawDrawingBackground(ctx){const e=drawingBackground();if(e&&e.visible!==false)drawEl(ctx,e)}
 async function setSelectedImageAsBackground(){
- const e=selectedImageElement();if(!e)return msg('먼저 가져온 그림을 선택해 주세요.');
- const im=await elementImage(e),bg=cv(),g=bg.getContext('2d');
- drawImageElementToCanvas(g,e,im);
- remember();
- U.clearRect(0,0,W,H);
- U.drawImage(bg,0,0,W,H);
- resetDrawingZoom();
- render();
- msg('선택한 그림을 지금 보이는 크기와 위치 그대로 그림판 배경에 넣었어요. 원래 그림은 그대로 남아 있어요.');
+ const e=selectedImageElement();if(!e||e.isDrawingBackground)return msg('먼저 가져온 그림을 선택해 주세요.');
+ const im=await elementImage(e);if(selected()!==e)return;
+ const iw=im.naturalWidth||im.width,ih=im.naturalHeight||im.height;
+ const scale=Math.max(W/iw,H/ih);
+ // Preserve source pixels and aspect ratio; center-cover the square canvas.
+ const bg={id:eId(),kind:'image',src:e.src,origin:e.origin,premiumKey:e.premiumKey,expression:e.expression,variant:e.variant,x:W/2,y:H/2,w:iw*scale,h:ih*scale,rotation:0,flip:!!e.flip,opacity:1,visible:true,locked:true,aboveInk:false,isDrawingBackground:true};
+ if(!bg.src&&!bg.origin&&!bg.premiumKey)bg.src=im.toDataURL('image/png');
+ remember();for(const old of els.filter(x=>x.isDrawingBackground))cache.delete(old.id);
+ els=els.filter(x=>!x.isDrawingBackground);e.visible=false;els.unshift(bg);cache.set(bg.id,im);sel=null;
+ resetDrawingZoom();setMode('select');msg('그림판 전체에 배경을 채웠어요. 원본은 그림 층 관리에서 다시 볼 수 있어요.');
 }
 async function convertBackgroundToImage(){
- if(!contextHasPixels(U))return msg('그림판 배경이 아직 없어요.');
- remember();
- const src=under.toDataURL('image/png');
- const n={id:eId(),kind:'image',src,x:W/2,y:H/2,w:W,h:H,rotation:0,flip:false,opacity:1,visible:true,locked:false,aboveInk:false};
- U.clearRect(0,0,W,H);
- els.push(n);
- cache.delete(n.id);
- sel=n.id;
- await refreshImages();
- render();
- imageActionUi();
- msg('배경 그림을 다시 움직일 수 있는 그림으로 가져왔어요. 이제 오리기나 이동을 할 수 있어요.');
+ const bg=drawingBackground();
+ if(!bg)return msg('관리할 새 배경이 없어요. 이전 버전의 배경은 색칠과 합쳐져 있어요.');
+ await elementImage(bg);remember();bg.isDrawingBackground=false;bg.locked=false;bg.visible=true;sel=bg.id;setMode('select');msg('배경을 일반 그림으로 바꿨어요.');
 }
 function clearDrawingBackground(){
- if(!contextHasPixels(U))return msg('지울 배경이 아직 없어요.');
- remember();
- U.clearRect(0,0,W,H);
- render();
- msg('그림판 배경을 지웠어요.');
+ const bg=drawingBackground();if(!bg)return msg('관리할 새 배경이 없어요. 이전 버전의 배경은 색칠과 합쳐져 있어요.');
+ remember();els=els.filter(e=>e!==bg);cache.delete(bg.id);if(sel===bg.id)sel=null;render();msg('배경만 지웠어요. 색칠과 다른 그림은 남아 있어요.');
+}
+function cropDrawingBackground(){
+ const bg=drawingBackground();if(!bg||bg.visible===false)return msg('먼저 배경을 표시해 주세요.');
+ if(precise||cutoutEdit)return msg('현재 편집을 먼저 끝내 주세요.');
+ sel=bg.id;beginImageCrop('imageCropLasso');
 }
 async function registerSelectedAsBackground(){
  const e=selectedImageElement();if(!e)return msg('먼저 가져온 그림을 선택해 주세요.');
@@ -272,13 +269,13 @@ function drawBubbleLetters(c,e){
  const gap=font*1.22,top=-(lines.length-1)*gap/2-e.h*.055;lines.forEach((line,i)=>c.fillText(line,0,top+i*gap,maxW));c.restore();
 }
 function drawEl(c,e){c.save();c.globalAlpha=e.opacity??1;c.translate(e.x,e.y);c.rotate(e.rotation||0);c.scale(e.flip?-1:1,1);if(e.kind==='shape'){shapePath(c,e);if(e.fill!==null){c.fillStyle=e.fill||'#e6a5d5';c.fill()}if(e.stroke!==null){c.strokeStyle=e.stroke||'#805b96';c.lineWidth=5;c.stroke()}if(e.shape==='bubble'&&e.text){drawBubbleLetters(c,e)}}else{const im=cache.get(e.id);if(im){c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(im,-e.w/2,-e.h/2,e.w,e.h)}}c.restore()}
-function compose(c,white=false){c.clearRect(0,0,W,H);if(white){c.fillStyle='white';c.fillRect(0,0,W,H)}c.drawImage(under,0,0);els.forEach(e=>{if(e.visible!==false&&!e.aboveInk)drawEl(c,e)});c.drawImage(paint,0,0);els.forEach(e=>{if(e.visible!==false&&e.aboveInk)drawEl(c,e)})}
+function compose(c,white=false){c.clearRect(0,0,W,H);if(white){c.fillStyle='white';c.fillRect(0,0,W,H)}drawDrawingBackground(c);c.drawImage(under,0,0);els.forEach(e=>{if(!e.isDrawingBackground&&e.visible!==false&&!e.aboveInk)drawEl(c,e)});c.drawImage(paint,0,0);els.forEach(e=>{if(e.visible!==false&&e.aboveInk)drawEl(c,e)})}
 function selected(){return els.find(e=>e.id===sel)}
 function setMode(mode){if(mode!=='imageCropLasso'&&precise){releasePreciseLock();precise=null;precisePointer=null;$('dwPrecisePreview').hidden=true;}resetPointerState();tool=mode;document.querySelectorAll('[data-dw-tool]').forEach(b=>b.classList.toggle('active',b.dataset.dwTool===mode));render()}
 function listLayers(){const root=$('dwLayerList');root.replaceChildren();if(!els.length){root.textContent='그림을 추가하면 이곳에서 각각 선택할 수 있어요.';return}for(const e of [...els].reverse()){
- const row=document.createElement('div');if(precise)row.style.pointerEvents='none';row.className='dw-layer-row'+(sel===e.id?' selected':'');const nm=document.createElement('button');nm.type='button';nm.className='dw-layer-name';nm.textContent=layerName(e);nm.onclick=()=>{sel=e.id;setMode('select')};row.append(nm);
+ const row=document.createElement('div');if(precise)row.style.pointerEvents='none';row.className='dw-layer-row'+(sel===e.id?' selected':'');const nm=document.createElement('button');nm.type='button';nm.className='dw-layer-name';nm.textContent=layerName(e);nm.onclick=()=>{if(e.isDrawingBackground)return msg('그림판 배경 메뉴에서 관리해 주세요.');sel=e.id;setMode('select')};row.append(nm);
  const add=(label,act)=>{const b=document.createElement('button');b.type='button';b.className='dw-layer-action';b.textContent=label;b.onclick=act;row.append(b)};
- add(e.visible===false?'보기':'숨기기',()=>{remember();e.visible=e.visible===false;render()});add(e.locked?'풀기':'잠그기',()=>{remember();e.locked=!e.locked;render()});add('앞으로',()=>{sel=e.id;order(1)});add('뒤로',()=>{sel=e.id;order(-1)});add('지우기',()=>remove(e.id));root.append(row)
+ add(e.visible===false?'보기':'숨기기',()=>{remember();e.visible=e.visible===false;render()});if(e.isDrawingBackground){add('지우기',()=>clearDrawingBackground());root.append(row);continue;}add(e.locked?'풀기':'잠그기',()=>{remember();e.locked=!e.locked;render()});add('앞으로',()=>{sel=e.id;order(1)});add('뒤로',()=>{sel=e.id;order(-1)});add('지우기',()=>remove(e.id));root.append(row)
  }}
 function showFloating(e){const f=$('dwFloating');if(!f)return;f.hidden=!(e&&tool==='select');if(!e||tool!=='select')return;$('dwFloatingName').textContent=layerName(e)}
 function paintFinishedStroke(){
@@ -684,6 +681,7 @@ if($('dwFinishCrop'))$('dwFinishCrop').onclick=()=>finishImageCrop(true);
 if($('dwSetSelectedAsBg'))$('dwSetSelectedAsBg').onclick=()=>setSelectedImageAsBackground().catch(e=>msg('배경 적용 실패: '+e.message));
 if($('dwRegisterBg'))$('dwRegisterBg').onclick=()=>registerSelectedAsBackground().catch(e=>msg('배경 등록 실패: '+e.message));
 if($('dwBgToImage'))$('dwBgToImage').onclick=()=>convertBackgroundToImage().catch(e=>msg('배경 그림 가져오기 실패: '+e.message));
+if($('dwCropBg'))$('dwCropBg').onclick=cropDrawingBackground;
 if($('dwClearBg'))$('dwClearBg').onclick=()=>clearDrawingBackground();
 function previewPng(){const c=document.createElement('canvas');c.width=1280;c.height=1280;const g=c.getContext('2d');g.fillStyle='white';g.fillRect(0,0,1280,1280);g.scale(2,2);compose(g,true);return c.toDataURL('image/png')}
 $('dwExport').onclick=()=>{const a=document.createElement('a');a.href=previewPng();a.download=($('dwName').value.trim()||'내 그림').replace(/[\\/:*?"<>|]/g,'_')+'.png';a.click()};
