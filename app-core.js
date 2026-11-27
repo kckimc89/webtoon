@@ -805,6 +805,8 @@ function richFrameFor(panel, idx){
 // C3.9.6: six scene backgrounds embedded in one offline HTML document.
 // Selecting a background always uses its own distinct landscape.
 const selectableBackgrounds = {"forest":"webtoon-art/ec6b0502d8964eebba7efa6d.webp","garden":"webtoon-art/cb7b03b9a7d06ee2a24e824e.webp","castle":"webtoon-art/b2295bfab6fcba75109b40ce.webp","sea":"webtoon-art/23caa5f7d0d5c8020378cbf8.webp","school":"webtoon-art/f9b5f05e367ea107287d91c7.webp","space":"webtoon-art/c1d8fbff89c3f60a18621774.webp"};
+const storybookBackgrounds={storybook_autumn:{name:'🍁 가을 숲의 색깔 편지',src:'./storybook-autumn-forest.jpg'}};
+for(const [id,item] of Object.entries(storybookBackgrounds)){selectableBackgrounds[id]=item.src;bgMeta[id]={name:item.name,sky:'#ffdfaa',ground:'#d8a76f',deco1:'🍁',deco2:'🍂'};}
 const customBackgroundStorageKey='webtoon-custom-backgrounds-v1';
 function readCustomBackgrounds(){
   try{
@@ -837,6 +839,9 @@ function populateBackgroundSelect(el,selectedValue){
     simpleItems.forEach(k=>{const opt=document.createElement('option');opt.value=k;opt.textContent=bgMeta[k].name;group.append(opt)});
     el.append(group);
   }
+  const storyGroup=document.createElement('optgroup');storyGroup.label='📖 창작동화 배경';
+  for(const [id,item] of Object.entries(storybookBackgrounds)){const opt=document.createElement('option');opt.value=id;opt.textContent=item.name;storyGroup.append(opt);}
+  el.append(storyGroup);
   const custom=readCustomBackgrounds().filter(item=>!item.hidden||item.id===current);
   if(custom.length){
     const group=document.createElement('optgroup');group.label='🖼 내가 넣은 배경';
@@ -2178,7 +2183,7 @@ syncEditor=function(){previousSyncEditor();updateQuickControls();};
 
 // C4.5.9: One source of truth for installed version; manifest supplied with each ZIP.
 // A GitHub Pages deployment must publish BOTH index.html and version.json in the same folder.
-const WEBTOON_APP_VERSION='4.5.36.4.6';
+const WEBTOON_APP_VERSION='4.5.36.4.7';
 let latestPublishedVersion=null;
 let initialVersionCheck=true;
 let versionCheckInFlight=false;

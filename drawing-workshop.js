@@ -452,7 +452,7 @@ const zoomBase=()=>zoomView?.clientWidth||zoomWrap?.clientWidth||640;
 function zoomTo(value){
  if(!zoomView||!zoomWrap)return;
  const prev=zoomRatio,centerX=(zoomView.scrollLeft+zoomView.clientWidth/2)/(zoomBase()*prev),centerY=(zoomView.scrollTop+zoomView.clientHeight/2)/(zoomBase()*prev);
- zoomRatio=Math.max(1,Math.min(4,value));
+ zoomRatio=Math.max(1,Math.min(6,value));
  zoomWrap.style.width=(zoomBase()*zoomRatio)+'px';
  zoomWrap.style.maxWidth='none';zoomWrap.style.margin='0';
  zoomView.style.maxHeight=zoomRatio>1?'min(75vh,790px)':'none';
